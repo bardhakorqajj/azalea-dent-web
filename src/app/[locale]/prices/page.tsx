@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { CtaBand } from "@/components/sections/CtaBand";
-import { ServicesIndex } from "@/components/sections/ServicesIndex";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { CtaBand } from "@/components/sections/CtaBand";
+import { PriceList } from "@/components/sections/PriceList";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
@@ -20,21 +20,21 @@ export async function generateMetadata({
   const dict = getDictionary(locale);
 
   return {
-    title: dict.services.pageTitle,
-    description: dict.meta.servicesDescription,
+    title: dict.prices.title,
+    description: dict.meta.pricesDescription,
     alternates: {
-      canonical: path(locale, "/services"),
-      languages: { sq: "/sq/services", en: "/en/services" },
+      canonical: path(locale, "/prices"),
+      languages: { sq: "/sq/prices", en: "/en/prices" },
     },
     openGraph: {
-      title: `${dict.services.pageTitle} | Azalea Dent`,
-      description: dict.meta.servicesDescription,
-      url: absoluteUrl(path(locale, "/services")),
+      title: `${dict.prices.title} | Azalea Dent`,
+      description: dict.meta.pricesDescription,
+      url: absoluteUrl(path(locale, "/prices")),
     },
   };
 }
 
-export default async function ServicesPage({
+export default async function PricesPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
@@ -49,33 +49,19 @@ export default async function ServicesPage({
       <PageHeader
         locale={locale}
         dict={dict}
-        eyebrow={dict.services.eyebrow}
-        title={dict.services.pageTitle}
-        lead={dict.services.pageLead}
-        breadcrumbs={[
-          { href: path(locale, "/services"), label: dict.nav.services },
-        ]}
+        eyebrow={dict.prices.eyebrow}
+        title={dict.prices.title}
+        lead={dict.prices.lead}
+        breadcrumbs={[{ href: path(locale, "/prices"), label: dict.nav.prices }]}
       />
 
-      <ServicesIndex
-        locale={locale}
-        dict={dict}
-        variant="page"
-        pricesHref={path(locale, "/prices")}
-        eyebrow={dict.services.eyebrow}
-        title={dict.services.title}
-        lead={dict.services.lead}
-      />
-
+      <PriceList locale={locale} dict={dict} />
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd
         data={breadcrumbSchema([
           { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          {
-            name: dict.services.pageTitle,
-            url: absoluteUrl(path(locale, "/services")),
-          },
+          { name: dict.prices.title, url: absoluteUrl(path(locale, "/prices")) },
         ])}
       />
     </>

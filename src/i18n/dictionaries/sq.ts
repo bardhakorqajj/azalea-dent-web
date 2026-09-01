@@ -9,6 +9,7 @@ export const sq = {
   nav: {
     home: "Ballina",
     services: "Trajtimet",
+    prices: "Çmimet",
     about: "Klinika",
     gallery: "Galeria",
     contact: "Kontakti",
@@ -35,6 +36,7 @@ export const sq = {
     back: "Kthehu",
     backToHome: "Kthehu në ballinë",
     viewGallery: "Shiko galerinë",
+    viewPrices: "Shiko çmimet",
   },
 
   hero: {
@@ -73,6 +75,18 @@ export const sq = {
     ctaTitle: "Keni pyetje për këtë trajtim?",
     ctaBody:
       "Na shkruani përmes formularit ose na gjeni në Instagram. Ju përgjigjemi me detajet që ju duhen përpara se të caktoni takimin.",
+  },
+
+  prices: {
+    eyebrow: "Çmimet",
+    title: "Lista e çmimeve",
+    lead:
+      "Çmimet e shërbimeve stomatologjike në Azalea Dent, sipas listës që gjendet edhe në klinikë.",
+    note:
+      "Çmimet janë në euro. Plani përfundimtar i trajtimit dhe kostoja e tij përcaktohen pas ekzaminimit në klinikë.",
+    ctaTitle: "Nuk e gjeni shërbimin që kërkoni?",
+    ctaBody:
+      "Na telefononi ose na shkruani dhe ju themi saktësisht se çfarë përfshin trajtimi dhe sa kushton.",
   },
 
   why: {
@@ -291,6 +305,8 @@ export const sq = {
       "Njihuni me klinikën Azalea Dent: hapësira, qasja ndaj pacientit dhe trajtimet që ofrohen.",
     galleryDescription:
       "Fotografi të klinikës Azalea Dent: hyrja, zona e pritjes dhe dhomat e trajtimit.",
+    pricesDescription:
+      "Lista e plotë e çmimeve të Azalea Dent në Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, endodonci, protetikë, estetikë, ortodonci dhe parodontologji.",
     contactDescription:
       "Kontaktoni Azalea Dent në Prishtinë për të caktuar një takim ose për një pyetje mbi trajtimet. Hapur e hënë – e premte, 14:00 – 20:00.",
     appointmentDescription:

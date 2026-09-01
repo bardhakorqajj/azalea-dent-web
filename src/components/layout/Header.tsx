@@ -26,6 +26,7 @@ export function Header({ locale, dict }: HeaderProps) {
 
   const links = [
     { href: path(locale, "/services"), label: dict.nav.services },
+    { href: path(locale, "/prices"), label: dict.nav.prices },
     { href: path(locale, "/about"), label: dict.nav.about },
     { href: path(locale, "/gallery"), label: dict.nav.gallery },
     { href: path(locale, "/contact"), label: dict.nav.contact },

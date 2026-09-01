@@ -19,6 +19,8 @@ type ServicesIndexProps = {
   title?: string;
   lead?: string;
   eyebrow?: string;
+  /** Shows a link to the price list beneath the heading. */
+  pricesHref?: string;
 };
 
 /**
@@ -35,6 +37,7 @@ export function ServicesIndex({
   title,
   lead,
   eyebrow,
+  pricesHref,
 }: ServicesIndexProps) {
   const items = services.filter((service) => service.slug !== exclude);
 
@@ -53,6 +56,11 @@ export function ServicesIndex({
                   {variant === "home" && (
                     <ButtonLink href={path(locale, "/services")} variant="secondary">
                       {dict.actions.allTreatments}
+                    </ButtonLink>
+                  )}
+                  {pricesHref && (
+                    <ButtonLink href={pricesHref} variant="secondary">
+                      {dict.actions.viewPrices}
                     </ButtonLink>
                   )}
                 </SectionHeading>

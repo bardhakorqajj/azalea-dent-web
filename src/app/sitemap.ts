@@ -4,7 +4,15 @@ import { serviceSlugs } from "@/content/services";
 import { locales, path } from "@/i18n/config";
 import { absoluteUrl } from "@/lib/site";
 
-const STATIC_PAGES = ["/", "/services", "/about", "/gallery", "/contact", "/appointment"];
+const STATIC_PAGES = [
+  "/",
+  "/services",
+  "/prices",
+  "/about",
+  "/gallery",
+  "/contact",
+  "/appointment",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();

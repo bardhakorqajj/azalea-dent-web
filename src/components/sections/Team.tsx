@@ -51,12 +51,11 @@ function Details({ member, locale }: { member: TeamMember; locale: Locale }) {
 
 /**
  * Renders nothing until real team members are added in `content/clinic.ts`.
- * A single dentist is laid out beside their portrait rather than stranded in a
- * three-column grid, so a one-person clinic still looks deliberate.
+ * Each card caps its width, so a single dentist reads as a deliberate card
+ * rather than being stretched across a three-column grid.
  */
 export function Team({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   if (clinic.team.length === 0) return null;
-  const solo = clinic.team.length === 1 ? clinic.team[0] : undefined;
 
   return (
     <Section surface="bone-warm">
@@ -69,32 +68,22 @@ export function Team({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           />
         </Reveal>
 
-        {solo ? (
-          <Reveal delay={80}>
-            <div className="mt-12 grid items-center gap-8 sm:grid-cols-[minmax(0,17rem)_1fr] sm:gap-14 lg:mt-16">
-              <Portrait member={solo} sizes="(min-width: 640px) 17rem, 100vw" />
-              <div>
-                <Details member={solo} locale={locale} />
-              </div>
-            </div>
-          </Reveal>
-        ) : (
-          <ul className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
-            {clinic.team.map((member, index) => (
-              <li key={member.name}>
-                <Reveal delay={Math.min(index * 70, 240)}>
-                  <Portrait
-                    member={member}
-                    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-                  />
-                  <div className="mt-5">
-                    <Details member={member} locale={locale} />
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+          {clinic.team.map((member, index) => (
+            /* Capped width so a single dentist is not stretched across the grid. */
+            <li key={member.name} className="max-w-[20rem]">
+              <Reveal delay={Math.min(index * 70, 240)}>
+                <Portrait
+                  member={member}
+                  sizes="(min-width: 1024px) 20rem, (min-width: 640px) 45vw, 100vw"
+                />
+                <div className="mt-5">
+                  <Details member={member} locale={locale} />
+                </div>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
       </Container>
     </Section>
   );

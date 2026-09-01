@@ -9,6 +9,7 @@ import {
   whatsappHref,
 } from "@/content/clinic";
 import { galleryOrder, photos } from "@/content/images";
+import { formatPrice, priceGroups, priceItemCount } from "@/content/prices";
 import { getService, services, serviceSlugs } from "@/content/services";
 import { locales } from "@/i18n/config";
 import { en } from "@/i18n/dictionaries/en";
@@ -141,5 +142,59 @@ describe("clinic contact helpers", () => {
     expect(clinic.team).toHaveLength(1);
     expect(clinic.team[0]?.name).toBe("Dr. Spec. Arbëreshë Korqaj");
     expect(clinic.team[0]?.role.sq).toBe("Mjeke specialiste");
+  });
+});
+
+describe("price list", () => {
+  it("keeps the eight categories from the printed sheet", () => {
+    expect(priceGroups).toHaveLength(8);
+    expect(priceGroups.map((g) => g.id)).toEqual([
+      "e-pergjithshme",
+      "pedodonci",
+      "kirurgji-orale",
+      "endodonci",
+      "protetike",
+      "estetike",
+      "ortodonci",
+      "parodontologji",
+    ]);
+  });
+
+  it("transcribes all 49 priced treatments", () => {
+    expect(priceItemCount).toBe(49);
+  });
+
+  it("gives every treatment a positive price and both languages", () => {
+    for (const group of priceGroups) {
+      for (const locale of locales) {
+        expect(group.title[locale].length).toBeGreaterThan(0);
+      }
+      for (const item of group.items) {
+        expect(item.price, `${item.name.sq} has no price`).toBeGreaterThan(0);
+        expect(Number.isInteger(item.price)).toBe(true);
+        for (const locale of locales) {
+          expect(item.name[locale].length, `${item.name.sq} missing ${locale}`)
+            .toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  /** Spot checks against the sheet, so a mistyped figure fails the build. */
+  it("matches the sheet on the prices patients ask about most", () => {
+    const priceOf = (sq: string) =>
+      priceGroups.flatMap((g) => g.items).find((i) => i.name.sq === sq)?.price;
+
+    expect(priceOf("Kontrollë stomatologjike")).toBe(10);
+    expect(priceOf("Implanti")).toBe(450);
+    expect(priceOf("Sinus lift")).toBe(500);
+    expect(priceOf("Pastrimi i dhëmbëve")).toBe(30);
+    expect(priceOf("Zbardhimi i dhëmbëve")).toBe(120);
+    expect(priceOf("Kurora zircon")).toBe(120);
+    expect(priceOf("Faseta estetike (veneer)")).toBe(200);
+  });
+
+  it("formats a price with the euro sign", () => {
+    expect(formatPrice(450)).toBe("450 €");
   });
 });

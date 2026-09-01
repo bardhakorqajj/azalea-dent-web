@@ -7,6 +7,7 @@ component needs to be touched to update the website.
 | --- | --- |
 | Phone, WhatsApp, email, address, opening hours, team, testimonials | `src/content/clinic.ts` |
 | The eight treatments and their copy | `src/content/services.ts` |
+| The price list | `src/content/prices.ts` |
 | Photographs, alt text and captions | `src/content/images.ts` |
 | Every other word on the site, in both languages | `src/i18n/dictionaries/sq.ts` and `en.ts` |
 
@@ -117,13 +118,36 @@ To add or replace a photo:
 Alt text should describe what is actually in the frame — it is read aloud by
 screen readers and indexed by Google.
 
-## 5. Adding a treatment
+## 5. Prices
+
+`src/content/prices.ts` holds the price list, grouped exactly as it is on the
+sheet at reception. To change a price, edit the number:
+
+```ts
+{ name: { sq: "Implanti", en: "Dental implant" }, price: 450 },
+```
+
+Prices are plain numbers in euro; the euro sign is added when rendering. Adding
+a treatment means adding one entry to the right group, and adding a whole
+category means one more group with an `id`, a `title` in both languages and its
+`items`.
+
+A few obvious spelling slips on the printed sheet were corrected in the file
+("Regullimi" to "Rregullimi", "Sherimi" to "Shërimi"). Everything else follows
+the sheet exactly, including the order of the categories.
+
+`npm test` checks the transcription: it asserts the eight categories, the total
+of 49 treatments, that every entry has a positive whole-number price and both
+languages, and it spot-checks the prices patients ask about most. If you change
+a price, update `tests/content.test.ts` when the test names that treatment.
+
+## 6. Adding a treatment
 
 Append an entry to `services` in `src/content/services.ts`. Its page, its place
 in the navigation index, the footer list, the appointment dropdown, the sitemap
 and the structured data are all generated from that one entry.
 
-## 6. Wording
+## 7. Wording
 
 `src/i18n/dictionaries/sq.ts` is the Albanian copy and also defines the shape
 that every language must provide. If you add a key there, TypeScript will

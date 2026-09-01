@@ -81,8 +81,8 @@ export const photos = {
       en: "The glass partition with the etched azalea logo, leading through to a treatment room.",
     },
     caption: {
-      sq: "Detaji i xhamit të gdhendur",
-      en: "Etched glass detail",
+      sq: "Dhoma e punës",
+      en: "The work room",
     },
     focus: "center center",
   },

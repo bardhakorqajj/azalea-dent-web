@@ -53,7 +53,7 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
               {dict.visit.lead}
             </p>
 
-            <div className="mt-10 grid gap-8 sm:grid-cols-2">
+            <div className="mt-10 grid gap-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-12">
               <div>
                 <h3 className="eyebrow font-sans text-bone-300/60">
                   {dict.visit.addressTitle}
@@ -86,11 +86,14 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
                 {hasHours ? (
                   <dl className="mt-3 space-y-1.5 text-[0.95rem]">
                     {clinic.hours.map((rule) => (
-                      <div key={rule.days.join("-")} className="flex justify-between gap-4">
-                        <dt className="text-bone-200/70">
+                      <div
+                        key={rule.days.join("-")}
+                        className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-0.5"
+                      >
+                        <dt className="whitespace-nowrap text-bone-200/70">
                           {formatDayRange(rule.days, locale)}
                         </dt>
-                        <dd className="text-bone-100 tabular-nums">
+                        <dd className="whitespace-nowrap text-bone-100 tabular-nums">
                           {formatHours(rule, dict.visit.closed)}
                         </dd>
                       </div>

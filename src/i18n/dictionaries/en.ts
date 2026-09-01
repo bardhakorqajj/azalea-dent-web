@@ -11,6 +11,7 @@ export const en: Dictionary = {
   nav: {
     home: "Home",
     services: "Treatments",
+    prices: "Prices",
     about: "The clinic",
     gallery: "Gallery",
     contact: "Contact",
@@ -37,6 +38,7 @@ export const en: Dictionary = {
     back: "Back",
     backToHome: "Back to home",
     viewGallery: "View gallery",
+    viewPrices: "View prices",
   },
 
   hero: {
@@ -75,6 +77,18 @@ export const en: Dictionary = {
     ctaTitle: "Questions about this treatment?",
     ctaBody:
       "Send us the form or message us on Instagram. We will answer with the details you need before you book.",
+  },
+
+  prices: {
+    eyebrow: "Prices",
+    title: "Price list",
+    lead:
+      "What treatment at Azalea Dent costs, following the same list displayed at the clinic.",
+    note:
+      "Prices are in euro. The final treatment plan and its cost are set after an examination at the clinic.",
+    ctaTitle: "Cannot find the treatment you are looking for?",
+    ctaBody:
+      "Call or message us and we will tell you exactly what the treatment involves and what it costs.",
   },
 
   why: {
@@ -288,6 +302,8 @@ export const en: Dictionary = {
       "Get to know Azalea Dent: the space, the approach to patients and the treatments offered.",
     galleryDescription:
       "Photographs of the Azalea Dent clinic: the entrance, the waiting area and the treatment rooms.",
+    pricesDescription:
+      "The full Azalea Dent price list in Prishtina: general dentistry, paediatric dentistry, oral surgery, endodontics, prosthetics, aesthetics, orthodontics and periodontology.",
     contactDescription:
       "Contact Azalea Dent in Prishtina to book an appointment or ask a question about treatments. Open Monday to Friday, 14:00 – 20:00.",
     appointmentDescription:

@@ -17,6 +17,7 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const year = new Date().getFullYear();
 
   const clinicLinks = [
+    { href: path(locale, "/prices"), label: dict.nav.prices },
     { href: path(locale, "/about"), label: dict.nav.about },
     { href: path(locale, "/gallery"), label: dict.nav.gallery },
     { href: path(locale, "/contact"), label: dict.nav.contact },
@@ -49,9 +50,14 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             {clinic.hours.length > 0 && (
               <dl className="mt-7 space-y-1.5 text-[0.9rem] text-bone-200/70">
                 {clinic.hours.map((rule) => (
-                  <div key={rule.days.join("-")} className="flex gap-3">
-                    <dt className="min-w-40">{formatDayRange(rule.days, locale)}</dt>
-                    <dd className="text-bone-100">
+                  <div
+                    key={rule.days.join("-")}
+                    className="flex flex-wrap items-baseline gap-x-4 gap-y-0.5"
+                  >
+                    <dt className="min-w-36 whitespace-nowrap">
+                      {formatDayRange(rule.days, locale)}
+                    </dt>
+                    <dd className="whitespace-nowrap text-bone-100 tabular-nums">
                       {formatHours(rule, dict.visit.closed)}
                     </dd>
                   </div>

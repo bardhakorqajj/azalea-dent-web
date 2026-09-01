@@ -59,10 +59,12 @@ export function ClinicDetails({
             {clinic.hours.map((rule) => (
               <div
                 key={rule.days.join("-")}
-                className="flex justify-between gap-6 border-b border-ink-900/8 pb-2"
+                className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-0.5 border-b border-ink-900/8 pb-2"
               >
-                <dt className="text-ink-600">{formatDayRange(rule.days, locale)}</dt>
-                <dd className="text-ink-900 tabular-nums">
+                <dt className="whitespace-nowrap text-ink-600">
+                  {formatDayRange(rule.days, locale)}
+                </dt>
+                <dd className="whitespace-nowrap text-ink-900 tabular-nums">
                   {formatHours(rule, dict.visit.closed)}
                 </dd>
               </div>
