@@ -29,7 +29,7 @@ export async function generateMetadata({
       languages: { sq: "/sq/contact", en: "/en/contact" },
     },
     openGraph: {
-      title: `${dict.contact.title} — Azalea Dent`,
+      title: `${dict.contact.title} | Azalea Dent`,
       description: dict.meta.contactDescription,
       url: absoluteUrl(path(locale, "/contact")),
     },

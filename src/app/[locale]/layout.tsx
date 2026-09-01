@@ -57,7 +57,7 @@ export async function generateMetadata({
     metadataBase: new URL(siteUrl()),
     title: {
       default: dict.meta.homeTitle,
-      template: `%s — ${clinic.name}`,
+      template: `%s | ${clinic.name}`,
     },
     description: dict.meta.homeDescription,
     applicationName: clinic.name,

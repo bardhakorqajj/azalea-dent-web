@@ -37,7 +37,7 @@ export async function generateMetadata({
       languages: { sq: "/sq/about", en: "/en/about" },
     },
     openGraph: {
-      title: `${dict.about.title} — Azalea Dent`,
+      title: `${dict.about.title} | Azalea Dent`,
       description: dict.meta.aboutDescription,
       url: absoluteUrl(path(locale, "/about")),
     },
@@ -113,7 +113,7 @@ export default async function AboutPage({
 
             <div className="lg:col-span-5">
               <Reveal delay={60}>
-                <div className="relative aspect-[3/4] w-full overflow-hidden">
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
                   <Image
                     src={photos.reception.src}
                     alt={photos.reception.alt[locale]}

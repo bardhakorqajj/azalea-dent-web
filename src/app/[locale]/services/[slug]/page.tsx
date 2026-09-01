@@ -51,7 +51,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: `${service.title[locale]} — Azalea Dent`,
+      title: `${service.title[locale]} | Azalea Dent`,
       description: service.summary[locale],
       url: absoluteUrl(url),
     },

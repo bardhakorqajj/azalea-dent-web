@@ -12,3 +12,20 @@ export function interpolate(
     key in values ? String(values[key]) : match,
   );
 }
+
+/**
+ * Initials for a monogram, ignoring titles.
+ *
+ * Abbreviations such as "Dr." and "Spec." are dropped, so
+ * "Dr. Spec. Arbëreshë Korqaj" gives "AK" rather than "DS".
+ */
+export function initials(fullName: string): string {
+  const names = fullName
+    .split(/\s+/)
+    .filter((part) => part.length > 0 && !part.endsWith("."));
+
+  return names
+    .slice(0, 2)
+    .map((part) => part[0]?.toLocaleUpperCase("sq") ?? "")
+    .join("");
+}

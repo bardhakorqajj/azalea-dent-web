@@ -4,7 +4,7 @@ import { clinic } from "@/content/clinic";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${clinic.name} — ${clinic.descriptor}`,
+    name: `${clinic.name} ${clinic.descriptor}`,
     short_name: clinic.name,
     start_url: "/sq",
     display: "standalone",

@@ -75,7 +75,7 @@ export function Header({ locale, dict }: HeaderProps) {
         <Link
           href={path(locale)}
           className="shrink-0 text-ink-900"
-          aria-label={`${dict.nav.home} — Azalea Dent`}
+          aria-label={`Azalea Dent, ${dict.nav.home}`}
         >
           <Logo />
         </Link>

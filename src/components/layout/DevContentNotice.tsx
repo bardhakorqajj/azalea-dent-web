@@ -14,7 +14,7 @@ export function DevContentNotice() {
     <aside className="fixed bottom-24 left-4 z-[60] max-w-xs rounded-sm border border-gold-500/60 bg-ink-950/95 p-4 text-[0.75rem] leading-relaxed text-bone-100 shadow-lg lg:bottom-4">
       <p className="font-semibold text-gold-300">Content still to fill in</p>
       <p className="mt-1 text-bone-300/80">
-        Set these in <code className="text-gold-300">src/content/clinic.ts</code> — see
+        Set these in <code className="text-gold-300">src/content/clinic.ts</code>. See
         CONTENT.md. Sections without data stay hidden.
       </p>
       <ul className="mt-2 flex flex-wrap gap-1.5">

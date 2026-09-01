@@ -92,7 +92,7 @@ export function ClinicDetails({
           {clinic.mapsEmbedUrl ? (
             <iframe
               src={clinic.mapsEmbedUrl}
-              title={`${clinic.name} — ${dict.visit.addressTitle}`}
+              title={`${clinic.name}, ${dict.visit.addressTitle}`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="aspect-[4/3] w-full border border-ink-900/12"

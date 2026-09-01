@@ -35,7 +35,7 @@ export async function generateMetadata({
       languages: { sq: "/sq/appointment", en: "/en/appointment" },
     },
     openGraph: {
-      title: `${dict.appointment.title} — Azalea Dent`,
+      title: `${dict.appointment.title} | Azalea Dent`,
       description: dict.meta.appointmentDescription,
       url: absoluteUrl(path(locale, "/appointment")),
     },

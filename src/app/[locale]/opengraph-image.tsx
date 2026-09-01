@@ -6,7 +6,7 @@ import { getDictionary } from "@/i18n/get-dictionary";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Azalea Dent — Dental Clinic";
+export const alt = "Azalea Dent Dental Clinic";
 
 const PETAL =
   "M50 40 C46 40.5 42.5 38 40.5 33 C37.5 26 38.5 16.8 43.5 16 C47 15.5 48 20 47.5 25 " +

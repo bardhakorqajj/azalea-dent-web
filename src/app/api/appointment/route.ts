@@ -121,7 +121,7 @@ export async function POST(request: Request) {
             process.env.APPOINTMENT_FROM_EMAIL ??
             "Azalea Dent <onboarding@resend.dev>",
           to: [toEmail],
-          subject: `Appointment request — ${appointment.name} (${serviceLabel})`,
+          subject: `Appointment request: ${appointment.name} (${serviceLabel})`,
           text: summary,
           ...(appointment.email ? { reply_to: appointment.email } : {}),
         }),

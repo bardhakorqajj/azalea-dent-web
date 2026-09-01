@@ -4,15 +4,15 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Close } from "@/components/ui/Icons";
-import { galleryOrder, photos, type PhotoKey } from "@/content/images";
+import { galleryOrder, photos } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { cn, interpolate } from "@/lib/utils";
+import { interpolate } from "@/lib/utils";
 
 /**
- * Editorial layout for the clinic photographs — arrival, waiting area,
- * corridor, then the treatment room — each at the aspect ratio that suits
- * the frame rather than a uniform grid. Every figure opens in a lightbox.
+ * The clinic photographs in a single even grid: every tile the same size and
+ * aligned to the same rows, in the order a patient meets the space. Each one
+ * opens in a lightbox.
  */
 export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -71,39 +71,30 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
     };
   }, [openIndex, close, step]);
 
-  /** Frame shape per position, tuned to each photograph. */
-  const frames: Record<PhotoKey, string> = {
-    facadeNight: "lg:col-span-12 aspect-[4/3] sm:aspect-[16/8]",
-    reception: "lg:col-span-7 aspect-[4/3]",
-    glassDetail: "lg:col-span-5 aspect-[4/3]",
-    operatoryOak: "lg:col-span-5 lg:col-start-2 aspect-[3/4]",
-    operatoryDaylight: "lg:col-span-5 lg:col-start-8 aspect-[3/4] lg:mt-20",
-  };
-
   const active = openIndex === null ? null : galleryOrder[openIndex];
   const activePhoto = active ? photos[active] : null;
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-12 lg:gap-8">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
         {galleryOrder.map((key, index) => {
           const photo = photos[key];
           return (
-            <figure key={key} className={cn("group min-w-0", frames[key])}>
+            <figure key={key} className="group min-w-0">
               <button
                 type="button"
                 ref={(node) => {
                   triggerRefs.current[index] = node;
                 }}
                 onClick={() => setOpenIndex(index)}
-                className="relative block h-full w-full cursor-zoom-in overflow-hidden bg-bone-200"
+                className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-bone-200"
               >
                 <span className="sr-only">{dict.gallery.open}</span>
                 <Image
                   src={photo.src}
                   alt={photo.alt[locale]}
                   placeholder="blur"
-                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                   className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
                   style={{ objectPosition: photo.focus }}
                 />

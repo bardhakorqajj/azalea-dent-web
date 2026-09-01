@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { isLocale, path } from "@/i18n/config";
 import { formatDayRange, formatHours } from "@/lib/hours";
-import { cn, interpolate } from "@/lib/utils";
+import { cn, initials, interpolate } from "@/lib/utils";
 
 describe("cn", () => {
   it("joins truthy class names only", () => {
@@ -62,5 +62,18 @@ describe("formatHours", () => {
     expect(formatHours({ days: ["sun"], opens: null, closes: null }, "Mbyllur")).toBe(
       "Mbyllur",
     );
+  });
+});
+
+describe("initials", () => {
+  it("skips titles and abbreviations", () => {
+    expect(initials("Dr. Spec. Arbëreshë Korqaj")).toBe("AK");
+    expect(initials("Dr. Arta Berisha")).toBe("AB");
+    expect(initials("Prof. Dr. Med. Filan Fisteku")).toBe("FF");
+  });
+
+  it("handles a plain name and a single word", () => {
+    expect(initials("Arta Berisha")).toBe("AB");
+    expect(initials("Arta")).toBe("A");
   });
 });

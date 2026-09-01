@@ -41,7 +41,7 @@ export const sq = {
     eyebrow: "Klinikë dentare në Prishtinë",
     title: "Kujdes dentar, i shpjeguar qartë.",
     lead:
-      "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia — çdo plan trajtimi diskutohet me ju përpara se të fillojë.",
+      "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia, çdo plan trajtimi e diskutojmë bashkë me ju përpara se të fillojë.",
     imageCaption: "Dhoma e trajtimit",
     scroll: "Zbrit",
   },
@@ -51,7 +51,7 @@ export const sq = {
     title: "Një hapësirë e menduar që vizita të jetë e lehtë.",
     body: [
       "Klinika është ndërtuar rreth një ideje të thjeshtë: pacienti duhet të dijë çfarë po ndodh. Vizita fillon në një ambient të qetë pritjeje dhe vazhdon në dhomën e trajtimit të pajisur plotësisht, ku çdo hap shpjegohet përpara se të kryhet.",
-      "Materialet, ngjyrat dhe drita janë zgjedhur që hapësira të mos ndihet klinike. Është e pastër dhe profesionale, por e ngrohtë — sepse gjysma e rehatisë gjatë një trajtimi vjen nga vetë ambienti.",
+      "Materialet, ngjyrat dhe drita janë zgjedhur me kujdes që hapësira të mos ndihet e ftohtë. Është e pastër dhe profesionale, por edhe e ngrohtë, sepse gjysma e rehatisë gjatë një trajtimi vjen nga vetë ambienti.",
     ],
     stats: [
       { value: "8", label: "Trajtime" },
@@ -72,7 +72,7 @@ export const sq = {
     otherTitle: "Trajtime të tjera",
     ctaTitle: "Keni pyetje për këtë trajtim?",
     ctaBody:
-      "Na shkruani përmes formularit ose na gjeni në Instagram — ju përgjigjemi me detajet që ju duhen përpara se të caktoni takimin.",
+      "Na shkruani përmes formularit ose na gjeni në Instagram. Ju përgjigjemi me detajet që ju duhen përpara se të caktoni takimin.",
   },
 
   why: {
@@ -103,7 +103,7 @@ export const sq = {
     title: "Brenda klinikës",
     lead: "Fotografi të vërteta të ambientit ku do të kryhet trajtimi juaj.",
     pageLead:
-      "Hyrja, zona e pritjes dhe të dyja dhomat e trajtimit — hapësira ashtu siç është.",
+      "Hyrja, zona e pritjes dhe dhoma e trajtimit, ashtu siç janë në të vërtetë.",
     open: "Zmadho fotografinë",
     close: "Mbyll",
     previous: "Fotografia e mëparshme",
@@ -226,7 +226,7 @@ export const sq = {
      */
     unconfigured: {
       title: "Dërgimi online nuk është aktiv ende",
-      body: "Formulari nuk është lidhur ende me një shërbim emaili, prandaj kërkesa juaj nuk u dërgua. Na kontaktoni direkt me një nga mënyrat më poshtë — ju përgjigjemi po atë ditë pune.",
+      body: "Formulari nuk është lidhur ende me një shërbim emaili, prandaj kërkesa juaj nuk u dërgua. Na kontaktoni direkt me një nga mënyrat më poshtë dhe ju kthejmë përgjigje sa më shpejt.",
       viaWhatsapp: "Dërgo të dhënat me WhatsApp",
       viaInstagram: "Na shkruani në Instagram",
     },
@@ -239,14 +239,14 @@ export const sq = {
       "Një klinikë dentare e ndërtuar që vizita të ndihet e qetë dhe e kuptueshme.",
     storyTitle: "Hapësira",
     story: [
-      "Azalea Dent ndodhet në katin përdhes, me hyrje direkte nga rruga. Tabela e ndriçuar dhe lulja e azaleas — e njëjta që gjendet e gdhendur në xhamat brenda — janë shenja e parë e klinikës.",
+      "Azalea Dent ndodhet në katin përdhes, me hyrje direkte nga rruga. Tabela e ndriçuar dhe lulja e azaleas, e njëjta që gjendet e gdhendur në xhamat brenda, janë shenja e parë e klinikës.",
       "Brenda, zona e pritjes është menduar si një hapësirë ku pritja nuk rëndon: dritare të mëdha, ulëse të rehatshme dhe dritë natyrale. Dhoma e trajtimit është e ndarë me xham dhe e pajisur plotësisht.",
-      "Paleta e klinikës — antracit, dru lisi dhe të bardhë të ngrohtë — është zgjedhur me qëllim. Ambientet dentare shpesh ndihen të ftohta; ky nuk është ndërtuar ashtu.",
+      "Paleta e klinikës, antracit, dru lisi dhe të bardhë të ngrohtë, është zgjedhur me qëllim. Shumë ambiente dentare ndihen të ftohta. Ky nuk është menduar ashtu.",
     ],
     approachTitle: "Qasja",
     approach: [
       "Çdo trajtim fillon me ekzaminim dhe me një plan. Ju e dini se çfarë do të bëhet, sa seanca nevojiten dhe sa kushton, përpara se të fillojë puna.",
-      "Kur ka më shumë se një zgjidhje, i shpjegojmë të gjitha — përfshirë atë që nuk kërkon ndërhyrje. Vendimi mbetet i juaji.",
+      "Kur ka më shumë se një zgjidhje, i shpjegojmë të gjitha, përfshirë edhe atë që nuk kërkon ndërhyrje. Vendimi mbetet gjithmonë i juaji.",
     ],
     servicesTitle: "Trajtimet në klinikë",
   },
@@ -255,7 +255,7 @@ export const sq = {
     eyebrow: "Kontakti",
     title: "Kontaktoni klinikën",
     lead:
-      "Për një takim, një pyetje ose një mendim të dytë — na shkruani dhe ju përgjigjemi.",
+      "Për një takim, një pyetje ose një mendim të dytë, na shkruani dhe ju kthejmë përgjigje.",
     formTitle: "Kërkesë për takim",
     infoTitle: "Të dhënat e klinikës",
   },
@@ -282,7 +282,7 @@ export const sq = {
   },
 
   meta: {
-    homeTitle: "Azalea Dent — Klinikë dentare në Prishtinë",
+    homeTitle: "Azalea Dent | Klinikë dentare në Prishtinë",
     homeDescription:
       "Klinikë dentare në Prishtinë: pastrim, mbushje, endodonti, protetikë, kurora, kirurgji orale dhe implantologji. Çdo plan trajtimi shpjegohet përpara se të fillojë.",
     servicesDescription:

@@ -43,7 +43,7 @@ export const en: Dictionary = {
     eyebrow: "Dental clinic in Prishtina",
     title: "Dental care, clearly explained.",
     lead:
-      "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants — every treatment plan is discussed with you before it begins.",
+      "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants, we talk through every treatment plan with you before it begins.",
     imageCaption: "The treatment room",
     scroll: "Scroll",
   },
@@ -53,7 +53,7 @@ export const en: Dictionary = {
     title: "A space designed to make the visit easy.",
     body: [
       "The clinic is built around a simple idea: the patient should know what is happening. A visit starts in a calm waiting area and continues in the fully equipped treatment room, where every step is explained before it is carried out.",
-      "The materials, colours and light were chosen so the space would not feel clinical. It is clean and professional, but warm — because half the comfort during a treatment comes from the room itself.",
+      "The materials, colours and light were chosen so the space would not feel cold. It is clean and professional, but warm too, because half the comfort during a treatment comes from the room itself.",
     ],
     stats: [
       { value: "8", label: "Treatments" },
@@ -74,7 +74,7 @@ export const en: Dictionary = {
     otherTitle: "Other treatments",
     ctaTitle: "Questions about this treatment?",
     ctaBody:
-      "Send us the form or message us on Instagram — we will answer with the details you need before you book.",
+      "Send us the form or message us on Instagram. We will answer with the details you need before you book.",
   },
 
   why: {
@@ -105,7 +105,7 @@ export const en: Dictionary = {
     title: "Inside the clinic",
     lead: "Real photographs of the space where your treatment takes place.",
     pageLead:
-      "The entrance, the waiting area and both treatment rooms — the space exactly as it is.",
+      "The entrance, the waiting area and the treatment room, exactly as they are.",
     open: "Enlarge photograph",
     close: "Close",
     previous: "Previous photograph",
@@ -224,7 +224,7 @@ export const en: Dictionary = {
     },
     unconfigured: {
       title: "Online sending is not active yet",
-      body: "The form is not yet connected to an email service, so your request was not sent. Please contact us directly using one of the options below — we reply the same working day.",
+      body: "The form is not yet connected to an email service, so your request was not sent. Please contact us directly using one of the options below and we will get back to you as soon as we can.",
       viaWhatsapp: "Send the details on WhatsApp",
       viaInstagram: "Message us on Instagram",
     },
@@ -236,14 +236,14 @@ export const en: Dictionary = {
     lead: "A dental clinic built so that a visit feels calm and understandable.",
     storyTitle: "The space",
     story: [
-      "Azalea Dent is on the ground floor, with direct access from the street. The illuminated sign and the azalea flower — the same one etched into the glass inside — are the first sign of the clinic.",
+      "Azalea Dent is on the ground floor, with direct access from the street. The illuminated sign and the azalea flower, the same one etched into the glass inside, are the first sign of the clinic.",
       "Inside, the waiting area is designed so that waiting is not a burden: large windows, comfortable seating and natural light. The treatment room is separated by glass and fully equipped.",
-      "The clinic's palette — charcoal, oak and warm white — was a deliberate choice. Dental spaces often feel cold; this one was not built that way.",
+      "The clinic's palette of charcoal, oak and warm white was a deliberate choice. Many dental spaces feel cold. This one was not meant to.",
     ],
     approachTitle: "The approach",
     approach: [
       "Every treatment starts with an examination and a plan. You know what will be done, how many appointments it takes and what it costs, before any work begins.",
-      "When there is more than one solution, we explain all of them — including the one that involves no intervention at all. The decision stays yours.",
+      "When there is more than one solution, we explain all of them, including the one that involves no treatment at all. The decision is always yours.",
     ],
     servicesTitle: "Treatments at the clinic",
   },
@@ -252,7 +252,7 @@ export const en: Dictionary = {
     eyebrow: "Contact",
     title: "Contact the clinic",
     lead:
-      "For an appointment, a question or a second opinion — write to us and we will reply.",
+      "For an appointment, a question or a second opinion, write to us and we will reply.",
     formTitle: "Appointment request",
     infoTitle: "Clinic details",
   },
@@ -279,7 +279,7 @@ export const en: Dictionary = {
   },
 
   meta: {
-    homeTitle: "Azalea Dent — Dental Clinic in Prishtina",
+    homeTitle: "Azalea Dent | Dental Clinic in Prishtina",
     homeDescription:
       "Dental clinic in Prishtina: cleanings, fillings, root canals, prosthetics, crowns, oral surgery and implants. Every treatment plan is explained before it begins.",
     servicesDescription:

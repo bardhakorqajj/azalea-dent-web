@@ -350,7 +350,7 @@ export const services: Service[] = [
     title: { sq: "Pastrim i dhëmbëve", en: "Professional cleaning" },
     summary: {
       sq: "Heqja e pllakës dhe e gurëzave që furça nuk i arrin, si bazë e shëndetit të mishrave.",
-      en: "Removing the plaque and tartar a toothbrush cannot reach — the basis of healthy gums.",
+      en: "Removing the plaque and tartar a toothbrush cannot reach, which is where healthy gums start.",
     },
     body: [
       {
