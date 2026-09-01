@@ -1,0 +1,178 @@
+@import "tailwindcss";
+
+/*
+ * Azalea Dent design tokens.
+ *
+ * The palette is taken directly from the clinic itself:
+ *   ink   — the charcoal shopfront, cabinetry, blinds and chairs
+ *   bone  — the warm off-white walls and ceramic floor
+ *   oak   — the natural oak reception desk and backsplash
+ *   gold  — the illuminated azalea sign above the door
+ */
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+
+  --color-ink-950: #0c0e0f;
+  --color-ink-900: #14171a;
+  --color-ink-800: #1f2326;
+  --color-ink-700: #2e3438;
+  --color-ink-600: #454d52;
+  --color-ink-500: #5f696e;
+  --color-ink-400: #838c91;
+  --color-ink-300: #a9b0b4;
+
+  --color-bone-50: #fbf9f6;
+  --color-bone-100: #f5f1ea;
+  --color-bone-200: #ebe5db;
+  --color-bone-300: #ddd5c8;
+  --color-bone-400: #c7bdac;
+
+  --color-oak-300: #d9bc98;
+  --color-oak-400: #c9a276;
+  --color-oak-500: #b1885c;
+
+  --color-gold-300: #eece8a;
+  --color-gold-400: #e3b657;
+  --color-gold-500: #c69a3d;
+  /* Text-safe bronze: 5.3:1 on bone-50, 5.0:1 on bone-100 (WCAG AA). */
+  --color-gold-700: #85621d;
+
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    /* Height of the sticky mobile action bar, so page bottoms never sit under it. */
+    --mobile-bar: 4.5rem;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --mobile-bar: 0rem;
+    }
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bone-50);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* A single, consistent focus ring across the whole site. */
+  :focus-visible {
+    outline: 2px solid var(--color-ink-900);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .on-dark :focus-visible,
+  [data-surface="dark"] :focus-visible {
+    outline-color: var(--color-gold-400);
+  }
+
+  ::selection {
+    background-color: var(--color-ink-900);
+    color: var(--color-bone-50);
+  }
+
+  /* Anchor targets clear the fixed header. */
+  :target {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@layer components {
+  /* Small uppercase label used above section headings. */
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Subtle grain, keeps large flat areas from looking flat/digital. */
+  .surface-grain {
+    position: relative;
+  }
+
+  .surface-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Scroll reveal — driven by the <Reveal> component.
+ * Elements are visible by default and only hidden once JS marks them pending,
+ * so the site is fully readable with JavaScript disabled.
+ * ------------------------------------------------------------------------- */
+[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.75s var(--ease-out-quint),
+    transform 0.75s var(--ease-out-quint);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    scroll-behavior: auto;
+  }
+
+  [data-reveal="pending"],
+  [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
