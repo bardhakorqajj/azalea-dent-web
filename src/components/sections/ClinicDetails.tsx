@@ -1,6 +1,9 @@
 import Image from "next/image";
 
-import { ContactChannelList } from "@/components/layout/ContactChannels";
+import {
+  ContactChannelList,
+  MessagingLinks,
+} from "@/components/layout/ContactChannels";
 import { clinic, formatAddress } from "@/content/clinic";
 import { photos } from "@/content/images";
 import { formatDayRange, formatHours } from "@/lib/hours";
@@ -75,11 +78,13 @@ export function ClinicDetails({
       <div className="mt-9">
         <h3 className="eyebrow text-ink-500">{dict.visit.contactTitle}</h3>
         <ContactChannelList dict={dict} className="mt-2 border-t border-ink-900/10" />
-        {!clinic.phone && (
+        {clinic.phones.length === 0 && (
           <p className="mt-4 text-[0.9rem] leading-relaxed text-ink-500">
             {dict.visit.contactPending}
           </p>
         )}
+        <h3 className="eyebrow mt-8 text-ink-500">{dict.visit.messagingTitle}</h3>
+        <MessagingLinks dict={dict} className="mt-4" />
       </div>
 
       {showMap && (

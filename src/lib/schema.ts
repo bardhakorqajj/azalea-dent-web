@@ -21,7 +21,7 @@ export function dentistSchema(locale: Locale) {
     alternateName: `${clinic.name} ${clinic.descriptor}`,
     url: absoluteUrl(path(locale)),
     image: absoluteUrl("/opengraph-image"),
-    ...(clinic.phone ? { telephone: clinic.phone } : {}),
+    ...(clinic.phones.length > 0 ? { telephone: clinic.phones } : {}),
     ...(clinic.email ? { email: clinic.email } : {}),
     ...(clinic.foundingYear ? { foundingDate: String(clinic.foundingYear) } : {}),
     ...(clinic.address

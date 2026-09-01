@@ -65,12 +65,12 @@ export const photos = {
   operatoryDaylight: {
     src: operatoryDaylight,
     alt: {
-      sq: "Dhoma e dytë e trajtimit me dritë natyrale nga dritarja e madhe dhe karrige dentare të gatshme.",
-      en: "The second treatment room with natural light from a large window and a prepared dental chair.",
+      sq: "Karrige dentare e gatshme pranë dritares së madhe, me dritë natyrale në dhomën e trajtimit.",
+      en: "A prepared dental chair beside the large window, with natural light in the treatment room.",
     },
     caption: {
-      sq: "Dhoma e dytë",
-      en: "The second room",
+      sq: "Njësia dentare",
+      en: "The dental unit",
     },
     focus: "center center",
   },
@@ -92,7 +92,7 @@ export type PhotoKey = keyof typeof photos;
 
 /**
  * Gallery order — arranged as a sequence rather than a plain grid: arrival,
- * waiting, the corridor, then the two treatment rooms.
+ * waiting, the corridor, then the treatment room.
  */
 export const galleryOrder: PhotoKey[] = [
   "facadeNight",

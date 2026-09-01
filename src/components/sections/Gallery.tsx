@@ -11,7 +11,7 @@ import { cn, interpolate } from "@/lib/utils";
 
 /**
  * Editorial layout for the clinic photographs — arrival, waiting area,
- * corridor, then the two treatment rooms — each at the aspect ratio that suits
+ * corridor, then the treatment room — each at the aspect ratio that suits
  * the frame rather than a uniform grid. Every figure opens in a lightbox.
  */
 export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) {

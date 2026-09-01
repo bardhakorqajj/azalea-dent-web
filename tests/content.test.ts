@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { clinic, formatAddress, telHref, whatsappHref } from "@/content/clinic";
+import {
+  clinic,
+  formatAddress,
+  primaryPhone,
+  telHref,
+  viberHref,
+  whatsappHref,
+} from "@/content/clinic";
 import { galleryOrder, photos } from "@/content/images";
 import { getService, services, serviceSlugs } from "@/content/services";
 import { locales } from "@/i18n/config";
@@ -89,13 +96,46 @@ describe("dictionaries", () => {
 
 describe("clinic contact helpers", () => {
   it("returns null rather than inventing details that are not configured", () => {
-    if (!clinic.phone) expect(telHref()).toBeNull();
+    if (clinic.phones.length === 0) expect(telHref()).toBeNull();
     if (!clinic.whatsapp) expect(whatsappHref()).toBeNull();
+    if (!clinic.viber) expect(viberHref()).toBeNull();
     if (!clinic.address) expect(formatAddress()).toBeNull();
   });
 
-  it("always exposes the clinic's real Instagram profile", () => {
+  it("publishes the clinic's real numbers", () => {
+    expect(clinic.phones).toEqual(["+383 48 306 376", "+383 43 779 909"]);
+    expect(primaryPhone()).toBe("+383 48 306 376");
+  });
+
+  it("strips formatting from tel: links so they dial correctly", () => {
+    expect(telHref()).toBe("tel:+38348306376");
+    expect(telHref("+383 43 779 909")).toBe("tel:+38343779909");
+  });
+
+  it("builds wa.me and viber links from the messaging number", () => {
+    expect(whatsappHref()).toBe("https://wa.me/38348306376");
+    expect(whatsappHref("Test")).toBe("https://wa.me/38348306376?text=Test");
+    expect(viberHref()).toBe("viber://chat?number=%2B38348306376");
+  });
+
+  it("exposes the clinic's real social profiles", () => {
     expect(clinic.social.instagram.handle).toBe("azalea.dent");
     expect(clinic.social.instagram.url).toContain("instagram.com/azalea.dent");
+    expect(clinic.social.facebook).toContain("facebook.com");
+  });
+
+  it("opens weekday afternoons and closes at the weekend", () => {
+    const weekday = clinic.hours.find((rule) => rule.days.includes("mon"));
+    expect(weekday).toMatchObject({ opens: "14:00", closes: "20:00" });
+    expect(weekday?.days).toEqual(["mon", "tue", "wed", "thu", "fri"]);
+
+    const weekend = clinic.hours.find((rule) => rule.days.includes("sun"));
+    expect(weekend?.opens).toBeNull();
+  });
+
+  it("lists the clinical team without inventing credentials", () => {
+    expect(clinic.team).toHaveLength(1);
+    expect(clinic.team[0]?.name).toBe("Dr. Spec. Arbëreshë Korqaj");
+    expect(clinic.team[0]?.role.sq).toBe("Mjeke specialiste");
   });
 });

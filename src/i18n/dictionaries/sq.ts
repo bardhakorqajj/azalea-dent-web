@@ -27,7 +27,9 @@ export const sq = {
     learnMore: "Mëso më shumë",
     call: "Telefono",
     whatsapp: "WhatsApp",
+    viber: "Viber",
     instagram: "Instagram",
+    facebook: "Facebook",
     email: "Email",
     directions: "Shiko në hartë",
     back: "Kthehu",
@@ -39,7 +41,7 @@ export const sq = {
     eyebrow: "Klinikë dentare",
     title: "Kujdes dentar, i shpjeguar qartë.",
     lead:
-      "Azalea Dent është një klinikë dentare me dy dhoma trajtimi dhe një ambient të qetë pritjeje. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia — çdo plan trajtimi diskutohet me ju përpara se të fillojë.",
+      "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia — çdo plan trajtimi diskutohet me ju përpara se të fillojë.",
     imageCaption: "Dhoma e trajtimit",
     scroll: "Zbrit",
   },
@@ -48,12 +50,12 @@ export const sq = {
     eyebrow: "Klinika",
     title: "Një hapësirë e menduar që vizita të jetë e lehtë.",
     body: [
-      "Klinika është ndërtuar rreth një ideje të thjeshtë: pacienti duhet të dijë çfarë po ndodh. Vizita fillon në një ambient të qetë pritjeje dhe vazhdon në dhoma trajtimi të pajisura plotësisht, ku çdo hap shpjegohet përpara se të kryhet.",
+      "Klinika është ndërtuar rreth një ideje të thjeshtë: pacienti duhet të dijë çfarë po ndodh. Vizita fillon në një ambient të qetë pritjeje dhe vazhdon në dhomën e trajtimit të pajisur plotësisht, ku çdo hap shpjegohet përpara se të kryhet.",
       "Materialet, ngjyrat dhe drita janë zgjedhur që hapësira të mos ndihet klinike. Është e pastër dhe profesionale, por e ngrohtë — sepse gjysma e rehatisë gjatë një trajtimi vjen nga vetë ambienti.",
     ],
     stats: [
       { value: "8", label: "Trajtime" },
-      { value: "2", label: "Dhoma trajtimi" },
+      { value: "14–20", label: "E hënë – E premte" },
     ],
   },
 
@@ -86,8 +88,8 @@ export const sq = {
         body: "Çdo hap përshkruhet me fjalë të thjeshta. Pyetjet janë pjesë e vizitës, jo ndërprerje e saj.",
       },
       {
-        title: "Dy dhoma të pajisura plotësisht",
-        body: "Dy dhoma trajtimi të veçanta, me pajisje dhe protokolle sterilizimi për çdo pacient.",
+        title: "Pajisje dhe sterilizim për çdo pacient",
+        body: "Dhoma e trajtimit është e pajisur plotësisht dhe instrumentet sterilizohen sipas protokollit përpara çdo pacienti.",
       },
       {
         title: "Nga kontrolli te kirurgjia",
@@ -130,6 +132,7 @@ export const sq = {
     addressTitle: "Adresa",
     contactTitle: "Kontakti",
     followTitle: "Na ndiqni",
+    messagingTitle: "Na shkruani",
     followBody:
       "Fotografitë e punës, njoftimet dhe orari i përditësuar publikohen në Instagram.",
     hoursPending: "Orari do të publikohet së shpejti.",
@@ -237,7 +240,7 @@ export const sq = {
     storyTitle: "Hapësira",
     story: [
       "Azalea Dent ndodhet në katin përdhes, me hyrje direkte nga rruga. Tabela e ndriçuar dhe lulja e azaleas — e njëjta që gjendet e gdhendur në xhamat brenda — janë shenja e parë e klinikës.",
-      "Brenda, zona e pritjes është menduar si një hapësirë ku pritja nuk rëndon: dritare të mëdha, ulëse të rehatshme dhe dritë natyrale. Dy dhomat e trajtimit janë të ndara me xham dhe të pajisura plotësisht.",
+      "Brenda, zona e pritjes është menduar si një hapësirë ku pritja nuk rëndon: dritare të mëdha, ulëse të rehatshme dhe dritë natyrale. Dhoma e trajtimit është e ndarë me xham dhe e pajisur plotësisht.",
       "Paleta e klinikës — antracit, dru lisi dhe të bardhë të ngrohtë — është zgjedhur me qëllim. Ambientet dentare shpesh ndihen të ftohta; ky nuk është ndërtuar ashtu.",
     ],
     approachTitle: "Qasja",

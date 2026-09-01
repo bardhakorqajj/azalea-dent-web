@@ -1,7 +1,10 @@
 import Image from "next/image";
 
 import { ButtonLink } from "@/components/ui/Button";
-import { ContactChannelList } from "@/components/layout/ContactChannels";
+import {
+  ContactChannelList,
+  MessagingLinks,
+} from "@/components/layout/ContactChannels";
 import { Reveal } from "@/components/ui/Reveal";
 import { clinic, formatAddress } from "@/content/clinic";
 import { photos } from "@/content/images";
@@ -102,6 +105,7 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
             </div>
 
             <ContactChannelList dict={dict} tone="dark" className="mt-10 border-t border-bone-100/12" />
+            <MessagingLinks dict={dict} tone="dark" className="mt-7" />
 
             <ButtonLink
               href={path(locale, "/appointment")}

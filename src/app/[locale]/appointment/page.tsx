@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 
 import { AppointmentForm } from "@/components/forms/AppointmentForm";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { ContactChannelList } from "@/components/layout/ContactChannels";
+import {
+  ContactChannelList,
+  MessagingLinks,
+} from "@/components/layout/ContactChannels";
 import { Faq } from "@/components/sections/Faq";
 import { Container } from "@/components/ui/Container";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -78,6 +81,7 @@ export default async function AppointmentPage({
                   dict={dict}
                   className="mt-5 border-t border-ink-900/10"
                 />
+                <MessagingLinks dict={dict} className="mt-6" />
 
                 {clinic.hours.length > 0 && (
                   <div className="mt-8">

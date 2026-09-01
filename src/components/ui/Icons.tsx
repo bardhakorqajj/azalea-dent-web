@@ -83,6 +83,24 @@ export function Instagram({ className }: IconProps) {
   );
 }
 
+export function Viber({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M12 3.2c4.6 0 7.8 2.9 7.8 7.2 0 4.3-3.2 7.2-7.8 7.2-.8 0-1.6-.1-2.3-.3L6 19.6v-3.3a7 7 0 0 1-1.8-5.9C4.6 6 7.7 3.2 12 3.2Z" />
+      <path d="M9.4 8.3c.2.9.6 1.7 1.2 2.3.6.6 1.4 1 2.3 1.2l.7-.9 1.6.8v1.2c-1.3.3-2.9-.4-4.2-1.7-1.3-1.3-2-2.8-1.7-4.2h1.2l.9 1.3Z" />
+    </svg>
+  );
+}
+
+export function Facebook({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="4.6" />
+      <path d="M15.1 8.2h-1.3c-1 0-1.5.6-1.5 1.5v1.4h2.6l-.4 2.6h-2.2v6.7" />
+    </svg>
+  );
+}
+
 export function Menu({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

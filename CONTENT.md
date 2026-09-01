@@ -16,18 +16,16 @@ After editing, run `npm run dev` and the change appears immediately.
 
 ## 1. Details that still need filling in
 
-These were left empty on purpose. They could not be verified from the material
-provided, and the site is built to **hide anything it does not know** rather
-than publish a placeholder. While you run `npm run dev`, a small panel in the
-corner lists whatever is still missing. It never appears on the live site.
+Most clinic details are now set. What remains could not be derived from a
+Google Maps short link (this project's build environment cannot reach Google
+Maps), so it needs pasting in by hand.
+
+While you run `npm run dev`, a small panel in the corner lists whatever is
+still missing. It never appears on the live site.
 
 Open `src/content/clinic.ts` and fill in:
 
 ```ts
-phone: "+383 44 123 456",          // full international form, so tel: links work from abroad
-whatsapp: "38344123456",           // digits only, no "+" and no spaces
-email: "info@azaleadent.com",
-
 address: {
   street: "Rr. Shembull 12",
   locality: "Prishtinë",
@@ -35,23 +33,30 @@ address: {
   country: "XK",                   // ISO country code: XK Kosovo, AL Albania
 },
 
-geo: { latitude: 42.6629, longitude: 21.1655 },   // from Google Maps
-
-mapsUrl: "https://maps.app.goo.gl/…",             // Maps → Share → Copy link
-mapsEmbedUrl: "https://www.google.com/maps/embed?pb=…",  // Maps → Share → Embed a map → copy the src="…" value
-
-hours: [
-  { days: ["mon", "tue", "wed", "thu", "fri"], opens: "09:00", closes: "19:00" },
-  { days: ["sat"], opens: "09:00", closes: "14:00" },
-  { days: ["sun"], opens: null, closes: null },   // null = closed
-],
-
-foundingYear: 2021,
+geo: { latitude: 42.6629, longitude: 21.1655 },
 ```
 
-As soon as a value is set it appears everywhere at once: the header, the
-footer, the contact page, the sticky mobile call button, and the
-`Dentist` structured data that Google reads.
+To get the coordinates: open the clinic in Google Maps, right-click the pin,
+and the first item in the menu is the latitude and longitude — click to copy.
+
+For the embedded map, an address alone is enough — no API key needed:
+
+```ts
+mapsEmbedUrl: "https://www.google.com/maps?q=Rr.+Shembull+12,+Prishtin%C3%AB&output=embed",
+```
+
+Take your address, replace spaces with `+`, and drop it after `q=`. Or use
+Google Maps' own embed code (Share → *Embed a map* → copy just the `src="…"`
+value), which gives you control over the zoom level.
+
+Until `mapsEmbedUrl` is set, the contact page shows the clinic's shopfront
+photograph in place of the map, alongside a working "View on map" link.
+
+### Already set
+
+Phone numbers, WhatsApp, Viber, email, Facebook, Instagram, the Google Maps
+link, opening hours and the clinical team are all configured. Edit them in the
+same file — everything that displays them updates at once.
 
 ## 2. The team
 

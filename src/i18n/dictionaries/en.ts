@@ -29,7 +29,9 @@ export const en: Dictionary = {
     learnMore: "Learn more",
     call: "Call",
     whatsapp: "WhatsApp",
+    viber: "Viber",
     instagram: "Instagram",
+    facebook: "Facebook",
     email: "Email",
     directions: "View on map",
     back: "Back",
@@ -41,7 +43,7 @@ export const en: Dictionary = {
     eyebrow: "Dental clinic",
     title: "Dental care, clearly explained.",
     lead:
-      "Azalea Dent is a dental clinic with two treatment rooms and a calm waiting area. From cleanings and fillings to root canals and implants — every treatment plan is discussed with you before it begins.",
+      "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants — every treatment plan is discussed with you before it begins.",
     imageCaption: "The treatment room",
     scroll: "Scroll",
   },
@@ -50,12 +52,12 @@ export const en: Dictionary = {
     eyebrow: "The clinic",
     title: "A space designed to make the visit easy.",
     body: [
-      "The clinic is built around a simple idea: the patient should know what is happening. A visit starts in a calm waiting area and continues in fully equipped treatment rooms, where every step is explained before it is carried out.",
+      "The clinic is built around a simple idea: the patient should know what is happening. A visit starts in a calm waiting area and continues in the fully equipped treatment room, where every step is explained before it is carried out.",
       "The materials, colours and light were chosen so the space would not feel clinical. It is clean and professional, but warm — because half the comfort during a treatment comes from the room itself.",
     ],
     stats: [
       { value: "8", label: "Treatments" },
-      { value: "2", label: "Treatment rooms" },
+      { value: "14–20", label: "Monday – Friday" },
     ],
   },
 
@@ -88,8 +90,8 @@ export const en: Dictionary = {
         body: "Every step is described in plain words. Questions are part of the appointment, not an interruption to it.",
       },
       {
-        title: "Two fully equipped rooms",
-        body: "Two separate treatment rooms, with equipment and sterilisation protocols for every patient.",
+        title: "Equipment and sterilisation for every patient",
+        body: "The treatment room is fully equipped, and instruments are sterilised to protocol before every patient.",
       },
       {
         title: "From check-up to surgery",
@@ -132,6 +134,7 @@ export const en: Dictionary = {
     addressTitle: "Address",
     contactTitle: "Contact",
     followTitle: "Follow us",
+    messagingTitle: "Message us",
     followBody:
       "Photographs of our work, announcements and up-to-date opening hours are posted on Instagram.",
     hoursPending: "Opening hours will be published soon.",
@@ -234,7 +237,7 @@ export const en: Dictionary = {
     storyTitle: "The space",
     story: [
       "Azalea Dent is on the ground floor, with direct access from the street. The illuminated sign and the azalea flower — the same one etched into the glass inside — are the first sign of the clinic.",
-      "Inside, the waiting area is designed so that waiting is not a burden: large windows, comfortable seating and natural light. The two treatment rooms are separated by glass and fully equipped.",
+      "Inside, the waiting area is designed so that waiting is not a burden: large windows, comfortable seating and natural light. The treatment room is separated by glass and fully equipped.",
       "The clinic's palette — charcoal, oak and warm white — was a deliberate choice. Dental spaces often feel cold; this one was not built that way.",
     ],
     approachTitle: "The approach",

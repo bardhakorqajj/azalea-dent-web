@@ -57,27 +57,26 @@ export const clinic = {
       handle: "azalea.dent",
       url: "https://www.instagram.com/azalea.dent/",
     },
-    /** TODO: add if the clinic has one, e.g. "https://www.facebook.com/..." */
-    facebook: null as string | null,
+    facebook: "https://www.facebook.com/profile.php?id=61578310892844" as
+      | string
+      | null,
     /** TODO: add the TikTok profile URL if there is one. */
     tiktok: null as string | null,
   },
 
   /**
-   * TODO — CONTACT DETAILS
-   * Phone in full international form so `tel:` links work from abroad,
-   * e.g. "+383 44 123 456". Set to `null` until confirmed.
+   * Published phone numbers, in full international form so `tel:` links work
+   * from abroad. The first is treated as the primary line.
    */
-  phone: null as string | null,
+  phones: ["+383 48 306 376", "+383 43 779 909"] as string[],
 
-  /**
-   * TODO — WhatsApp number in international digits only, no spaces or "+",
-   * e.g. "38344123456". Used to build wa.me links.
-   */
-  whatsapp: null as string | null,
+  /** WhatsApp number — international digits only, no spaces or "+". */
+  whatsapp: "38348306376" as string | null,
 
-  /** TODO — public contact address, e.g. "info@azaleadent.com". */
-  email: null as string | null,
+  /** Viber number — international form, used to build `viber://` links. */
+  viber: "+38348306376" as string | null,
+
+  email: "azaleadent@hotmail.com" as string | null,
 
   /** TODO — the street address shown on the contact page and in local SEO. */
   address: null as {
@@ -92,8 +91,8 @@ export const clinic = {
   /** TODO — decimal coordinates of the clinic, used for LocalBusiness schema. */
   geo: null as { latitude: number; longitude: number } | null,
 
-  /** TODO — the clinic's Google Maps share link ("Share" → "Copy link"). */
-  mapsUrl: null as string | null,
+  /** The clinic's Google Maps share link. */
+  mapsUrl: "https://maps.app.goo.gl/izaVgzz7tqvfkv3C6" as string | null,
 
   /**
    * TODO — Google Maps embed URL ("Share" → "Embed a map" → copy the `src`).
@@ -102,20 +101,23 @@ export const clinic = {
    */
   mapsEmbedUrl: null as string | null,
 
-  /** TODO — opening hours. Example of the expected shape:
-   *
-   *   { days: ["mon","tue","wed","thu","fri"], opens: "09:00", closes: "19:00" },
-   *   { days: ["sat"], opens: "09:00", closes: "14:00" },
-   *   { days: ["sun"], opens: null, closes: null },
-   */
-  hours: [] as OpeningHours[],
+  /** Opening hours. `opens: null` marks a closed day. */
+  hours: [
+    { days: ["mon", "tue", "wed", "thu", "fri"], opens: "14:00", closes: "20:00" },
+    { days: ["sat", "sun"], opens: null, closes: null },
+  ] as OpeningHours[],
 
   /**
-   * TODO — the clinical team. Add one entry per dentist exactly as the clinic
+   * The clinical team. Add one entry per dentist exactly as the clinic
    * publishes their name and title. Do not add credentials that are not
    * published by the clinic itself.
    */
-  team: [] as TeamMember[],
+  team: [
+    {
+      name: "Dr. Spec. Arbëreshë Korqaj",
+      role: { sq: "Mjeke specialiste", en: "Specialist dentist" },
+    },
+  ] as TeamMember[],
 
   /**
    * TODO — patient testimonials. Only add reviews the clinic has actually
@@ -132,10 +134,21 @@ export const clinic = {
 
 export type Clinic = typeof clinic;
 
-/** `tel:` href, or `null` when no number is configured. */
-export function telHref(): string | null {
-  if (!clinic.phone) return null;
-  return `tel:${clinic.phone.replace(/[^\d+]/g, "")}`;
+/** The primary published number, or `null` when none is configured. */
+export function primaryPhone(): string | null {
+  return clinic.phones[0] ?? null;
+}
+
+/** `tel:` href for a number, defaulting to the primary line. */
+export function telHref(phone: string | null = primaryPhone()): string | null {
+  if (!phone) return null;
+  return `tel:${phone.replace(/[^\d+]/g, "")}`;
+}
+
+/** `viber://` deep link, which opens the Viber app on a phone. */
+export function viberHref(): string | null {
+  if (!clinic.viber) return null;
+  return `viber://chat?number=${encodeURIComponent(clinic.viber.replace(/[^\d+]/g, ""))}`;
 }
 
 /** `wa.me` href with an optional pre-filled message. */
@@ -165,10 +178,10 @@ export function formatAddress(): string | null {
  */
 export function missingClinicFacts(): string[] {
   const missing: string[] = [];
-  if (!clinic.phone) missing.push("phone");
-  if (!clinic.whatsapp) missing.push("whatsapp");
+  if (clinic.phones.length === 0) missing.push("phones");
   if (!clinic.email) missing.push("email");
   if (!clinic.address) missing.push("address");
+  if (!clinic.geo) missing.push("geo");
   if (!clinic.mapsEmbedUrl) missing.push("mapsEmbedUrl");
   if (clinic.hours.length === 0) missing.push("hours");
   if (clinic.team.length === 0) missing.push("team");

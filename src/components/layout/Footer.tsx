@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import { AzaleaMark } from "@/components/ui/AzaleaMark";
 import { Container } from "@/components/ui/Container";
-import { ContactChannelList } from "@/components/layout/ContactChannels";
+import {
+  ContactChannelList,
+  MessagingLinks,
+} from "@/components/layout/ContactChannels";
 import { clinic, formatAddress } from "@/content/clinic";
 import { services } from "@/content/services";
 import { formatDayRange, formatHours } from "@/lib/hours";
@@ -96,6 +99,10 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           <div className="lg:col-span-3">
             <h2 className="eyebrow font-sans text-gold-400">{dict.footer.contact}</h2>
             <ContactChannelList dict={dict} tone="dark" className="mt-3" />
+            <h2 className="eyebrow mt-8 font-sans text-gold-400">
+              {dict.visit.messagingTitle}
+            </h2>
+            <MessagingLinks dict={dict} tone="dark" className="mt-4" />
           </div>
         </div>
 
