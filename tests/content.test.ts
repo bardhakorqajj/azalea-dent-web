@@ -102,6 +102,10 @@ describe("clinic contact helpers", () => {
     if (!clinic.address) expect(formatAddress()).toBeNull();
   });
 
+  it("formats the address in postal order", () => {
+    expect(formatAddress()).toBe("Holger Petersen, 10000 Prishtinë");
+  });
+
   it("publishes the clinic's real numbers", () => {
     expect(clinic.phones).toEqual(["+383 48 306 376", "+383 43 779 909"]);
     expect(primaryPhone()).toBe("+383 48 306 376");

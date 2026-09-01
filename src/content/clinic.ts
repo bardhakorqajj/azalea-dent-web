@@ -78,28 +78,40 @@ export const clinic = {
 
   email: "azaleadent@hotmail.com" as string | null,
 
-  /** TODO — the street address shown on the contact page and in local SEO. */
-  address: null as {
+  /** The street address shown on the contact page and in local SEO. */
+  address: {
+    street: "Holger Petersen",
+    locality: "Prishtinë",
+    postalCode: "10000",
+    /** ISO 3166-1 alpha-2. */
+    country: "XK",
+  } as {
     street: string;
     locality: string;
     region?: string;
     postalCode?: string;
-    /** ISO 3166-1 alpha-2, e.g. "XK" for Kosovo, "AL" for Albania. */
     country: string;
   } | null,
 
-  /** TODO — decimal coordinates of the clinic, used for LocalBusiness schema. */
+  /**
+   * Decimal coordinates for LocalBusiness schema. Left unset by choice — the
+   * address and the Maps link already place the clinic. To switch it on, use
+   * 42.6390286 / 21.1638098 (taken from the clinic's own Google Maps URL).
+   */
   geo: null as { latitude: number; longitude: number } | null,
 
   /** The clinic's Google Maps share link. */
   mapsUrl: "https://maps.app.goo.gl/izaVgzz7tqvfkv3C6" as string | null,
 
   /**
-   * TODO — Google Maps embed URL ("Share" → "Embed a map" → copy the `src`).
-   * The contact page renders a real map when this is set, and a tidy
-   * address card when it is not.
+   * Google Maps embed, centred on the clinic's coordinates. This form needs no
+   * API key. To show a labelled pin instead, replace it with the `src` value
+   * from Google Maps' own "Share → Embed a map" dialog.
    */
-  mapsEmbedUrl: null as string | null,
+  mapsEmbedUrl:
+    "https://www.google.com/maps?q=42.6390286,21.1638098&z=17&output=embed" as
+      | string
+      | null,
 
   /** Opening hours. `opens: null` marks a closed day. */
   hours: [
@@ -120,14 +132,15 @@ export const clinic = {
   ] as TeamMember[],
 
   /**
-   * TODO — patient testimonials. Only add reviews the clinic has actually
-   * received (Google reviews, Instagram comments) with the patient's consent.
+   * Patient testimonials. Intentionally empty — the section stays hidden.
+   * To switch it on later, add reviews the clinic has actually received, with
+   * the patient's consent.
    */
   testimonials: [] as Testimonial[],
 
   /**
-   * TODO — the year the clinic opened, e.g. 2021. Shown in the about section
-   * and in structured data. Leave `null` if unconfirmed.
+   * The year the clinic opened. Shown in structured data when set; leave
+   * `null` while unconfirmed.
    */
   foundingYear: null as number | null,
 } as const;
@@ -163,28 +176,26 @@ export function mailtoHref(): string | null {
   return clinic.email ? `mailto:${clinic.email}` : null;
 }
 
-/** Single-line address, e.g. "Rr. Example 12, Prishtinë". */
+/** Single-line address, e.g. "Holger Petersen, 10000 Prishtinë". */
 export function formatAddress(): string | null {
   const a = clinic.address;
   if (!a) return null;
-  return [a.street, a.postalCode, a.locality, a.region]
-    .filter(Boolean)
-    .join(", ");
+  const town = [a.postalCode, a.locality].filter(Boolean).join(" ");
+  return [a.street, town, a.region].filter(Boolean).join(", ");
 }
 
 /**
  * Lists the clinic facts that are still unset. Used by the development-only
- * checklist and by `npm run test` to keep CONTENT.md honest.
+ * checklist. `geo`, `testimonials` and `foundingYear` are deliberate omissions
+ * rather than gaps, so they are not reported.
  */
 export function missingClinicFacts(): string[] {
   const missing: string[] = [];
   if (clinic.phones.length === 0) missing.push("phones");
   if (!clinic.email) missing.push("email");
   if (!clinic.address) missing.push("address");
-  if (!clinic.geo) missing.push("geo");
   if (!clinic.mapsEmbedUrl) missing.push("mapsEmbedUrl");
   if (clinic.hours.length === 0) missing.push("hours");
   if (clinic.team.length === 0) missing.push("team");
-  if (clinic.testimonials.length === 0) missing.push("testimonials");
   return missing;
 }

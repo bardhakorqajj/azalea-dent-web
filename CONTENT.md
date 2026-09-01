@@ -14,49 +14,39 @@ After editing, run `npm run dev` and the change appears immediately.
 
 ---
 
-## 1. Details that still need filling in
+## 1. Clinic details
 
-Most clinic details are now set. What remains could not be derived from a
-Google Maps short link (this project's build environment cannot reach Google
-Maps), so it needs pasting in by hand.
+Every clinic fact is set in `src/content/clinic.ts` — phone numbers, WhatsApp,
+Viber, email, address, opening hours, the Google Maps link and embed, the
+Instagram and Facebook profiles, and the clinical team. Edit them there and
+every place that displays them updates at once: the footer, the contact page,
+the sticky mobile call button, and the `Dentist` structured data Google reads.
 
-While you run `npm run dev`, a small panel in the corner lists whatever is
-still missing. It never appears on the live site.
+Two fields are deliberately left empty and are **not** reported as missing:
 
-Open `src/content/clinic.ts` and fill in:
+- `geo` — decimal coordinates. The address and the Maps link already place the
+  clinic. To switch it on for local SEO, set
+  `{ latitude: 42.6390286, longitude: 21.1638098 }`.
+- `testimonials` — the section stays hidden until real, attributable reviews
+  are added. See section 3.
 
-```ts
-address: {
-  street: "Rr. Shembull 12",
-  locality: "Prishtinë",
-  postalCode: "10000",
-  country: "XK",                   // ISO country code: XK Kosovo, AL Albania
-},
+While you run `npm run dev`, a small panel in the corner lists anything still
+missing. It never appears on the live site, and it should currently be empty.
 
-geo: { latitude: 42.6629, longitude: 21.1655 },
-```
+### The map
 
-To get the coordinates: open the clinic in Google Maps, right-click the pin,
-and the first item in the menu is the latitude and longitude — click to copy.
-
-For the embedded map, an address alone is enough — no API key needed:
+`mapsEmbedUrl` uses a coordinate-based embed, which needs no Google API key:
 
 ```ts
-mapsEmbedUrl: "https://www.google.com/maps?q=Rr.+Shembull+12,+Prishtin%C3%AB&output=embed",
+mapsEmbedUrl: "https://www.google.com/maps?q=42.6390286,21.1638098&z=17&output=embed",
 ```
 
-Take your address, replace spaces with `+`, and drop it after `q=`. Or use
-Google Maps' own embed code (Share → *Embed a map* → copy just the `src="…"`
-value), which gives you control over the zoom level.
+The pin is exactly on the clinic but is labelled with coordinates rather than
+the business name. For a labelled pin, open the clinic in Google Maps →
+**Share → Embed a map** → copy just the `src="…"` value and paste it here.
 
-Until `mapsEmbedUrl` is set, the contact page shows the clinic's shopfront
-photograph in place of the map, alongside a working "View on map" link.
-
-### Already set
-
-Phone numbers, WhatsApp, Viber, email, Facebook, Instagram, the Google Maps
-link, opening hours and the clinical team are all configured. Edit them in the
-same file — everything that displays them updates at once.
+If `mapsEmbedUrl` is ever cleared, the contact page falls back to the
+shopfront photograph with a short note, alongside a working "view on map" link.
 
 ## 2. The team
 

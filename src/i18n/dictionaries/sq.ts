@@ -38,7 +38,7 @@ export const sq = {
   },
 
   hero: {
-    eyebrow: "Klinikë dentare",
+    eyebrow: "Klinikë dentare në Prishtinë",
     title: "Kujdes dentar, i shpjeguar qartë.",
     lead:
       "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia — çdo plan trajtimi diskutohet me ju përpara se të fillojë.",
@@ -282,17 +282,17 @@ export const sq = {
   },
 
   meta: {
-    homeTitle: "Azalea Dent — Klinikë dentare",
+    homeTitle: "Azalea Dent — Klinikë dentare në Prishtinë",
     homeDescription:
-      "Klinikë dentare Azalea Dent: pastrim, mbushje, endodonti, protetikë, kurora, kirurgji orale dhe implantologji. Çdo plan trajtimi shpjegohet përpara se të fillojë.",
+      "Klinikë dentare në Prishtinë: pastrim, mbushje, endodonti, protetikë, kurora, kirurgji orale dhe implantologji. Çdo plan trajtimi shpjegohet përpara se të fillojë.",
     servicesDescription:
-      "Tetë trajtimet e Azalea Dent: pastrim, zbardhim, mbushje, endodonti, kurora, proteza, kirurgji orale dhe implantologji.",
+      "Tetë trajtimet e klinikës Azalea Dent në Prishtinë: pastrim, zbardhim, mbushje, endodonti, kurora, proteza, kirurgji orale dhe implantologji.",
     aboutDescription:
       "Njihuni me klinikën Azalea Dent: hapësira, qasja ndaj pacientit dhe trajtimet që ofrohen.",
     galleryDescription:
       "Fotografi të klinikës Azalea Dent: hyrja, zona e pritjes dhe dhomat e trajtimit.",
     contactDescription:
-      "Kontaktoni Azalea Dent për të caktuar një takim ose për një pyetje mbi trajtimet.",
+      "Kontaktoni Azalea Dent në Prishtinë për të caktuar një takim ose për një pyetje mbi trajtimet. Hapur e hënë – e premte, 14:00 – 20:00.",
     appointmentDescription:
       "Dërgoni një kërkesë për takim në klinikën dentare Azalea Dent.",
   },

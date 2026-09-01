@@ -40,7 +40,7 @@ export const en: Dictionary = {
   },
 
   hero: {
-    eyebrow: "Dental clinic",
+    eyebrow: "Dental clinic in Prishtina",
     title: "Dental care, clearly explained.",
     lead:
       "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants — every treatment plan is discussed with you before it begins.",
@@ -279,17 +279,17 @@ export const en: Dictionary = {
   },
 
   meta: {
-    homeTitle: "Azalea Dent — Dental Clinic",
+    homeTitle: "Azalea Dent — Dental Clinic in Prishtina",
     homeDescription:
-      "Azalea Dent dental clinic: cleanings, fillings, root canals, prosthetics, crowns, oral surgery and implants. Every treatment plan is explained before it begins.",
+      "Dental clinic in Prishtina: cleanings, fillings, root canals, prosthetics, crowns, oral surgery and implants. Every treatment plan is explained before it begins.",
     servicesDescription:
-      "The eight treatments at Azalea Dent: cleaning, whitening, fillings, root canal treatment, crowns, dentures, oral surgery and implants.",
+      "The eight treatments at Azalea Dent in Prishtina: cleaning, whitening, fillings, root canal treatment, crowns, dentures, oral surgery and implants.",
     aboutDescription:
       "Get to know Azalea Dent: the space, the approach to patients and the treatments offered.",
     galleryDescription:
       "Photographs of the Azalea Dent clinic: the entrance, the waiting area and the treatment rooms.",
     contactDescription:
-      "Contact Azalea Dent to book an appointment or ask a question about treatments.",
+      "Contact Azalea Dent in Prishtina to book an appointment or ask a question about treatments. Open Monday to Friday, 14:00 – 20:00.",
     appointmentDescription:
       "Send an appointment request to the Azalea Dent dental clinic.",
   },
