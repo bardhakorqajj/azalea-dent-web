@@ -19,7 +19,7 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
 
   /* Three treatments surfaced as a quick index into the services page. */
   const featured = services.filter((service) =>
-    ["implantologji", "endodonti", "zbardhim-dentar"].includes(service.slug),
+    ["kirurgji-orale", "protetike", "estetike-dentare"].includes(service.slug),
   );
 
   return (

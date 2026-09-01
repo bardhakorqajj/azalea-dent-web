@@ -86,8 +86,9 @@ export function Instagram({ className }: IconProps) {
 export function Viber({ className }: IconProps) {
   return (
     <svg {...base} className={className}>
-      <path d="M12 3.2c4.6 0 7.8 2.9 7.8 7.2 0 4.3-3.2 7.2-7.8 7.2-.8 0-1.6-.1-2.3-.3L6 19.6v-3.3a7 7 0 0 1-1.8-5.9C4.6 6 7.7 3.2 12 3.2Z" />
-      <path d="M9.4 8.3c.2.9.6 1.7 1.2 2.3.6.6 1.4 1 2.3 1.2l.7-.9 1.6.8v1.2c-1.3.3-2.9-.4-4.2-1.7-1.3-1.3-2-2.8-1.7-4.2h1.2l.9 1.3Z" />
+      {/* Upright rounded bubble with a tail, so it reads apart from WhatsApp's circle. */}
+      <path d="M12 3c3.6 0 5.6 2 5.6 5.9 0 3.9-2 5.9-5.6 5.9h-.7l-2.6 2.7v-3.1C7 13.7 6.4 11.9 6.4 8.9 6.4 5 8.4 3 12 3Z" />
+      <path d="M10 7.3c.2.8.5 1.4 1 1.9.5.5 1.1.8 1.9 1l.6-.8 1.4.7v1c-1.1.3-2.5-.3-3.6-1.3-1.1-1.1-1.6-2.4-1.3-3.5h1l.6 1Z" />
     </svg>
   );
 }

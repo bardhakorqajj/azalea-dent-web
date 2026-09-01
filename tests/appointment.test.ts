@@ -18,7 +18,7 @@ function valid(overrides: Partial<AppointmentRequest> = {}): AppointmentRequest 
     ...emptyAppointment,
     name: "Arta Berisha",
     phone: "+383 44 123 456",
-    service: "implantologji",
+    service: "kirurgji-orale",
     date: "2026-06-20",
     consent: true,
     ...overrides,

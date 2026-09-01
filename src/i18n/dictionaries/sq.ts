@@ -68,7 +68,7 @@ export const sq = {
       "Të gjitha trajtimet kryhen në klinikë, nga kontrolli i rregullt te ndërhyrjet kirurgjikale.",
     pageTitle: "Trajtimet",
     pageLead:
-      "Tetë trajtimet që ofron Azalea Dent, të shpjeguara hap pas hapi: çfarë janë, si zhvillohen dhe çfarë të prisni.",
+      "Tetë fushat e trajtimit në Azalea Dent, të shpjeguara hap pas hapi: çfarë përfshijnë, si zhvillohen dhe çfarë të prisni.",
     highlightsTitle: "Të mira për t'u ditur",
     stepsTitle: "Si zhvillohet",
     otherTitle: "Trajtime të tjera",
@@ -298,9 +298,9 @@ export const sq = {
   meta: {
     homeTitle: "Azalea Dent | Klinikë dentare në Prishtinë",
     homeDescription:
-      "Klinikë dentare në Prishtinë: pastrim, mbushje, endodonti, protetikë, kurora, kirurgji orale dhe implantologji. Çdo plan trajtimi shpjegohet përpara se të fillojë.",
+      "Klinikë dentare në Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, endodonci, protetikë, estetikë, ortodonci dhe parodontologji. Çdo plan trajtimi shpjegohet përpara se të fillojë.",
     servicesDescription:
-      "Tetë trajtimet e klinikës Azalea Dent në Prishtinë: pastrim, zbardhim, mbushje, endodonti, kurora, proteza, kirurgji orale dhe implantologji.",
+      "Tetë fushat e trajtimit në Azalea Dent, Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, endodonci, protetikë, estetikë dentare, ortodonci dhe parodontologji.",
     aboutDescription:
       "Njihuni me klinikën Azalea Dent: hapësira, qasja ndaj pacientit dhe trajtimet që ofrohen.",
     galleryDescription:

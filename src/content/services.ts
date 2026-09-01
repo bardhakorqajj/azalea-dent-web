@@ -18,30 +18,141 @@ export type Service = {
   highlights: Localised[];
   /** What a visit actually involves, in order. */
   steps: { title: Localised; detail: Localised }[];
+  /** Matching group in `content/prices.ts`, so each page can list its prices. */
+  priceGroupId: string;
 };
 
 /**
- * The eight treatments listed on the clinic's own shopfront, in the order they
- * appear there. Descriptions are general, factual explanations of each
- * procedure — they contain no outcome promises and no clinic-specific claims
- * that have not been verified.
+ * The eight areas of treatment the clinic offers, in the order and grouping of
+ * its own price list. Descriptions are general, factual explanations of each
+ * area: no outcome promises, and nothing claimed that the price list does not
+ * actually cover.
  */
 export const services: Service[] = [
   {
-    slug: "kirurgji-orale",
-    title: { sq: "Kirurgji orale", en: "Oral surgery" },
+    slug: "stomatologji-e-pergjithshme",
+    priceGroupId: "e-pergjithshme",
+    title: { sq: "Stomatologji e përgjithshme", en: "General dentistry" },
     summary: {
-      sq: "Ndërhyrje kirurgjikale në gojë, të planifikuara me kujdes dhe të kryera me anestezi lokale.",
-      en: "Surgical procedures in the mouth, carefully planned and carried out under local anaesthetic.",
+      sq: "Kontrolli i rregullt, radiografitë dhe masat parandaluese që i kapin problemet herët.",
+      en: "Routine check-ups, radiographs and the preventive care that catches problems early.",
     },
     body: [
       {
-        sq: "Kirurgjia orale përfshin çdo ndërhyrje që kërkon punë në indet e gojës dhe të nofullës: heqjen e dhëmbëve që nuk mund të ruhen, nxjerrjen e dhëmbëve të pjekurisë, si dhe përgatitjen e kockës përpara vendosjes së implanteve.",
-        en: "Oral surgery covers any procedure that involves working on the tissues of the mouth and jaw: removing teeth that cannot be saved, extracting wisdom teeth, and preparing bone before implants are placed.",
+        sq: "Stomatologjia e përgjithshme është pika ku fillon çdo trajtim tjetër. Në kontroll shikohen dhëmbët, mishrat dhe kafshimi, dhe kur nevojitet bëhet një radiografi retroalveolare për të parë atë që nuk duket me sy.",
+        en: "General dentistry is where every other treatment starts. A check-up looks at the teeth, the gums and the bite, and when needed a periapical radiograph shows what the eye cannot.",
       },
       {
-        sq: "Çdo rast fillon me një ekzaminim dhe me imazhe diagnostikuese, që ndërhyrja të planifikohet paraprakisht. Ju shpjegojmë hap pas hapi çfarë do të ndodhë, sa do të zgjasë dhe si do të jetë shërimi, para se të vendosni.",
-        en: "Every case begins with an examination and diagnostic imaging so the procedure can be planned in advance. We explain step by step what will happen, how long it takes and what recovery looks like, before you decide.",
+        sq: "Këtu hyjnë edhe masat parandaluese: fluorizimi dhe vulosja e fisurave, që mbrojnë sipërfaqet e dhëmbëve përpara se të shfaqet kariesi. Sa më herët kapet një problem, aq më i thjeshtë dhe më i lirë është trajtimi.",
+        en: "It also covers prevention: fluoride treatment and fissure sealing, which protect the tooth surfaces before decay appears. The earlier a problem is caught, the simpler and the cheaper it is to treat.",
+      },
+    ],
+    highlights: [
+      { sq: "Kontroll i plotë i dhëmbëve dhe mishrave", en: "A full check of teeth and gums" },
+      { sq: "Radiografi retroalveolare sipas nevojës", en: "Periapical radiographs when needed" },
+      { sq: "Fluorizim dhe vulosje e fisurave", en: "Fluoride treatment and fissure sealing" },
+    ],
+    steps: [
+      {
+        title: { sq: "Biseda", en: "The conversation" },
+        detail: {
+          sq: "Na tregoni për ankesat, sëmundjet kronike dhe medikamentet që merrni rregullisht.",
+          en: "Tell us about any complaints, chronic conditions and medication you take regularly.",
+        },
+      },
+      {
+        title: { sq: "Ekzaminimi", en: "Examination" },
+        detail: {
+          sq: "Shikohen të gjithë dhëmbët, mishrat dhe mënyra si mbyllet kafshimi.",
+          en: "All the teeth, the gums and the way the bite closes are examined.",
+        },
+      },
+      {
+        title: { sq: "Imazhet", en: "Imaging" },
+        detail: {
+          sq: "Nëse nevojitet, një radiografi tregon zonat mes dhëmbëve dhe rreth rrënjëve.",
+          en: "If needed, a radiograph shows the areas between the teeth and around the roots.",
+        },
+      },
+      {
+        title: { sq: "Plani", en: "The plan" },
+        detail: {
+          sq: "Dilni me një plan të qartë: çfarë duhet bërë, në sa seanca dhe sa kushton.",
+          en: "You leave with a clear plan: what needs doing, in how many appointments, and what it costs.",
+        },
+      },
+    ],
+  },
+  {
+    slug: "pedodonci",
+    priceGroupId: "pedodonci",
+    title: { sq: "Pedodonci", en: "Paediatric dentistry" },
+    summary: {
+      sq: "Trajtimi i dhëmbëve të qumështit, pa nxitim, që fëmija të mos ketë frikë nga vizita e radhës.",
+      en: "Care for milk teeth, unhurried, so a child does not dread the next visit.",
+    },
+    body: [
+      {
+        sq: "Dhëmbët e qumështit kanë rëndësi: ata mbajnë vendin për dhëmbët e përhershëm dhe ndikojnë në përtypje e në të folur. Kariesi tek ata trajtohet me mbushje kompozite, njësoj si tek të rriturit.",
+        en: "Milk teeth matter: they hold the space for the permanent teeth and affect chewing and speech. Decay in them is treated with composite fillings, just as in adults.",
+      },
+      {
+        sq: "Kur një dhëmb qumështi nuk mund të ruhet, ai hiqet. Vizita e parë bëhet pa nxitim: fëmija njihet me dhomën dhe me pajisjet, dhe puna fillon vetëm kur ndihet i qetë.",
+        en: "When a milk tooth cannot be saved, it is removed. The first visit is never rushed: the child gets to know the room and the equipment, and work only starts once they feel settled.",
+      },
+    ],
+    highlights: [
+      { sq: "Mbushje kompozite në dhëmbët e qumështit", en: "Composite fillings in milk teeth" },
+      { sq: "Vizita e parë pa nxitim", en: "An unhurried first visit" },
+      { sq: "Këshilla për larjen e dhëmbëve në shtëpi", en: "Advice on brushing at home" },
+    ],
+    steps: [
+      {
+        title: { sq: "Njohja", en: "Getting comfortable" },
+        detail: {
+          sq: "Fëmija shikon dhomën dhe pajisjet përpara se të preket ndonjë dhëmb.",
+          en: "The child sees the room and the equipment before any tooth is touched.",
+        },
+      },
+      {
+        title: { sq: "Ekzaminimi", en: "Examination" },
+        detail: {
+          sq: "Kontrollohen dhëmbët e qumështit dhe ata të përhershëm që kanë dalë.",
+          en: "The milk teeth and any permanent teeth that have come through are checked.",
+        },
+      },
+      {
+        title: { sq: "Trajtimi", en: "Treatment" },
+        detail: {
+          sq: "Mbushje ose nxjerrje, sipas gjendjes së dhëmbit, me hapa të shpjeguar edhe fëmijës.",
+          en: "A filling or an extraction, depending on the tooth, with each step explained to the child too.",
+        },
+      },
+      {
+        title: { sq: "Kontrolli", en: "Follow-up" },
+        detail: {
+          sq: "Një takim kontrolli dhe udhëzime praktike për prindin.",
+          en: "A check-up appointment and practical guidance for the parent.",
+        },
+      },
+    ],
+  },
+  {
+    slug: "kirurgji-orale",
+    priceGroupId: "kirurgji-orale",
+    title: { sq: "Kirurgji orale", en: "Oral surgery" },
+    summary: {
+      sq: "Nxjerrje dhëmbësh, ndërhyrje në mishra e kockë dhe vendosja e implanteve.",
+      en: "Extractions, procedures on the gums and bone, and the placement of dental implants.",
+    },
+    body: [
+      {
+        sq: "Kirurgjia orale përfshin çdo ndërhyrje që kërkon punë në indet e gojës dhe të nofullës: heqjen e dhëmbëve që nuk mund të ruhen, nxjerrjen e dhëmbëve të pjekurisë dhe të atyre të impaktuar, si dhe përgatitjen e kockës përpara vendosjes së implanteve.",
+        en: "Oral surgery covers any procedure that involves working on the tissues of the mouth and jaw: removing teeth that cannot be saved, extracting wisdom and impacted teeth, and preparing the bone before an implant is placed.",
+      },
+      {
+        sq: "Implanti është një rrënjë artificiale prej titani që vendoset në kockë dhe merr rolin e rrënjës natyrale. Trajtimi zhvillohet në faza: pas vendosjes, implantit i duhet një periudhë shërimi për t'u integruar me kockën përpara se mbi të të fiksohet kurora.",
+        en: "An implant is an artificial titanium root placed in the bone that takes over the role of the natural root. Treatment happens in stages: after placement, the implant needs a healing period to integrate with the bone before the crown is fixed on top.",
       },
     ],
     highlights: [
@@ -51,9 +162,9 @@ export const services: Service[] = [
     ],
     steps: [
       {
-        title: { sq: "Konsultë dhe diagnozë", en: "Consultation and diagnosis" },
+        title: { sq: "Konsulta dhe diagnoza", en: "Consultation and diagnosis" },
         detail: {
-          sq: "Ekzaminim i gojës dhe imazhe për të parë gjendjen e dhëmbit dhe të kockës përreth.",
+          sq: "Ekzaminim dhe imazhe për të parë gjendjen e dhëmbit dhe të kockës përreth.",
           en: "An examination and imaging to assess the tooth and the surrounding bone.",
         },
       },
@@ -67,290 +178,254 @@ export const services: Service[] = [
       {
         title: { sq: "Ndërhyrja", en: "The procedure" },
         detail: {
-          sq: "Zona anestetizohet plotësisht dhe ndërhyrja kryhet në një ambient steril.",
+          sq: "Zona anestetizohet plotësisht dhe ndërhyrja kryhet në ambient steril.",
           en: "The area is fully numbed and the procedure is carried out in a sterile setting.",
         },
       },
       {
         title: { sq: "Kontrolli pas ndërhyrjes", en: "Follow-up" },
         detail: {
-          sq: "Një takim kontrolli për të verifikuar shërimin dhe për të hequr suturat nëse është e nevojshme.",
+          sq: "Një takim kontrolli për të verifikuar shërimin dhe për të hequr suturat nëse duhet.",
           en: "A check-up appointment to confirm healing and remove sutures if needed.",
         },
       },
     ],
   },
   {
-    slug: "implantologji",
-    title: { sq: "Implantologji", en: "Dental implants" },
+    slug: "endodonci",
+    priceGroupId: "endodonci",
+    title: {
+      sq: "Sëmundje të dhëmbit dhe endodonci",
+      en: "Tooth disease and endodontics",
+    },
     summary: {
-      sq: "Zëvendësimi i një dhëmbi të humbur me një rrënjë titani dhe një kurorë të punuar posaçërisht për ju.",
-      en: "Replacing a missing tooth with a titanium root and a crown made specifically for you.",
+      sq: "Mbushjet e kariesit dhe trajtimi i kanalit të rrënjës, që dhëmbi të mbetet në vendin e vet.",
+      en: "Fillings for decay and root canal treatment, so the tooth stays where it is.",
     },
     body: [
       {
-        sq: "Implanti është një rrënjë artificiale prej titani që vendoset në kockën e nofullës dhe merr rolin e rrënjës natyrale. Mbi të fiksohet një kurorë, një urë ose një protezë, në varësi të numrit të dhëmbëve që mungojnë.",
-        en: "An implant is an artificial titanium root placed in the jawbone that takes over the role of the natural root. A crown, a bridge or a denture is then fixed on top, depending on how many teeth are missing.",
+        sq: "Kariesi trajtohet me mbushje kompozite në ngjyrën e dhëmbit. Sa më herët kapet, aq më pak strukturë humbet dhëmbi. Kariesi i vogël shpesh nuk shkakton dhimbje, prandaj kontrollet e rregullta janë mënyra më e sigurt për ta kapur në kohë.",
+        en: "Decay is treated with tooth-coloured composite fillings. The earlier it is caught, the less tooth structure is lost. Small cavities often cause no pain, which is why regular check-ups are the most reliable way to catch them in time.",
       },
       {
-        sq: "Trajtimi zhvillohet në faza dhe kërkon kohë: pas vendosjes, implantit i duhet një periudhë shërimi për t'u integruar me kockën përpara se të ngarkohet. Për këtë arsye planifikimi paraprak dhe kontrollet e rregullta janë pjesë thelbësore e procesit.",
-        en: "Treatment happens in stages and takes time: after placement, the implant needs a healing period to integrate with the bone before it is loaded. Careful planning and regular check-ups are therefore an essential part of the process.",
+        sq: "Kur infeksioni arrin nervin, trajtimi i kanalit të rrënjës është mënyra për ta ruajtur dhëmbin në vend të heqjes. Nervi i infektuar hiqet, kanalet pastrohen, dezinfektohen dhe mbyllen. Sipas dhëmbit mund të jenë një deri në tre kanale, dhe mund të nevojitet më shumë se një seancë.",
+        en: "When infection reaches the nerve, root canal treatment is the way to keep the tooth rather than remove it. The infected nerve is removed and the canals are cleaned, disinfected and sealed. Depending on the tooth there may be one to three canals, and more than one appointment may be needed.",
       },
     ],
     highlights: [
-      { sq: "Zgjidhje e fiksuar, nuk hiqet nga pacienti", en: "A fixed solution that is not removed by the patient" },
-      { sq: "Nuk kërkon gdhendjen e dhëmbëve fqinjë", en: "Does not require reshaping the neighbouring teeth" },
-      { sq: "Trajtim në faza, me kontrolle të planifikuara", en: "Staged treatment with planned check-ups" },
-    ],
-    steps: [
-      {
-        title: { sq: "Vlerësimi i kockës", en: "Assessing the bone" },
-        detail: {
-          sq: "Imazhet tregojnë nëse ka vëllim të mjaftueshëm kocke dhe ku duhet pozicionuar implanti.",
-          en: "Imaging shows whether there is enough bone volume and where the implant should sit.",
-        },
-      },
-      {
-        title: { sq: "Vendosja e implantit", en: "Placing the implant" },
-        detail: {
-          sq: "Ndërhyrje me anestezi lokale, gjatë së cilës rrënja e titanit vendoset në kockë.",
-          en: "A procedure under local anaesthetic in which the titanium root is placed in the bone.",
-        },
-      },
-      {
-        title: { sq: "Periudha e integrimit", en: "Integration period" },
-        detail: {
-          sq: "Implanti lihet të shërohet dhe të lidhet me kockën përpara fazës protetike.",
-          en: "The implant is left to heal and bond with the bone before the prosthetic stage.",
-        },
-      },
-      {
-        title: { sq: "Kurora përfundimtare", en: "The final crown" },
-        detail: {
-          sq: "Merret masa dhe punohet kurora, e cila fiksohet mbi implant.",
-          en: "An impression is taken and the crown is made, then fixed onto the implant.",
-        },
-      },
-    ],
-  },
-  {
-    slug: "kurora-dentare",
-    title: { sq: "Kurora dentare", en: "Dental crowns" },
-    summary: {
-      sq: "Mbulesa të punuara me porosi që rikthejnë formën dhe funksionin e një dhëmbi të dëmtuar.",
-      en: "Custom-made caps that restore the shape and function of a damaged tooth.",
-    },
-    body: [
-      {
-        sq: "Kurora është një mbulesë që vendoset mbi një dhëmb të dëmtuar, të thyer ose të trajtuar me kanal, kur mbushja nuk mjafton më. Ajo mbron atë çka ka mbetur nga dhëmbi dhe i rikthen formën dhe funksionin.",
-        en: "A crown is a cap placed over a tooth that is damaged, broken or root-treated, when a filling is no longer enough. It protects what remains of the tooth and restores its shape and function.",
-      },
-      {
-        sq: "Kurorat punohen me porosi sipas masës së gojës suaj. Ngjyra zgjidhet për t'iu përshtatur dhëmbëve fqinjë, në mënyrë që rezultati të duket natyral.",
-        en: "Crowns are made to order from an impression of your mouth. The shade is chosen to match the neighbouring teeth so that the result looks natural.",
-      },
-    ],
-    highlights: [
-      { sq: "Punohen me porosi për çdo pacient", en: "Made to order for each patient" },
-      { sq: "Ngjyra përshtatet me dhëmbët fqinjë", en: "Shade matched to the neighbouring teeth" },
-      { sq: "Mbrojnë dhëmbin e trajtuar nga thyerja", en: "Protect a treated tooth from fracture" },
-    ],
-    steps: [
-      {
-        title: { sq: "Përgatitja e dhëmbit", en: "Preparing the tooth" },
-        detail: {
-          sq: "Dhëmbi formësohet me kujdes që kurora të ulet saktë mbi të.",
-          en: "The tooth is carefully shaped so the crown seats precisely over it.",
-        },
-      },
-      {
-        title: { sq: "Marrja e masës", en: "Taking the impression" },
-        detail: {
-          sq: "Merret masa e gojës dhe përcaktohet ngjyra e kurorës.",
-          en: "An impression is taken and the shade of the crown is agreed.",
-        },
-      },
-      {
-        title: { sq: "Kurora e përkohshme", en: "Temporary crown" },
-        detail: {
-          sq: "Deri sa punohet kurora përfundimtare, dhëmbi mbrohet me një kurorë të përkohshme.",
-          en: "While the final crown is made, the tooth is protected with a temporary one.",
-        },
-      },
-      {
-        title: { sq: "Fiksimi", en: "Fitting" },
-        detail: {
-          sq: "Kurora provohet, rregullohet nëse duhet dhe fiksohet përfundimisht.",
-          en: "The crown is tried in, adjusted if needed and then permanently fitted.",
-        },
-      },
-    ],
-  },
-  {
-    slug: "proteza-dentare",
-    title: { sq: "Proteza dentare", en: "Dentures and prosthetics" },
-    summary: {
-      sq: "Zgjidhje të lëvizshme ose të fiksuara kur mungojnë disa dhëmbë ose i gjithë harku dentar.",
-      en: "Removable or fixed solutions when several teeth or a whole arch are missing.",
-    },
-    body: [
-      {
-        sq: "Kur mungojnë disa dhëmbë ose i gjithë harku, proteza rikthen aftësinë për të përtypur dhe për të folur qartë, si dhe mbështetjen e strukturës së fytyrës.",
-        en: "When several teeth or an entire arch are missing, a denture restores the ability to chew and speak clearly, as well as support for the structure of the face.",
-      },
-      {
-        sq: "Ekzistojnë disa lloje: proteza të plota, të pjesshme dhe proteza të mbështetura mbi implante. Zgjedhja varet nga sa dhëmbë kanë mbetur, nga gjendja e kockës dhe nga çfarë ju përshtatet më mirë në përditshmëri.",
-        en: "There are several types: full dentures, partial dentures and implant-supported dentures. The choice depends on how many teeth remain, the condition of the bone and what suits your daily life best.",
-      },
-    ],
-    highlights: [
-      { sq: "Opsione të lëvizshme dhe të fiksuara", en: "Removable and fixed options" },
-      { sq: "Të punuara sipas masës së gojës suaj", en: "Made from an impression of your own mouth" },
-      { sq: "Rregullime pas dorëzimit sipas nevojës", en: "Adjustments after fitting when needed" },
-    ],
-    steps: [
-      {
-        title: { sq: "Vlerësimi", en: "Assessment" },
-        detail: {
-          sq: "Shqyrtojmë dhëmbët që kanë mbetur dhe gjendjen e mishrave e të kockës.",
-          en: "We review the remaining teeth and the condition of the gums and bone.",
-        },
-      },
-      {
-        title: { sq: "Masa dhe provat", en: "Impressions and try-ins" },
-        detail: {
-          sq: "Merren masat dhe bëhen prova të njëpasnjëshme për formën dhe kafshimin.",
-          en: "Impressions are taken and successive try-ins check the shape and the bite.",
-        },
-      },
-      {
-        title: { sq: "Dorëzimi", en: "Fitting" },
-        detail: {
-          sq: "Proteza dorëzohet dhe rregullohet derisa të ulet rehat.",
-          en: "The denture is fitted and adjusted until it sits comfortably.",
-        },
-      },
-      {
-        title: { sq: "Kontrollet", en: "Follow-up" },
-        detail: {
-          sq: "Takime kontrolli për rregullime të vogla gjatë periudhës së përshtatjes.",
-          en: "Check-up appointments for small adjustments during the settling-in period.",
-        },
-      },
-    ],
-  },
-  {
-    slug: "endodonti",
-    title: { sq: "Endodonti", en: "Root canal treatment" },
-    summary: {
-      sq: "Trajtimi i kanalit të rrënjës për të shpëtuar një dhëmb me infeksion në nerv.",
-      en: "Root canal treatment to save a tooth with an infected nerve.",
-    },
-    body: [
-      {
-        sq: "Kur infeksioni arrin nervin e dhëmbit, trajtimi i kanalit të rrënjës është mënyra për ta ruajtur dhëmbin në vend të heqjes së tij. Nervi i infektuar hiqet, kanalet pastrohen, dezinfektohen dhe mbyllen.",
-        en: "When infection reaches the nerve of a tooth, root canal treatment is the way to keep the tooth rather than remove it. The infected nerve is removed and the canals are cleaned, disinfected and sealed.",
-      },
-      {
-        sq: "Trajtimi kryhet me anestezi lokale dhe, sipas rastit, mund të kërkojë më shumë se një seancë. Pas tij, dhëmbi shpesh ka nevojë për një kurorë për ta mbrojtur nga thyerja.",
-        en: "The treatment is carried out under local anaesthetic and, depending on the case, may take more than one appointment. Afterwards the tooth often needs a crown to protect it from fracture.",
-      },
-    ],
-    highlights: [
+      { sq: "Mbushje kompozite në ngjyrën e dhëmbit", en: "Tooth-coloured composite fillings" },
       { sq: "Ruan dhëmbin natyral në vend të heqjes", en: "Keeps the natural tooth instead of extracting it" },
       { sq: "Kryhet me anestezi lokale", en: "Carried out under local anaesthetic" },
-      { sq: "Mund të kërkojë më shumë se një seancë", en: "May require more than one appointment" },
     ],
     steps: [
       {
         title: { sq: "Diagnoza", en: "Diagnosis" },
         detail: {
-          sq: "Ekzaminim dhe radiografi për të përcaktuar shtrirjen e infeksionit.",
-          en: "An examination and radiograph to determine the extent of the infection.",
+          sq: "Ekzaminim dhe radiografi për të përcaktuar shtrirjen e kariesit ose të infeksionit.",
+          en: "An examination and radiograph to determine the extent of the decay or infection.",
         },
       },
       {
-        title: { sq: "Pastrimi i kanaleve", en: "Cleaning the canals" },
+        title: { sq: "Pastrimi", en: "Cleaning" },
         detail: {
-          sq: "Nervi i infektuar hiqet dhe kanalet pastrohen e dezinfektohen.",
-          en: "The infected nerve is removed and the canals are cleaned and disinfected.",
+          sq: "Pjesa e prekur hiqet me kujdes, ose kanalet pastrohen dhe dezinfektohen.",
+          en: "The affected part is carefully removed, or the canals are cleaned and disinfected.",
         },
       },
       {
         title: { sq: "Mbyllja", en: "Sealing" },
         detail: {
-          sq: "Kanalet mbushen dhe mbyllen hermetikisht.",
-          en: "The canals are filled and sealed.",
+          sq: "Zbrazëtira mbushet me kompozit, ose kanalet mbushen dhe mbyllen hermetikisht.",
+          en: "The cavity is filled with composite, or the canals are filled and sealed.",
         },
       },
       {
         title: { sq: "Restaurimi", en: "Restoration" },
         detail: {
-          sq: "Dhëmbi restaurohet me mbushje ose me kurorë, sipas gjendjes së tij.",
-          en: "The tooth is restored with a filling or a crown, depending on its condition.",
+          sq: "Kafshimi rregullohet, dhe kur duhet dhëmbi mbrohet me kurorë.",
+          en: "The bite is adjusted and, where needed, the tooth is protected with a crown.",
         },
       },
     ],
   },
   {
-    slug: "mbushje-dentare",
-    title: { sq: "Mbushje të dhëmbëve", en: "Dental fillings" },
+    slug: "protetike",
+    priceGroupId: "protetike",
+    title: { sq: "Protetikë", en: "Prosthetics" },
     summary: {
-      sq: "Riparimi i kariesit me materiale kompozite në ngjyrën e dhëmbit.",
-      en: "Repairing decay with tooth-coloured composite materials.",
+      sq: "Kurora, ura dhe proteza që rikthejnë përtypjen dhe pamjen e dhëmbëve.",
+      en: "Crowns, bridges and dentures that restore both chewing and appearance.",
     },
     body: [
       {
-        sq: "Mbushja riparon një dhëmb të prekur nga kariesi. Pjesa e dëmtuar hiqet dhe zbrazëtira mbushet me material kompozit, i cili zgjidhet në ngjyrën e dhëmbit tuaj.",
-        en: "A filling repairs a tooth affected by decay. The damaged part is removed and the cavity is filled with a composite material chosen to match the colour of your tooth.",
+        sq: "Kurora është një mbulesë që vendoset mbi një dhëmb të dëmtuar, të thyer ose të trajtuar me kanal, kur mbushja nuk mjafton më. Punohet me porosi sipas masës së gojës suaj, dhe ngjyra zgjidhet për t'iu përshtatur dhëmbëve fqinjë.",
+        en: "A crown is a cap placed over a tooth that is damaged, broken or root-treated, when a filling is no longer enough. It is made to order from an impression of your own mouth, and the shade is matched to the neighbouring teeth.",
       },
       {
-        sq: "Sa më herët të trajtohet kariesi, aq më pak strukturë dhëmbi humbet. Kariesi i vogël shpesh nuk shkakton dhimbje, prandaj kontrollet e rregullta janë mënyra më e sigurt për ta kapur në kohë.",
-        en: "The earlier decay is treated, the less tooth structure is lost. Small cavities often cause no pain, which is why regular check-ups are the most reliable way to catch them early.",
+        sq: "Kur mungojnë disa dhëmbë ose i gjithë harku, proteza rikthen përtypjen, të folurit dhe mbështetjen e strukturës së fytyrës. Zgjedhja mes akrilatit, protezës së skeletuar dhe asaj mbi implante varet nga sa dhëmbë kanë mbetur dhe nga gjendja e kockës.",
+        en: "When several teeth or a whole arch are missing, a denture restores chewing, speech and support for the structure of the face. The choice between acrylic, a cast framework and an implant-supported denture depends on how many teeth remain and on the condition of the bone.",
       },
     ],
     highlights: [
-      { sq: "Material kompozit në ngjyrën e dhëmbit", en: "Tooth-coloured composite material" },
-      { sq: "Zakonisht përfundon në një seancë", en: "Usually completed in a single appointment" },
-      { sq: "Ruan sa më shumë strukturë natyrale", en: "Preserves as much natural structure as possible" },
+      { sq: "Punohen me porosi për çdo pacient", en: "Made to order for each patient" },
+      { sq: "Ngjyra përshtatet me dhëmbët fqinjë", en: "Shade matched to the neighbouring teeth" },
+      {
+        sq: "Riparim dhe ri-cimentim i punimeve ekzistuese",
+        en: "Repair and re-cementing of existing work",
+      },
     ],
     steps: [
       {
-        title: { sq: "Kontrolli", en: "Examination" },
+        title: { sq: "Përgatitja", en: "Preparation" },
         detail: {
-          sq: "Identifikohet kariesi dhe vlerësohet thellësia e tij.",
-          en: "The decay is identified and its depth assessed.",
+          sq: "Dhëmbi formësohet me kujdes, ose vlerësohen dhëmbët që kanë mbetur.",
+          en: "The tooth is carefully shaped, or the remaining teeth are assessed.",
         },
       },
       {
-        title: { sq: "Pastrimi i kariesit", en: "Removing the decay" },
+        title: { sq: "Marrja e masës", en: "Taking the impression" },
         detail: {
-          sq: "Pjesa e prekur hiqet me kujdes, duke ruajtur indin e shëndoshë.",
-          en: "The affected part is carefully removed while healthy tissue is preserved.",
+          sq: "Merret masa e gojës dhe përcaktohet ngjyra e punimit.",
+          en: "An impression is taken and the shade of the work is agreed.",
         },
       },
       {
-        title: { sq: "Mbushja", en: "Filling" },
+        title: { sq: "Provat", en: "Try-ins" },
         detail: {
-          sq: "Zbrazëtira mbushet me kompozit dhe formësohet sipas dhëmbit.",
-          en: "The cavity is filled with composite and shaped to the tooth.",
+          sq: "Deri sa punohet punimi përfundimtar, dhëmbi mbrohet me kurorë të përkohshme.",
+          en: "While the final work is made, the tooth is protected with a temporary crown.",
         },
       },
       {
-        title: { sq: "Rregullimi i kafshimit", en: "Adjusting the bite" },
+        title: { sq: "Fiksimi", en: "Fitting" },
         detail: {
-          sq: "Mbushja lëmohet dhe kontrollohet që kafshimi të jetë i rehatshëm.",
-          en: "The filling is polished and the bite is checked for comfort.",
+          sq: "Punimi provohet, rregullohet nëse duhet dhe fiksohet përfundimisht.",
+          en: "The work is tried in, adjusted if needed and then permanently fitted.",
         },
       },
     ],
   },
   {
-    slug: "pastrim-dentar",
-    title: { sq: "Pastrim i dhëmbëve", en: "Professional cleaning" },
+    slug: "estetike-dentare",
+    priceGroupId: "estetike",
+    title: {
+      sq: "Estetikë dentare dhe zbardhim",
+      en: "Dental aesthetics and whitening",
+    },
     summary: {
-      sq: "Heqja e pllakës dhe e gurëzave që furça nuk i arrin, si bazë e shëndetit të mishrave.",
-      en: "Removing the plaque and tartar a toothbrush cannot reach, which is where healthy gums start.",
+      sq: "Zbardhim, faseta dhe mbushje estetike, pas një kontrolli që konfirmon se dhëmbët janë të shëndetshëm.",
+      en: "Whitening, veneers and aesthetic fillings, after a check confirms the teeth are healthy.",
+    },
+    body: [
+      {
+        sq: "Zbardhimi lehtëson ngjyrosjet e grumbulluara me kohë nga kafeja, çaji, duhani ose thjesht nga mosha. Një dhëmb i vetëm që është errësuar pas trajtimit të kanalit mund të zbardhet veçmas nga të tjerët.",
+        en: "Whitening lightens staining built up over time from coffee, tea, smoking or simply age. A single tooth that has darkened after root canal treatment can be whitened on its own.",
+      },
+      {
+        sq: "Fasetat estetike janë shtresa të holla që vendosen mbi sipërfaqen e përparme të dhëmbit dhe ndryshojnë formën ose ngjyrën e tij. Trajtimet estetike kryhen vetëm pasi konfirmohet se dhëmbët dhe mishrat janë të shëndetshëm. Materialet artificiale si mbushjet dhe kurorat nuk e ndryshojnë ngjyrën, prandaj planifikimi bëhet paraprakisht.",
+        en: "Veneers are thin layers placed over the front surface of a tooth to change its shape or its colour. Cosmetic treatment is only carried out once the teeth and gums have been confirmed healthy. Artificial materials such as fillings and crowns do not change colour, so this is planned for in advance.",
+      },
+    ],
+    highlights: [
+      { sq: "Kryhet pas një kontrolli paraprak", en: "Carried out after a preliminary check" },
+      { sq: "Rezultati ndryshon sipas rastit", en: "Results vary from case to case" },
+      { sq: "Këshilla për ta ruajtur rezultatin", en: "Advice on keeping the result" },
+    ],
+    steps: [
+      {
+        title: { sq: "Kontrolli paraprak", en: "Preliminary check" },
+        detail: {
+          sq: "Konfirmohet se dhëmbët dhe mishrat janë të shëndetshëm për trajtim estetik.",
+          en: "The teeth and gums are confirmed healthy enough for cosmetic treatment.",
+        },
+      },
+      {
+        title: { sq: "Pastrimi", en: "Cleaning" },
+        detail: {
+          sq: "Zakonisht paraprihet nga një pastrim, që trajtimi të veprojë në sipërfaqe të pastër.",
+          en: "It is usually preceded by a cleaning, so the treatment works on a clean surface.",
+        },
+      },
+      {
+        title: { sq: "Trajtimi", en: "The treatment" },
+        detail: {
+          sq: "Zbardhimi kryhet me mishrat e mbrojtur, ose faseta punohet dhe fiksohet.",
+          en: "Whitening is carried out with the gums protected, or the veneer is made and fitted.",
+        },
+      },
+      {
+        title: { sq: "Ruajtja e rezultatit", en: "Keeping the result" },
+        detail: {
+          sq: "Udhëzime për ushqimet dhe pijet në ditët e para pas trajtimit.",
+          en: "Guidance on food and drink in the first days after treatment.",
+        },
+      },
+    ],
+  },
+  {
+    slug: "ortodonci",
+    priceGroupId: "ortodonci",
+    title: { sq: "Ortodonci", en: "Orthodontics" },
+    summary: {
+      sq: "Mbajtësit që ruajnë pozicionin e dhëmbëve pas një trajtimi ortodontik.",
+      en: "Retainers that hold the teeth in position after orthodontic treatment.",
+    },
+    body: [
+      {
+        sq: "Pas një trajtimi ortodontik, dhëmbët kanë prirjen të kthehen drejt pozicionit të mëparshëm. Retaineri është elementi që i mban në vend gjatë periudhës kur kocka dhe indet përreth stabilizohen.",
+        en: "After orthodontic treatment, teeth tend to drift back towards their previous position. A retainer is what holds them in place while the bone and the surrounding tissue settle.",
+      },
+      {
+        sq: "Në klinikë vendoset retainer metalik. Nëse keni nevojë për një trajtim tjetër ortodontik, ejani në konsultë: shqyrtojmë rastin dhe ju themi qartë çfarë mund të bëhet këtu dhe çfarë kërkon një specialist tjetër.",
+        en: "The clinic fits metal retainers. If you need other orthodontic treatment, come in for a consultation: we will look at the case and tell you plainly what can be done here and what needs a different specialist.",
+      },
+    ],
+    highlights: [
+      { sq: "Retainer metalik", en: "Metal retainer" },
+      {
+        sq: "Ruan rezultatin e trajtimit ortodontik",
+        en: "Protects the result of orthodontic treatment",
+      },
+      { sq: "Konsultë përpara çdo vendimi", en: "A consultation before any decision" },
+    ],
+    steps: [
+      {
+        title: { sq: "Konsulta", en: "Consultation" },
+        detail: {
+          sq: "Shqyrtojmë pozicionin e dhëmbëve dhe trajtimin ortodontik që keni bërë.",
+          en: "We look at the position of the teeth and the orthodontic treatment you have had.",
+        },
+      },
+      {
+        title: { sq: "Vendosja", en: "Fitting" },
+        detail: {
+          sq: "Retaineri vendoset dhe kontrollohet që të mos pengojë kafshimin.",
+          en: "The retainer is fitted and checked so that it does not interfere with the bite.",
+        },
+      },
+      {
+        title: { sq: "Kontrolli", en: "Check-up" },
+        detail: {
+          sq: "Një takim kontrolli për të parë se si po qëndron dhe si po ndihet.",
+          en: "A check-up appointment to see how it is holding and how it feels.",
+        },
+      },
+      {
+        title: { sq: "Mirëmbajtja", en: "Care" },
+        detail: {
+          sq: "Udhëzime praktike për pastrimin rreth retainerit.",
+          en: "Practical guidance on cleaning around the retainer.",
+        },
+      },
+    ],
+  },
+  {
+    slug: "parodontologji",
+    priceGroupId: "parodontologji",
+    title: { sq: "Parodontologji", en: "Periodontology" },
+    summary: {
+      sq: "Pastrimi profesional dhe trajtimi i mishrave, ku fillon shëndeti i dhëmbëve.",
+      en: "Professional cleaning and gum treatment, where healthy teeth begin.",
     },
     body: [
       {
@@ -358,13 +433,19 @@ export const services: Service[] = [
         en: "Even with regular brushing, plaque builds up in some areas and hardens over time into tartar. A professional cleaning removes it and polishes the tooth surfaces, reducing gum irritation.",
       },
       {
-        sq: "Pastrimi është edhe mundësia më e mirë për një kontroll të plotë: gjatë seancës shikohen dhëmbët dhe mishrat, kështu që problemet e vogla kapen para se të rriten.",
-        en: "A cleaning is also the best opportunity for a full check-up: the teeth and gums are examined during the appointment, so small problems are caught before they grow.",
+        sq: "Kur mishrat janë tashmë të prekur, nevojitet kiretazha parodontale, që pastron nën vijën e mishrave. Sipas thellësisë së problemit, ajo bëhet e mbyllur, kuadrant pas kuadranti, ose e hapur për një nofull të tërë.",
+        en: "When the gums are already affected, periodontal curettage is needed to clean below the gum line. Depending on how deep the problem goes, it is done closed, quadrant by quadrant, or open across a whole jaw.",
       },
     ],
     highlights: [
-      { sq: "Përfshin kontroll të plotë të dhëmbëve dhe mishrave", en: "Includes a full check of teeth and gums" },
-      { sq: "Zakonisht një seancë e vetme", en: "Usually a single appointment" },
+      {
+        sq: "Përfshin kontroll të plotë të dhëmbëve dhe mishrave",
+        en: "Includes a full check of teeth and gums",
+      },
+      {
+        sq: "Kiretazhë e mbyllur ose e hapur sipas rastit",
+        en: "Closed or open curettage depending on the case",
+      },
       { sq: "Këshilla praktike për kujdesin në shtëpi", en: "Practical advice for care at home" },
     ],
     steps: [
@@ -383,10 +464,10 @@ export const services: Service[] = [
         },
       },
       {
-        title: { sq: "Lëmimi", en: "Polishing" },
+        title: { sq: "Kiretazha", en: "Curettage" },
         detail: {
-          sq: "Sipërfaqet lëmohen, gjë që ngadalëson grumbullimin e pllakës.",
-          en: "The surfaces are polished, which slows down how quickly plaque returns.",
+          sq: "Kur mishrat janë të prekur, pastrimi vazhdon nën vijën e tyre.",
+          en: "Where the gums are affected, cleaning continues below the gum line.",
         },
       },
       {
@@ -394,59 +475,6 @@ export const services: Service[] = [
         detail: {
           sq: "Kalojmë bashkë teknikën e larjes dhe zonat që kërkojnë më shumë vëmendje.",
           en: "We go through brushing technique together and the areas that need more attention.",
-        },
-      },
-    ],
-  },
-  {
-    slug: "zbardhim-dentar",
-    title: { sq: "Zbardhim i dhëmbëve", en: "Teeth whitening" },
-    summary: {
-      sq: "Trajtim estetik për të lehtësuar ngjyrosjet, pas një kontrolli që konfirmon se dhëmbët janë të shëndetshëm.",
-      en: "A cosmetic treatment to lighten staining, after a check confirms the teeth are healthy.",
-    },
-    body: [
-      {
-        sq: "Zbardhimi lehtëson ngjyrosjet e grumbulluara me kohë nga kafeja, çaji, duhani ose thjesht nga mosha. Trajtimi kryhet vetëm pasi konfirmohet se dhëmbët dhe mishrat janë të shëndetshëm.",
-        en: "Whitening lightens staining built up over time from coffee, tea, smoking or simply age. The treatment is only carried out once the teeth and gums have been confirmed healthy.",
-      },
-      {
-        sq: "Rezultati ndryshon nga personi në person dhe varet nga ngjyra fillestare e dhëmbëve dhe nga shkaku i ngjyrosjes. Materialet artificiale si mbushjet dhe kurorat nuk e ndryshojnë ngjyrën, prandaj planifikimi bëhet paraprakisht.",
-        en: "Results vary from person to person and depend on the starting shade and the cause of the staining. Artificial materials such as fillings and crowns do not change colour, so this is planned for in advance.",
-      },
-    ],
-    highlights: [
-      { sq: "Kryhet pas një kontrolli paraprak", en: "Carried out after a preliminary check" },
-      { sq: "Rezultati ndryshon sipas rastit", en: "Results vary from case to case" },
-      { sq: "Këshilla për ta ruajtur rezultatin", en: "Advice on maintaining the result" },
-    ],
-    steps: [
-      {
-        title: { sq: "Kontrolli paraprak", en: "Preliminary check" },
-        detail: {
-          sq: "Konfirmohet se dhëmbët dhe mishrat janë të shëndetshëm për trajtim.",
-          en: "The teeth and gums are confirmed healthy enough for treatment.",
-        },
-      },
-      {
-        title: { sq: "Pastrimi", en: "Cleaning" },
-        detail: {
-          sq: "Zakonisht paraprihet nga një pastrim, që trajtimi të veprojë në sipërfaqe të pastër.",
-          en: "It is usually preceded by a cleaning so the treatment works on a clean surface.",
-        },
-      },
-      {
-        title: { sq: "Trajtimi", en: "The treatment" },
-        detail: {
-          sq: "Materiali zbardhues aplikohet me mishrat e mbrojtur.",
-          en: "The whitening material is applied with the gums protected.",
-        },
-      },
-      {
-        title: { sq: "Ruajtja e rezultatit", en: "Maintaining the result" },
-        detail: {
-          sq: "Udhëzime për ushqimet dhe pijet në ditët e para pas trajtimit.",
-          en: "Guidance on food and drink in the first days after treatment.",
         },
       },
     ],

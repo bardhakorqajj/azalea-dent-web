@@ -1,9 +1,9 @@
+import { ChannelIconLinks } from "@/components/layout/ContactChannels";
 import { AzaleaMark } from "@/components/ui/AzaleaMark";
 import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { clinic } from "@/content/clinic";
 import { path, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 
@@ -19,17 +19,11 @@ export function CtaBand({ locale, dict }: { locale: Locale; dict: Dictionary }) 
           <p className="mx-auto mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-ink-600">
             {dict.appointment.lead}
           </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-3">
             <ButtonLink href={path(locale, "/appointment")} withArrow>
               {dict.actions.bookAppointment}
             </ButtonLink>
-            <ButtonLink
-              href={clinic.social.instagram.url}
-              variant="secondary"
-              external
-            >
-              {dict.actions.instagram}
-            </ButtonLink>
+            <ChannelIconLinks dict={dict} className="justify-center" />
           </div>
         </Reveal>
       </Container>

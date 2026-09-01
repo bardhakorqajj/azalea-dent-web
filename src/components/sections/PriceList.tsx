@@ -2,9 +2,36 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
-import { formatPrice, priceGroups } from "@/content/prices";
+import { formatPrice, priceGroups, type PriceGroup } from "@/content/prices";
 import { path, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+
+/** One category's treatments and prices, name left and price right. */
+export function PriceGroupTable({
+  group,
+  locale,
+}: {
+  group: PriceGroup;
+  locale: Locale;
+}) {
+  return (
+    <dl>
+      {group.items.map((item) => (
+        <div
+          key={item.name.sq}
+          className="flex items-baseline justify-between gap-6 border-b border-ink-900/8 py-3.5"
+        >
+          <dt className="text-[0.98rem] leading-snug text-ink-700">
+            {item.name[locale]}
+          </dt>
+          <dd className="shrink-0 text-[0.98rem] font-medium whitespace-nowrap text-ink-900 tabular-nums">
+            {formatPrice(item.price)}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
 
 /**
  * The clinic's price list, grouped exactly as it is on the printed sheet at
@@ -38,21 +65,7 @@ export function PriceList({
                   {group.title[locale]}
                 </h2>
 
-                <dl>
-                  {group.items.map((item) => (
-                    <div
-                      key={item.name.sq}
-                      className="flex items-baseline justify-between gap-6 border-b border-ink-900/8 py-3.5"
-                    >
-                      <dt className="text-[0.98rem] leading-snug text-ink-700">
-                        {item.name[locale]}
-                      </dt>
-                      <dd className="shrink-0 text-[0.98rem] font-medium whitespace-nowrap text-ink-900 tabular-nums">
-                        {formatPrice(item.price)}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
+                <PriceGroupTable group={group} locale={locale} />
               </section>
             </Reveal>
           ))}

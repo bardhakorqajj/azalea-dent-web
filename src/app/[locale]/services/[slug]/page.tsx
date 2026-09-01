@@ -9,7 +9,9 @@ import { Container } from "@/components/ui/Container";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
+import { PriceGroupTable } from "@/components/sections/PriceList";
 import { photos } from "@/content/images";
+import { priceGroups } from "@/content/prices";
 import { getService, serviceSlugs } from "@/content/services";
 import {
   defaultLocale,
@@ -71,6 +73,7 @@ export default async function ServicePage({
 
   const dict = getDictionary(locale);
   const photo = photos.operatoryDaylight;
+  const priceGroup = priceGroups.find((group) => group.id === service.priceGroupId);
   const url = absoluteUrl(`${path(locale, "/services")}/${slug}`);
 
   return (
@@ -126,6 +129,27 @@ export default async function ServicePage({
                     </li>
                   ))}
                 </ol>
+                {priceGroup && (
+                  <>
+                    <h2 className="mt-14 font-display text-[1.6rem] text-ink-900">
+                      {dict.prices.title}
+                    </h2>
+                    <div className="mt-8 border-t border-ink-900/12">
+                      <PriceGroupTable group={priceGroup} locale={locale} />
+                    </div>
+                    <p className="mt-5 text-[0.9rem] leading-relaxed text-ink-500">
+                      {dict.prices.note}
+                    </p>
+                    <ButtonLink
+                      href={path(locale, "/prices")}
+                      variant="secondary"
+                      size="sm"
+                      className="mt-6"
+                    >
+                      {dict.actions.viewPrices}
+                    </ButtonLink>
+                  </>
+                )}
               </Reveal>
             </div>
 

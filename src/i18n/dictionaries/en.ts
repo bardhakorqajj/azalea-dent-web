@@ -70,7 +70,7 @@ export const en: Dictionary = {
       "Every treatment is carried out at the clinic, from a routine check-up to surgical procedures.",
     pageTitle: "Treatments",
     pageLead:
-      "The eight treatments offered at Azalea Dent, explained step by step: what they are, how they work and what to expect.",
+      "The eight areas of treatment at Azalea Dent, explained step by step: what they cover, how they work and what to expect.",
     highlightsTitle: "Good to know",
     stepsTitle: "How it works",
     otherTitle: "Other treatments",
@@ -295,9 +295,9 @@ export const en: Dictionary = {
   meta: {
     homeTitle: "Azalea Dent | Dental Clinic in Prishtina",
     homeDescription:
-      "Dental clinic in Prishtina: cleanings, fillings, root canals, prosthetics, crowns, oral surgery and implants. Every treatment plan is explained before it begins.",
+      "Dental clinic in Prishtina: general dentistry, paediatric dentistry, oral surgery, endodontics, prosthetics, aesthetics, orthodontics and periodontology. Every treatment plan is explained before it begins.",
     servicesDescription:
-      "The eight treatments at Azalea Dent in Prishtina: cleaning, whitening, fillings, root canal treatment, crowns, dentures, oral surgery and implants.",
+      "The eight areas of treatment at Azalea Dent in Prishtina: general dentistry, paediatric dentistry, oral surgery, endodontics, prosthetics, dental aesthetics, orthodontics and periodontology.",
     aboutDescription:
       "Get to know Azalea Dent: the space, the approach to patients and the treatments offered.",
     galleryDescription:

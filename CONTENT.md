@@ -6,7 +6,7 @@ component needs to be touched to update the website.
 | What | File |
 | --- | --- |
 | Phone, WhatsApp, email, address, opening hours, team, testimonials | `src/content/clinic.ts` |
-| The eight treatments and their copy | `src/content/services.ts` |
+| The eight areas of treatment and their copy | `src/content/services.ts` |
 | The price list | `src/content/prices.ts` |
 | Photographs, alt text and captions | `src/content/images.ts` |
 | Every other word on the site, in both languages | `src/i18n/dictionaries/sq.ts` and `en.ts` |
@@ -141,13 +141,30 @@ of 49 treatments, that every entry has a positive whole-number price and both
 languages, and it spot-checks the prices patients ask about most. If you change
 a price, update `tests/content.test.ts` when the test names that treatment.
 
-## 6. Adding a treatment
+## 6. How treatments and prices fit together
+
+The eight entries in `services.ts` mirror the eight categories of the price
+list one for one, joined by `priceGroupId`:
+
+```ts
+{ slug: "parodontologji", priceGroupId: "parodontologji", ... }
+```
+
+That link is what lets each treatment page list its own prices under the
+steps. A unit test asserts that every treatment points at a real price group
+and that every group is reachable from a treatment page, so the two files
+cannot drift apart.
+
+Adding a ninth area means adding both: a group in `prices.ts` and a service in
+`services.ts` that names its `priceGroupId`.
+
+## 7. Adding a treatment
 
 Append an entry to `services` in `src/content/services.ts`. Its page, its place
 in the navigation index, the footer list, the appointment dropdown, the sitemap
 and the structured data are all generated from that one entry.
 
-## 7. Wording
+## 8. Wording
 
 `src/i18n/dictionaries/sq.ts` is the Albanian copy and also defines the shape
 that every language must provide. If you add a key there, TypeScript will

@@ -16,8 +16,19 @@ import { en } from "@/i18n/dictionaries/en";
 import { sq } from "@/i18n/dictionaries/sq";
 
 describe("services", () => {
-  it("covers the eight treatments listed on the clinic shopfront", () => {
+  it("covers the eight areas on the clinic's price list", () => {
     expect(services).toHaveLength(8);
+  });
+
+  it("maps every treatment to a group in the price list", () => {
+    const groupIds = new Set(priceGroups.map((group) => group.id));
+    for (const service of services) {
+      expect(groupIds.has(service.priceGroupId), `${service.slug} has no prices`).toBe(
+        true,
+      );
+    }
+    // Every price group is reachable from a treatment page.
+    expect(new Set(services.map((s) => s.priceGroupId)).size).toBe(priceGroups.length);
   });
 
   it("uses unique slugs", () => {
@@ -41,7 +52,7 @@ describe("services", () => {
   });
 
   it("looks up by slug and returns undefined for unknown slugs", () => {
-    expect(getService("implantologji")?.title.en).toBe("Dental implants");
+    expect(getService("kirurgji-orale")?.title.en).toBe("Oral surgery");
     expect(getService("nope")).toBeUndefined();
   });
 });

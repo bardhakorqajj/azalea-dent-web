@@ -202,3 +202,86 @@ export function MessagingLinks({ dict, tone = "light", className }: ToneProps) {
     </ul>
   );
 }
+
+/**
+ * Every direct channel as square icon buttons, sized to match a primary
+ * button so they sit on the same line beside it without taking the space a
+ * row of labelled buttons would.
+ */
+export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps) {
+  const links: Channel[] = [];
+  const tel = telHref();
+  const wa = whatsappHref();
+  const viber = viberHref();
+
+  if (tel && clinic.phones[0]) {
+    links.push({
+      key: "phone",
+      href: tel,
+      label: dict.actions.call,
+      value: clinic.phones[0],
+      Icon: Phone,
+    });
+  }
+  if (wa) {
+    links.push({
+      key: "whatsapp",
+      href: wa,
+      label: dict.actions.whatsapp,
+      value: dict.actions.whatsapp,
+      Icon: WhatsApp,
+    });
+  }
+  if (viber) {
+    links.push({
+      key: "viber",
+      href: viber,
+      label: dict.actions.viber,
+      value: dict.actions.viber,
+      Icon: Viber,
+    });
+  }
+  links.push({
+    key: "instagram",
+    href: clinic.social.instagram.url,
+    label: dict.actions.instagram,
+    value: dict.actions.instagram,
+    Icon: Instagram,
+  });
+  if (clinic.social.facebook) {
+    links.push({
+      key: "facebook",
+      href: clinic.social.facebook,
+      label: dict.actions.facebook,
+      value: dict.actions.facebook,
+      Icon: Facebook,
+    });
+  }
+
+  const isDark = tone === "dark";
+
+  return (
+    <ul className={cn("flex flex-wrap items-center gap-2", className)}>
+      {links.map((link) => (
+        <li key={link.key}>
+          <a
+            href={link.href}
+            {...(link.href.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
+            title={link.label}
+            className={cn(
+              "inline-flex h-12 w-12 items-center justify-center rounded-sm border transition-colors",
+              isDark
+                ? "border-bone-100/25 text-bone-100 hover:border-gold-400 hover:text-gold-300"
+                : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900",
+            )}
+          >
+            <span className="sr-only">{link.label}</span>
+            <link.Icon className="h-5 w-5" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
