@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Inter, Source_Serif_4 } from "next/font/google";
 
 import { DevContentNotice } from "@/components/layout/DevContentNotice";
 import { Footer } from "@/components/layout/Footer";
@@ -28,14 +28,15 @@ const inter = Inter({
 });
 
 /**
- * Fraunces is loaded as a variable font so its WONK axis can be switched off in
- * globals.css. With wonk on, the "j" and "g" take quirky swashed forms that read
- * as decorative rather than clinical.
+ * Source Serif 4 for headings. Fraunces was the first choice, but its "j"
+ * carries a swashed hook in every one of its axis settings, which read as
+ * decorative rather than clinical; this face keeps a short, upright descender.
+ * Only weight 400 is used, so only that is downloaded.
  */
-const fraunces = Fraunces({
+const displaySerif = Source_Serif_4({
   subsets: ["latin", "latin-ext"],
-  axes: ["SOFT", "WONK", "opsz"],
-  variable: "--font-fraunces",
+  weight: ["400"],
+  variable: "--font-display-serif",
   display: "swap",
 });
 
@@ -106,7 +107,7 @@ export default async function LocaleLayout({
   const dict = getDictionary(locale);
 
   return (
-    <html lang={htmlLang[locale]} className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang={htmlLang[locale]} className={`${inter.variable} ${displaySerif.variable}`}>
       <head>
         {/* Scroll-reveal is progressive: without JS the content is simply visible. */}
         <noscript>

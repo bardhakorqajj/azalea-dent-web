@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ArrowLeft, ArrowRight, Close } from "@/components/ui/Icons";
+import { Close } from "@/components/ui/Icons";
 import { galleryOrder, photos } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
@@ -24,13 +24,28 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
 
   const total = galleryOrder.length;
 
-  /** Scrolls the strip by roughly one tile. */
-  const nudge = (direction: number) => {
+  /* The strip advances on its own, and holds still while someone is reading
+     it, has the lightbox open, or has asked for reduced motion. */
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
     const strip = stripRef.current;
-    if (!strip) return;
-    const step = strip.querySelector("li")?.clientWidth ?? strip.clientWidth * 0.8;
-    strip.scrollBy({ left: direction * (step + 24), behavior: "smooth" });
-  };
+    if (!strip || paused || openIndex !== null) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const timer = window.setInterval(() => {
+      const tile = strip.querySelector("li");
+      if (!tile) return;
+      const gap = parseFloat(getComputedStyle(tile.parentElement!).columnGap) || 0;
+      const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
+      strip.scrollTo({
+        left: atEnd ? 0 : strip.scrollLeft + tile.clientWidth + gap,
+        behavior: "smooth",
+      });
+    }, 2000);
+
+    return () => window.clearInterval(timer);
+  }, [paused, openIndex]);
   const close = useCallback(() => setOpenIndex(null), []);
   const step = useCallback(
     (delta: number) => {
@@ -87,25 +102,6 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
   return (
     <>
       <div className="relative">
-        <div className="flex items-center justify-end gap-2 pb-5">
-          <button
-            type="button"
-            onClick={() => nudge(-1)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-ink-900/20 text-ink-800 transition-colors hover:border-ink-900 hover:text-ink-900"
-          >
-            <span className="sr-only">{dict.gallery.previous}</span>
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            onClick={() => nudge(1)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-ink-900/20 text-ink-800 transition-colors hover:border-ink-900 hover:text-ink-900"
-          >
-            <span className="sr-only">{dict.gallery.next}</span>
-            <ArrowRight className="h-5 w-5" />
-          </button>
-        </div>
-
         {/* The scroll container carries the region role; the list inside keeps
             its own list semantics. */}
         <div
@@ -113,6 +109,11 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
           tabIndex={0}
           role="region"
           aria-label={dict.gallery.title}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onFocusCapture={() => setPaused(true)}
+          onBlurCapture={() => setPaused(false)}
+          onTouchStart={() => setPaused(true)}
           className="scrollbar-none overflow-x-auto overscroll-x-contain scroll-smooth pb-2"
         >
           <ul className="flex snap-x snap-mandatory gap-5 sm:gap-6">

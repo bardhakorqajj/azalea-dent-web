@@ -126,7 +126,7 @@ export const clinic = {
    */
   team: [
     {
-      name: "Dr. Spec. Arbëreshë Korqaj",
+      name: "Dr. Spec. Arbëreshë Korçaj",
       role: { sq: "Mjeke specialiste", en: "Specialist dentist" },
     },
   ] as TeamMember[],

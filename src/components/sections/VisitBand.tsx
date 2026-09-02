@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import { ButtonLink } from "@/components/ui/Button";
 import {
+  ChannelIconLinks,
   ContactChannelList,
-  MessagingLinks,
 } from "@/components/layout/ContactChannels";
 import { Reveal } from "@/components/ui/Reveal";
 import { clinic, formatAddress } from "@/content/clinic";
@@ -28,8 +28,8 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
       data-surface="dark"
       className="surface-grain bg-ink-950 text-bone-100"
     >
-      <div className="grid lg:grid-cols-2">
-        <div className="relative h-[62vw] max-h-[36rem] min-h-[18rem] w-full lg:h-full lg:max-h-none lg:min-h-[42rem]">
+      <div className="grid lg:grid-cols-2 lg:items-center">
+        <div className="relative aspect-[3/2] w-full lg:self-center">
           <Image
             src={photo.src}
             alt={photo.alt[locale]}
@@ -108,16 +108,17 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
             </div>
 
             <ContactChannelList dict={dict} tone="dark" className="mt-10 border-t border-bone-100/12" />
-            <MessagingLinks dict={dict} tone="dark" className="mt-7" />
 
-            <ButtonLink
-              href={path(locale, "/appointment")}
-              variant="onDark"
-              className="mt-10"
-              withArrow
-            >
-              {dict.actions.bookAppointment}
-            </ButtonLink>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-3">
+              <ButtonLink
+                href={path(locale, "/appointment")}
+                variant="onDark"
+                withArrow
+              >
+                {dict.actions.bookAppointment}
+              </ButtonLink>
+              <ChannelIconLinks dict={dict} tone="dark" />
+            </div>
           </Reveal>
         </div>
       </div>

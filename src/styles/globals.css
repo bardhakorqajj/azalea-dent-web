@@ -11,7 +11,7 @@
  */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-display: var(--font-display-serif), ui-serif, Georgia, "Times New Roman", serif;
 
   --color-ink-950: #0c0e0f;
   --color-ink-900: #14171a;
@@ -78,11 +78,6 @@
     font-weight: 400;
     letter-spacing: -0.015em;
     text-wrap: balance;
-    /* WONK 0 keeps "j" and "g" in their plain forms rather than the swashed
-       ones Fraunces uses by default. SOFT 0 keeps the terminals crisp. */
-    font-variation-settings:
-      "SOFT" 0,
-      "WONK" 0;
   }
 
   p {

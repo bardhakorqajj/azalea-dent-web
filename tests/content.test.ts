@@ -151,7 +151,7 @@ describe("clinic contact helpers", () => {
 
   it("lists the clinical team without inventing credentials", () => {
     expect(clinic.team).toHaveLength(1);
-    expect(clinic.team[0]?.name).toBe("Dr. Spec. Arbëreshë Korqaj");
+    expect(clinic.team[0]?.name).toBe("Dr. Spec. Arbëreshë Korçaj");
     expect(clinic.team[0]?.role.sq).toBe("Mjeke specialiste");
   });
 });

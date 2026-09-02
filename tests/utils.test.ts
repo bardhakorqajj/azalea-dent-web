@@ -67,7 +67,7 @@ describe("formatHours", () => {
 
 describe("initials", () => {
   it("skips titles and abbreviations", () => {
-    expect(initials("Dr. Spec. Arbëreshë Korqaj")).toBe("AK");
+    expect(initials("Dr. Spec. Arbëreshë Korçaj")).toBe("AK");
     expect(initials("Dr. Arta Berisha")).toBe("AB");
     expect(initials("Prof. Dr. Med. Filan Fisteku")).toBe("FF");
   });
