@@ -28,8 +28,15 @@ Vercel-specific — you can move later without code changes.
    - Install Command: `npm install`
 
    Leave all of it as-is.
-5. Set the production branch to the branch you merge into (**Settings → Git →
-   Production Branch**), usually `main`.
+5. Check the production branch under **Settings → Git → Production Branch**.
+   The repository currently has a single branch,
+   `claude/dental-clinic-website-i7hpin`, which is therefore its default and
+   what Vercel will deploy.
+
+   If you would rather the production branch were called `main`, rename it on
+   GitHub first (**Settings → Branches → the pencil icon next to the default
+   branch**), then set the same name in Vercel. Renaming is safe: GitHub
+   redirects existing links. It is cosmetic, so skip it if you prefer.
 
 ## 2. Turn on appointment requests
 
@@ -41,6 +48,10 @@ the provider keys, not the destinations.
 
 Every channel you configure is used, so a request can arrive as an email *and*
 a text at the same time. If one provider fails, the others still deliver.
+
+**For email only, set `RESEND_API_KEY` and nothing else.** The SMS and webhook
+channels stay switched off until their variables are present, so there is
+nothing to disable.
 
 ### Email (start here, free)
 
