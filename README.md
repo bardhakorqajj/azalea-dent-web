@@ -114,9 +114,17 @@ variables:
 
 | Variables | Behaviour |
 | --- | --- |
-| `RESEND_API_KEY` + `APPOINTMENT_TO_EMAIL` | Emails the request via Resend |
+| `RESEND_API_KEY` | Emails the request to the clinic address in `content/clinic.ts` |
+| `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN` + `TWILIO_FROM_NUMBER` | Texts the request to the clinic's first published number |
 | `APPOINTMENT_WEBHOOK_URL` | POSTs the request as JSON to any endpoint |
-| *neither set* | Returns `501`; the form says plainly that nothing was sent and offers WhatsApp and Instagram instead |
+| *none set* | Returns `501`; the form says plainly that nothing was sent and offers WhatsApp, Viber and Instagram instead |
+
+Recipients default to the clinic's own email and phone number, so only the
+provider credentials need setting. `APPOINTMENT_TO_EMAIL` and
+`APPOINTMENT_SMS_TO` override them.
+
+Every configured channel is used, and the request counts as delivered if any
+one of them succeeds, so a failing SMS provider cannot stop the email arriving.
 
 The form never reports success for a request that went nowhere. Until a
 delivery method is configured, patients are routed to a real channel rather
@@ -130,10 +138,14 @@ None of them are required to run the site.
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | recommended | Canonical origin for metadata, sitemap, hreflang |
-| `RESEND_API_KEY` | optional | Email delivery for appointment requests |
-| `APPOINTMENT_TO_EMAIL` | with Resend | Where requests are delivered |
+| `RESEND_API_KEY` | for email | Email delivery for appointment requests |
+| `APPOINTMENT_TO_EMAIL` | optional | Overrides the recipient address |
 | `APPOINTMENT_FROM_EMAIL` | optional | Verified sender address |
-| `APPOINTMENT_WEBHOOK_URL` | optional | Alternative to email delivery |
+| `TWILIO_ACCOUNT_SID` | for SMS | Twilio account identifier |
+| `TWILIO_AUTH_TOKEN` | for SMS | Twilio auth token |
+| `TWILIO_FROM_NUMBER` | for SMS | The Twilio number messages are sent from |
+| `APPOINTMENT_SMS_TO` | optional | Overrides the number that receives texts |
+| `APPOINTMENT_WEBHOOK_URL` | optional | POSTs each request as JSON |
 
 `.env*` files are git-ignored. Never commit real keys.
 

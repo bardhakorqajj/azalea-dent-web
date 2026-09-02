@@ -31,46 +31,85 @@ Vercel-specific — you can move later without code changes.
 5. Set the production branch to the branch you merge into (**Settings → Git →
    Production Branch**), usually `main`.
 
-## 2. Configure environment variables
+## 2. Turn on appointment requests
 
-Before the first deploy, open **Settings → Environment Variables** and add:
+This is the one part of the site that cannot work until you create an account
+somewhere: sending email or SMS needs credentials, and only you can issue them.
+Everything else is already wired. Requests go to
+**azaleadent@hotmail.com** and **+383 48 306 376** by default, so you only add
+the provider keys, not the destinations.
+
+Every channel you configure is used, so a request can arrive as an email *and*
+a text at the same time. If one provider fails, the others still deliver.
+
+### Email (start here, free)
+
+1. Create an account at **https://resend.com**.
+2. **API Keys → Create API Key**, with *Sending access*. Copy it once; it is
+   not shown again.
+3. In Vercel, **Settings → Environment Variables**, add for Production and
+   Preview:
+
+   | Name | Value |
+   | --- | --- |
+   | `RESEND_API_KEY` | the `re_…` key |
+
+   That is enough. Requests arrive at `azaleadent@hotmail.com`.
+
+4. **Before going live**, verify a domain so mail is not filtered as spam:
+   **Domains → Add Domain**, enter `azaleadent.com`, add the DKIM and SPF
+   records Resend shows you at your DNS provider, then set:
+
+   | Name | Value |
+   | --- | --- |
+   | `APPOINTMENT_FROM_EMAIL` | `Azalea Dent <takime@azaleadent.com>` |
+
+   Without a verified domain, Resend only delivers to the address that owns the
+   Resend account. Fine for testing, not for production.
+
+**Getting requests on the phone without paying for SMS:** add
+`azaleadent@hotmail.com` to the Mail app on the phone and turn on
+notifications for it. Every request then arrives as a push notification, at no
+cost. Most small clinics do this and never set up SMS at all.
+
+### Text message (optional, costs money per message)
+
+Only worth it if email notifications are not reliable enough for you.
+
+1. Create an account at **https://twilio.com** and buy a number that can send
+   to Kosovo (+383). Check Twilio's SMS pricing and geographic permissions for
+   Kosovo first: some routes need it enabled explicitly under
+   *Messaging → Settings → Geo permissions*.
+2. Add:
+
+   | Name | Value |
+   | --- | --- |
+   | `TWILIO_ACCOUNT_SID` | `AC…` from the Twilio console |
+   | `TWILIO_AUTH_TOKEN` | the auth token |
+   | `TWILIO_FROM_NUMBER` | the Twilio number, e.g. `+15550100000` |
+
+   Texts go to `+383 48 306 376`. Set `APPOINTMENT_SMS_TO` to change that.
+
+### Anything else
+
+`APPOINTMENT_WEBHOOK_URL` posts each request as JSON to any endpoint, which is
+how you would connect Zapier, Make, n8n, a Google Sheet or a clinic CRM.
+
+### Also set
 
 | Name | Value | Environments |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://azaleadent.com` (your real domain) | Production |
 
-Then, once you have chosen how appointment requests should reach the clinic,
-add **either** the Resend pair **or** the webhook (see `.env.example`):
-
-| Name | Value | Environments |
-| --- | --- | --- |
-| `RESEND_API_KEY` | `re_…` from resend.com | Production, Preview |
-| `APPOINTMENT_TO_EMAIL` | the clinic inbox | Production, Preview |
-| `APPOINTMENT_FROM_EMAIL` | `Azalea Dent <takime@azaleadent.com>` | Production, Preview |
-
-or
-
-| Name | Value | Environments |
-| --- | --- | --- |
-| `APPOINTMENT_WEBHOOK_URL` | your Zapier/Make/n8n endpoint | Production, Preview |
-
-Changing an environment variable does **not** redeploy on its own — trigger a
+Changing an environment variable does **not** redeploy on its own: trigger a
 redeploy afterwards (step 9).
 
-Until one of these is set the form still works: it tells patients plainly that
-online sending is not active and points them to WhatsApp and Instagram.
+### Checking it works
 
-### Setting up Resend (if you choose email)
-
-1. Create a free account at **https://resend.com**.
-2. **Domains → Add Domain**, enter `azaleadent.com`, and add the DKIM/SPF
-   records Resend shows you at your DNS provider.
-3. **API Keys → Create API Key**, with *Sending access*. Copy it once — it is
-   not shown again.
-4. Put it in `RESEND_API_KEY` on Vercel.
-
-Without a verified domain, Resend only delivers to the account owner's own
-address. That is fine for testing, not for production.
+After deploying, send yourself a request from `/sq/appointment`. On success the
+form shows a confirmation; if nothing is configured it says plainly that
+nothing was sent and offers WhatsApp, Viber and Instagram instead. Vercel's
+**Logs** tab records the reason for any delivery that failed.
 
 ## 3. Deploy
 
