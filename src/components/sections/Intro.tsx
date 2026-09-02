@@ -13,7 +13,7 @@ export function Intro({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const photo = photos.reception;
 
   return (
-    <Section surface="bone-warm">
+    <Section id="about" surface="bone-warm">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="lg:col-span-6">

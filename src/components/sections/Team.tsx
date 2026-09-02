@@ -14,7 +14,7 @@ function Portrait({ member, sizes }: { member: TeamMember; sizes: string }) {
   const photo = member.photo ? teamPhotos[member.photo] : undefined;
 
   return (
-    <div className="relative aspect-[4/5] w-full overflow-hidden bg-ink-900">
+    <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full bg-ink-900">
       {photo ? (
         <Image
           src={photo}
@@ -41,7 +41,7 @@ function Details({ member, locale }: { member: TeamMember; locale: Locale }) {
       <h3 className="text-[1.4rem] leading-snug text-ink-900">{member.name}</h3>
       <p className="eyebrow mt-2.5 text-gold-700">{member.role[locale]}</p>
       {member.bio && (
-        <p className="mt-4 max-w-md text-[0.98rem] leading-relaxed text-ink-600">
+        <p className="mx-auto mt-4 max-w-md text-[0.98rem] leading-relaxed text-ink-600">
           {member.bio[locale]}
         </p>
       )}
@@ -68,16 +68,18 @@ export function Team({ locale, dict }: { locale: Locale; dict: Dictionary }) {
           />
         </Reveal>
 
-        <ul className="mt-12 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3">
+        {/* Centred row, so one dentist sits in the middle rather than
+            at the left edge of a grid. */}
+        <ul className="mt-12 flex flex-wrap justify-center gap-x-12 gap-y-14 lg:mt-16">
           {clinic.team.map((member, index) => (
             /* Capped width so a single dentist is not stretched across the grid. */
-            <li key={member.name} className="max-w-[20rem]">
+            <li key={member.name} className="w-full max-w-[17rem] text-center">
               <Reveal delay={Math.min(index * 70, 240)}>
                 <Portrait
                   member={member}
-                  sizes="(min-width: 1024px) 20rem, (min-width: 640px) 45vw, 100vw"
+                  sizes="(min-width: 1024px) 17rem, (min-width: 640px) 45vw, 100vw"
                 />
-                <div className="mt-5">
+                <div className="mt-6">
                   <Details member={member} locale={locale} />
                 </div>
               </Reveal>

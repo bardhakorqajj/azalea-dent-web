@@ -20,7 +20,7 @@ export function GalleryPreview({
   dict: Dictionary;
 }) {
   return (
-    <Section surface="bone-warm">
+    <Section id="gallery" surface="bone-warm">
       <Container>
         <Reveal>
           <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">

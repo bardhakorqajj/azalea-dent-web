@@ -24,6 +24,10 @@ export function Header({ locale, dict }: HeaderProps) {
   const open = openedAt === pathname;
   const setOpen = (next: boolean) => setOpenedAt(next ? pathname : null);
 
+  /* Homepage sections that correspond to a navigation destination. */
+  const isHome = pathname === path(locale);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
   const links = [
     { href: path(locale, "/services"), label: dict.nav.services },
     { href: path(locale, "/prices"), label: dict.nav.prices },
@@ -31,6 +35,41 @@ export function Header({ locale, dict }: HeaderProps) {
     { href: path(locale, "/gallery"), label: dict.nav.gallery },
     { href: path(locale, "/contact"), label: dict.nav.contact },
   ];
+
+  /* Tracks which homepage section is under the reading line, so the matching
+     tab lights up as the page scrolls. Measured on an animation frame rather
+     than set straight from the effect body. */
+  useEffect(() => {
+    // Off the homepage the value is simply not read, so there is nothing to clear.
+    if (!isHome) return;
+
+    const ids = ["about", "services", "gallery", "contact"];
+    let frame = 0;
+
+    const measure = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.35;
+      let current: string | null = null;
+      for (const id of ids) {
+        const rect = document.getElementById(id)?.getBoundingClientRect();
+        if (rect && rect.top <= line && rect.bottom > line) current = id;
+      }
+      setActiveSection(current);
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(measure);
+    };
+
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [isHome]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -60,8 +99,10 @@ export function Header({ locale, dict }: HeaderProps) {
     return `/${target}${rest}`;
   };
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (href: string) => {
+    if (isHome) return activeSection !== null && href === path(locale, `/${activeSection}`);
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   return (
     <header

@@ -72,11 +72,17 @@
   h1,
   h2,
   h3,
-  h4 {
+  h4,
+  .font-display {
     font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: -0.015em;
     text-wrap: balance;
+    /* WONK 0 keeps "j" and "g" in their plain forms rather than the swashed
+       ones Fraunces uses by default. SOFT 0 keeps the terminals crisp. */
+    font-variation-settings:
+      "SOFT" 0,
+      "WONK" 0;
   }
 
   p {
@@ -117,6 +123,16 @@
 }
 
 @layer utilities {
+  /* Horizontal scrollers keep their gesture but hide the bar itself. */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   .text-balance {
     text-wrap: balance;
   }

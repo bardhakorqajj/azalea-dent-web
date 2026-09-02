@@ -24,7 +24,7 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
 
   return (
     <section
-      id="visit"
+      id="contact"
       data-surface="dark"
       className="surface-grain bg-ink-950 text-bone-100"
     >

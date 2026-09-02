@@ -115,8 +115,16 @@ To add or replace a photo:
 4. Import it in `src/content/images.ts` with alt text and a caption in both
    languages, then add its key to `galleryOrder`.
 
-Alt text should describe what is actually in the frame — it is read aloud by
+Alt text should describe what is actually in the frame. It is read aloud by
 screen readers and indexed by Google.
+
+The gallery is a horizontal strip, so it takes as many photographs as you have
+without the page growing longer. Five is thin for it. Good additions: the
+reception desk close up, the sterilisation area, the waiting area from another
+angle, equipment, and the shopfront in daylight. Drop them into
+`source-photos/`, add them to `PHOTOS` in `scripts/process-images.mjs`, run
+`npm run images`, then register them in `src/content/images.ts` and add their
+keys to `galleryOrder`.
 
 ## 5. Prices
 

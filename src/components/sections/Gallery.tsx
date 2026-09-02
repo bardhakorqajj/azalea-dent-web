@@ -3,24 +3,34 @@
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Close } from "@/components/ui/Icons";
+import { ArrowLeft, ArrowRight, Close } from "@/components/ui/Icons";
 import { galleryOrder, photos } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { interpolate } from "@/lib/utils";
 
 /**
- * The clinic photographs in a single even grid: every tile the same size and
- * aligned to the same rows, in the order a patient meets the space. Each one
- * opens in a lightbox.
+ * The clinic photographs as a horizontal strip: every tile the same size, in
+ * the order a patient meets the space, scrolled sideways with the scrollbar
+ * hidden. Arrow buttons and the native keyboard scroll both work, so the strip
+ * is reachable without a trackpad gesture. Each tile opens in a lightbox.
  */
 export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const triggerRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const total = galleryOrder.length;
+
+  /** Scrolls the strip by roughly one tile. */
+  const nudge = (direction: number) => {
+    const strip = stripRef.current;
+    if (!strip) return;
+    const step = strip.querySelector("li")?.clientWidth ?? strip.clientWidth * 0.8;
+    strip.scrollBy({ left: direction * (step + 24), behavior: "smooth" });
+  };
   const close = useCallback(() => setOpenIndex(null), []);
   const step = useCallback(
     (delta: number) => {
@@ -76,38 +86,74 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-        {galleryOrder.map((key, index) => {
-          const photo = photos[key];
-          return (
-            <figure key={key} className="group min-w-0">
-              <button
-                type="button"
-                ref={(node) => {
-                  triggerRefs.current[index] = node;
-                }}
-                onClick={() => setOpenIndex(index)}
-                className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-bone-200"
+      <div className="relative">
+        <div className="flex items-center justify-end gap-2 pb-5">
+          <button
+            type="button"
+            onClick={() => nudge(-1)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-ink-900/20 text-ink-800 transition-colors hover:border-ink-900 hover:text-ink-900"
+          >
+            <span className="sr-only">{dict.gallery.previous}</span>
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => nudge(1)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-ink-900/20 text-ink-800 transition-colors hover:border-ink-900 hover:text-ink-900"
+          >
+            <span className="sr-only">{dict.gallery.next}</span>
+            <ArrowRight className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* The scroll container carries the region role; the list inside keeps
+            its own list semantics. */}
+        <div
+          ref={stripRef}
+          tabIndex={0}
+          role="region"
+          aria-label={dict.gallery.title}
+          className="scrollbar-none overflow-x-auto overscroll-x-contain scroll-smooth pb-2"
+        >
+          <ul className="flex snap-x snap-mandatory gap-5 sm:gap-6">
+          {galleryOrder.map((key, index) => {
+            const photo = photos[key];
+            return (
+              <li
+                key={key}
+                className="w-[80%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]"
               >
-                <span className="sr-only">{dict.gallery.open}</span>
-                <Image
-                  src={photo.src}
-                  alt={photo.alt[locale]}
-                  placeholder="blur"
-                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                  style={{ objectPosition: photo.focus }}
-                />
-              </button>
-              <figcaption className="eyebrow mt-3 flex items-center gap-2.5 text-ink-500">
-                <span className="text-gold-700 tabular-nums">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {photo.caption[locale]}
-              </figcaption>
-            </figure>
-          );
-        })}
+                <figure className="group">
+                  <button
+                    type="button"
+                    ref={(node) => {
+                      triggerRefs.current[index] = node;
+                    }}
+                    onClick={() => setOpenIndex(index)}
+                    className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-bone-200"
+                  >
+                    <span className="sr-only">{dict.gallery.open}</span>
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt[locale]}
+                      placeholder="blur"
+                      sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 80vw"
+                      className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                      style={{ objectPosition: photo.focus }}
+                    />
+                  </button>
+                  <figcaption className="eyebrow mt-3 flex items-center gap-2.5 text-ink-500">
+                    <span className="text-gold-700 tabular-nums">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    {photo.caption[locale]}
+                  </figcaption>
+                </figure>
+              </li>
+            );
+          })}
+          </ul>
+        </div>
       </div>
 
       {activePhoto && openIndex !== null && (

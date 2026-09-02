@@ -177,7 +177,9 @@ export function MessagingLinks({ dict, tone = "light", className }: ToneProps) {
   const isDark = tone === "dark";
 
   return (
-    <ul className={cn("flex flex-wrap gap-2.5", className)}>
+    /* An even grid, so every channel button is exactly the same size
+       whatever the length of its name. */
+    <ul className={cn("grid max-w-xs grid-cols-2 gap-2.5", className)}>
       {channels.map((channel) => (
         <li key={channel.key}>
           <a
@@ -186,7 +188,7 @@ export function MessagingLinks({ dict, tone = "light", className }: ToneProps) {
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
             className={cn(
-              "inline-flex min-h-11 items-center gap-2.5 rounded-sm border px-4 text-[0.78rem] transition-colors",
+              "inline-flex min-h-11 w-full items-center justify-center gap-2.5 rounded-sm border px-3 text-[0.78rem] transition-colors",
               isDark
                 ? "border-bone-100/25 text-bone-100 hover:border-gold-400 hover:text-gold-300"
                 : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900",

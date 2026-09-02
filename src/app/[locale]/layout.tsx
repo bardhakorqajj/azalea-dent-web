@@ -27,10 +27,14 @@ const inter = Inter({
   display: "swap",
 });
 
-// Headings all sit at 400, so only that weight is downloaded.
+/**
+ * Fraunces is loaded as a variable font so its WONK axis can be switched off in
+ * globals.css. With wonk on, the "j" and "g" take quirky swashed forms that read
+ * as decorative rather than clinical.
+ */
 const fraunces = Fraunces({
   subsets: ["latin", "latin-ext"],
-  weight: ["400"],
+  axes: ["SOFT", "WONK", "opsz"],
   variable: "--font-fraunces",
   display: "swap",
 });
