@@ -46,12 +46,12 @@ export function Intro({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </Reveal>
 
             <Reveal delay={140}>
-              <dl className="mt-10 flex gap-12 border-t border-ink-900/10 pt-8">
+              <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-6 border-t border-ink-900/10 pt-8">
                 {dict.intro.stats.map((stat) => (
                   <div key={stat.label}>
                     <dt className="sr-only">{stat.label}</dt>
                     <dd>
-                      <span className="block font-display text-[2.6rem] leading-none text-ink-900">
+                      <span className="block font-display text-[1.9rem] leading-none whitespace-nowrap text-ink-900 sm:text-[2.4rem]">
                         {stat.value}
                       </span>
                       <span className="eyebrow mt-3 block text-ink-500">

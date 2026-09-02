@@ -57,7 +57,7 @@ export const sq = {
     ],
     stats: [
       { value: "8", label: "Trajtime" },
-      { value: "14–20", label: "E hënë – E premte" },
+      { value: "14:00 – 20:00", label: "E hënë – E premte" },
     ],
   },
 

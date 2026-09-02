@@ -59,7 +59,7 @@ export const en: Dictionary = {
     ],
     stats: [
       { value: "8", label: "Treatments" },
-      { value: "14–20", label: "Monday – Friday" },
+      { value: "14:00 – 20:00", label: "Monday – Friday" },
     ],
   },
 
