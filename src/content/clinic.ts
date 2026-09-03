@@ -115,7 +115,11 @@ export const clinic = {
 
   /** Opening hours. `opens: null` marks a closed day. */
   hours: [
-    { days: ["mon", "tue", "wed", "thu", "fri"], opens: "14:00", closes: "20:00" },
+    {
+      days: ["mon", "tue", "wed", "thu", "fri"],
+      opens: "14:00",
+      closes: "20:00",
+    },
     { days: ["sat", "sun"], opens: null, closes: null },
   ] as OpeningHours[],
 
@@ -172,8 +176,35 @@ export function whatsappHref(message?: string): string | null {
   return `https://wa.me/${digits}${query}`;
 }
 
-export function mailtoHref(): string | null {
-  return clinic.email ? `mailto:${clinic.email}` : null;
+/** `mailto:` href, optionally pre-filled with a subject and body. */
+export function mailtoHref(
+  options: { subject?: string; body?: string } = {},
+): string | null {
+  if (!clinic.email) return null;
+
+  /* Built by hand rather than with URLSearchParams, which encodes spaces as
+     "+" — correct for form data, but mail clients paste it literally into the
+     message body. */
+  const parts: string[] = [];
+  if (options.subject)
+    parts.push(`subject=${encodeURIComponent(options.subject)}`);
+  if (options.body) parts.push(`body=${encodeURIComponent(options.body)}`);
+
+  return `mailto:${clinic.email}${parts.length ? `?${parts.join("&")}` : ""}`;
+}
+
+/**
+ * The published, human-readable form of a messaging number. WhatsApp and Viber
+ * store the number as bare digits for their link formats, but a patient should
+ * read it the same way it appears everywhere else on the site, so it is matched
+ * back to the published phone list where possible.
+ */
+export function displayNumber(raw: string): string {
+  const digits = raw.replace(/\D/g, "");
+  const published = clinic.phones.find(
+    (phone) => phone.replace(/\D/g, "") === digits,
+  );
+  return published ?? `+${digits}`;
 }
 
 /** Single-line address, e.g. "Holger Petersen, 10000 Prishtinë". */

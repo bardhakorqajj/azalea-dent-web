@@ -245,8 +245,12 @@ export const sq = {
     unconfigured: {
       title: "Dërgimi online nuk është aktiv ende",
       body: "Formulari nuk është lidhur ende me një shërbim emaili, prandaj kërkesa juaj nuk u dërgua. Na kontaktoni direkt me një nga mënyrat më poshtë dhe ju kthejmë përgjigje sa më shpejt.",
-      viaWhatsapp: "Dërgo të dhënat me WhatsApp",
-      viaInstagram: "Na shkruani në Instagram",
+    },
+    /** Shared by both panels above: the ways to reach the clinic instead. */
+    fallback: {
+      heading: "Na kontaktoni direkt",
+      note: "Te WhatsApp dhe emaili, të dhënat që shkruat janë bashkëngjitur tashmë, s'keni nevojë t'i rishkruani.",
+      emailSubject: "Kërkesë për takim",
     },
   },
 

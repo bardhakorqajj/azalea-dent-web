@@ -1,18 +1,18 @@
 import {
   clinic,
+  displayNumber,
   mailtoHref,
   telHref,
   viberHref,
   whatsappHref,
 } from "@/content/clinic";
 import {
-  Facebook,
-  Instagram,
-  Mail,
-  Phone,
-  Viber,
-  WhatsApp,
-} from "@/components/ui/Icons";
+  FacebookBrand,
+  InstagramBrand,
+  ViberBrand,
+  WhatsAppBrand,
+} from "@/components/ui/BrandIcons";
+import { Mail, Phone } from "@/components/ui/Icons";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { cn } from "@/lib/utils";
 
@@ -44,7 +44,9 @@ export function contactChannels(dict: Dictionary): ChannelGroup[] {
 
   const phones = clinic.phones
     .map((phone) => ({ href: telHref(phone), value: phone }))
-    .filter((entry): entry is { href: string; value: string } => Boolean(entry.href));
+    .filter((entry): entry is { href: string; value: string } =>
+      Boolean(entry.href),
+    );
 
   if (phones.length > 0) {
     groups.push({
@@ -84,7 +86,7 @@ export function messagingChannels(dict: Dictionary): Channel[] {
       href: wa,
       label: dict.actions.whatsapp,
       value: dict.actions.whatsapp,
-      Icon: WhatsApp,
+      Icon: WhatsAppBrand,
     });
   }
   if (viber) {
@@ -93,7 +95,7 @@ export function messagingChannels(dict: Dictionary): Channel[] {
       href: viber,
       label: dict.actions.viber,
       value: dict.actions.viber,
-      Icon: Viber,
+      Icon: ViberBrand,
     });
   }
 
@@ -102,7 +104,7 @@ export function messagingChannels(dict: Dictionary): Channel[] {
     href: clinic.social.instagram.url,
     label: dict.actions.instagram,
     value: `@${clinic.social.instagram.handle}`,
-    Icon: Instagram,
+    Icon: InstagramBrand,
   });
 
   if (clinic.social.facebook) {
@@ -111,7 +113,7 @@ export function messagingChannels(dict: Dictionary): Channel[] {
       href: clinic.social.facebook,
       label: dict.actions.facebook,
       value: dict.actions.facebook,
-      Icon: Facebook,
+      Icon: FacebookBrand,
     });
   }
 
@@ -124,7 +126,11 @@ type ToneProps = {
   className?: string;
 };
 
-export function ContactChannelList({ dict, tone = "light", className }: ToneProps) {
+export function ContactChannelList({
+  dict,
+  tone = "light",
+  className,
+}: ToneProps) {
   const groups = contactChannels(dict);
   if (groups.length === 0) return null;
   const isDark = tone === "dark";
@@ -146,7 +152,12 @@ export function ContactChannelList({ dict, tone = "light", className }: ToneProp
             )}
           />
           <div className="min-w-0">
-            <p className={cn("eyebrow", isDark ? "text-bone-300/60" : "text-ink-500")}>
+            <p
+              className={cn(
+                "eyebrow",
+                isDark ? "text-bone-300/60" : "text-ink-500",
+              )}
+            >
               {group.label}
             </p>
             {group.items.map((item) => (
@@ -194,9 +205,8 @@ export function MessagingLinks({ dict, tone = "light", className }: ToneProps) {
                 : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900",
             )}
           >
-            <channel.Icon
-              className={cn("h-4 w-4 shrink-0", isDark ? "text-gold-400" : "text-gold-700")}
-            />
+            {/* Brand marks carry their own colour, so no text class here. */}
+            <channel.Icon className="h-4 w-4 shrink-0" />
             {channel.label}
           </a>
         </li>
@@ -210,7 +220,11 @@ export function MessagingLinks({ dict, tone = "light", className }: ToneProps) {
  * button so they sit on the same line beside it without taking the space a
  * row of labelled buttons would.
  */
-export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps) {
+export function ChannelIconLinks({
+  dict,
+  tone = "light",
+  className,
+}: ToneProps) {
   const links: Channel[] = [];
   const tel = telHref();
   const wa = whatsappHref();
@@ -231,7 +245,7 @@ export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps)
       href: wa,
       label: dict.actions.whatsapp,
       value: dict.actions.whatsapp,
-      Icon: WhatsApp,
+      Icon: WhatsAppBrand,
     });
   }
   if (viber) {
@@ -240,7 +254,7 @@ export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps)
       href: viber,
       label: dict.actions.viber,
       value: dict.actions.viber,
-      Icon: Viber,
+      Icon: ViberBrand,
     });
   }
   links.push({
@@ -248,7 +262,7 @@ export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps)
     href: clinic.social.instagram.url,
     label: dict.actions.instagram,
     value: dict.actions.instagram,
-    Icon: Instagram,
+    Icon: InstagramBrand,
   });
   if (clinic.social.facebook) {
     links.push({
@@ -256,7 +270,7 @@ export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps)
       href: clinic.social.facebook,
       label: dict.actions.facebook,
       value: dict.actions.facebook,
-      Icon: Facebook,
+      Icon: FacebookBrand,
     });
   }
 
@@ -281,6 +295,136 @@ export function ChannelIconLinks({ dict, tone = "light", className }: ToneProps)
           >
             <span className="sr-only">{link.label}</span>
             <link.Icon className="h-5 w-5" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * Every way a patient can reach the clinic, as one flat list. Used when an
+ * appointment request could not be delivered: at that moment the patient
+ * should not have to hunt for an alternative, so all of them are offered at
+ * once, most immediate first.
+ *
+ * `summary` pre-fills the channels that can carry it, so nobody retypes what
+ * they already filled in. Phone and Viber cannot carry a message body, and
+ * Instagram and Facebook are profile links, so those open bare.
+ */
+export function fallbackChannels(
+  dict: Dictionary,
+  summary?: string,
+): Channel[] {
+  const channels: Channel[] = [];
+
+  for (const phone of clinic.phones) {
+    const href = telHref(phone);
+    if (href) {
+      channels.push({
+        key: `phone-${phone}`,
+        href,
+        label: dict.actions.call,
+        value: phone,
+        Icon: Phone,
+      });
+    }
+  }
+
+  const wa = whatsappHref(summary);
+  if (wa) {
+    channels.push({
+      key: "whatsapp",
+      href: wa,
+      label: dict.actions.whatsapp,
+      value: clinic.whatsapp
+        ? displayNumber(clinic.whatsapp)
+        : dict.actions.whatsapp,
+      Icon: WhatsAppBrand,
+    });
+  }
+
+  const viber = viberHref();
+  if (viber && clinic.viber) {
+    channels.push({
+      key: "viber",
+      href: viber,
+      label: dict.actions.viber,
+      value: displayNumber(clinic.viber),
+      Icon: ViberBrand,
+    });
+  }
+
+  const mail = mailtoHref({
+    subject: dict.appointment.fallback.emailSubject,
+    body: summary,
+  });
+  if (mail && clinic.email) {
+    channels.push({
+      key: "email",
+      href: mail,
+      label: dict.actions.email,
+      value: clinic.email,
+      Icon: Mail,
+    });
+  }
+
+  channels.push({
+    key: "instagram",
+    href: clinic.social.instagram.url,
+    label: dict.actions.instagram,
+    value: `@${clinic.social.instagram.handle}`,
+    Icon: InstagramBrand,
+  });
+
+  if (clinic.social.facebook) {
+    channels.push({
+      key: "facebook",
+      href: clinic.social.facebook,
+      label: dict.actions.facebook,
+      /* The page URL is a numeric profile id with no readable handle, so the
+         clinic's own name is what identifies it. */
+      value: clinic.name,
+      Icon: FacebookBrand,
+    });
+  }
+
+  return channels;
+}
+
+/** The list above, rendered as tappable rows inside the fallback panel. */
+export function FallbackChannels({
+  dict,
+  summary,
+  className,
+}: {
+  dict: Dictionary;
+  summary?: string;
+  className?: string;
+}) {
+  const channels = fallbackChannels(dict, summary);
+  if (channels.length === 0) return null;
+
+  return (
+    <ul className={cn("grid gap-2.5 sm:grid-cols-2", className)}>
+      {channels.map((channel) => (
+        <li key={channel.key}>
+          <a
+            href={channel.href}
+            {...(channel.href.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
+            className="flex min-h-14 w-full items-center gap-3 rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-2.5 transition-colors hover:border-ink-900 hover:bg-bone-100"
+          >
+            <channel.Icon className="h-5 w-5 shrink-0 text-gold-700" />
+            <span className="flex min-w-0 flex-col">
+              <span className="text-[0.7rem] font-medium tracking-[0.14em] text-ink-500 uppercase">
+                {channel.label}
+              </span>
+              <span className="truncate text-[0.92rem] text-ink-900">
+                {channel.value}
+              </span>
+            </span>
           </a>
         </li>
       ))}

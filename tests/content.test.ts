@@ -2,12 +2,15 @@ import { describe, expect, it } from "vitest";
 
 import {
   clinic,
+  displayNumber,
   formatAddress,
+  mailtoHref,
   primaryPhone,
   telHref,
   viberHref,
   whatsappHref,
 } from "@/content/clinic";
+import { fallbackChannels } from "@/components/layout/ContactChannels";
 import { galleryOrder, photos } from "@/content/images";
 import { formatPrice, priceGroups, priceItemCount } from "@/content/prices";
 import { getService, services, serviceSlugs } from "@/content/services";
@@ -23,12 +26,15 @@ describe("services", () => {
   it("maps every treatment to a group in the price list", () => {
     const groupIds = new Set(priceGroups.map((group) => group.id));
     for (const service of services) {
-      expect(groupIds.has(service.priceGroupId), `${service.slug} has no prices`).toBe(
-        true,
-      );
+      expect(
+        groupIds.has(service.priceGroupId),
+        `${service.slug} has no prices`,
+      ).toBe(true);
     }
     // Every price group is reachable from a treatment page.
-    expect(new Set(services.map((s) => s.priceGroupId)).size).toBe(priceGroups.length);
+    expect(new Set(services.map((s) => s.priceGroupId)).size).toBe(
+      priceGroups.length,
+    );
   });
 
   it("uses unique slugs", () => {
@@ -41,7 +47,9 @@ describe("services", () => {
         expect(service.title[locale]?.length).toBeGreaterThan(0);
         expect(service.summary[locale]?.length).toBeGreaterThan(0);
         expect(service.body.every((p) => p[locale].length > 0)).toBe(true);
-        expect(service.highlights.every((h) => h[locale].length > 0)).toBe(true);
+        expect(service.highlights.every((h) => h[locale].length > 0)).toBe(
+          true,
+        );
         expect(
           service.steps.every(
             (s) => s.title[locale].length > 0 && s.detail[locale].length > 0,
@@ -98,7 +106,8 @@ describe("dictionaries", () => {
       } else if (Array.isArray(node)) {
         node.forEach((item, i) => walk(item, `${path}[${i}]`));
       } else if (node && typeof node === "object") {
-        for (const [key, value] of Object.entries(node)) walk(value, `${path}.${key}`);
+        for (const [key, value] of Object.entries(node))
+          walk(value, `${path}.${key}`);
       }
     };
     walk(sq, "sq");
@@ -132,6 +141,26 @@ describe("clinic contact helpers", () => {
     expect(whatsappHref()).toBe("https://wa.me/38348306376");
     expect(whatsappHref("Test")).toBe("https://wa.me/38348306376?text=Test");
     expect(viberHref()).toBe("viber://chat?number=%2B38348306376");
+  });
+
+  it("pre-fills mailto: without turning spaces into plus signs", () => {
+    expect(mailtoHref()).toBe("mailto:azaleadent@hotmail.com");
+
+    const href = mailtoHref({
+      subject: "Kërkesë për takim",
+      body: "Emri: A B",
+    });
+    expect(href).toContain("subject=K%C3%ABrkes%C3%AB%20p%C3%ABr%20takim");
+    expect(href).toContain("body=Emri%3A%20A%20B");
+    expect(href).not.toContain("+");
+  });
+
+  it("shows messaging numbers the way they are published elsewhere", () => {
+    // WhatsApp and Viber store bare digits; patients should read the spaced form.
+    expect(displayNumber("38348306376")).toBe("+383 48 306 376");
+    expect(displayNumber("+38348306376")).toBe("+383 48 306 376");
+    // An unpublished number is still rendered, just without invented spacing.
+    expect(displayNumber("+38344000000")).toBe("+38344000000");
   });
 
   it("exposes the clinic's real social profiles", () => {
@@ -184,8 +213,10 @@ describe("price list", () => {
         expect(item.price, `${item.name.sq} has no price`).toBeGreaterThan(0);
         expect(Number.isInteger(item.price)).toBe(true);
         for (const locale of locales) {
-          expect(item.name[locale].length, `${item.name.sq} missing ${locale}`)
-            .toBeGreaterThan(0);
+          expect(
+            item.name[locale].length,
+            `${item.name.sq} missing ${locale}`,
+          ).toBeGreaterThan(0);
         }
       }
     }
@@ -207,5 +238,62 @@ describe("price list", () => {
 
   it("formats a price with the euro sign", () => {
     expect(formatPrice(450)).toBe("450 €");
+  });
+});
+
+describe("fallback channels", () => {
+  /* When a request fails to send, every route to the clinic is offered at
+     once. A channel quietly going missing here would leave a patient with a
+     dead end, so the list is pinned down rather than smoke-tested. */
+  it("offers every published way of reaching the clinic", () => {
+    const keys = fallbackChannels(sq).map((channel) => channel.key);
+    expect(keys).toEqual([
+      "phone-+383 48 306 376",
+      "phone-+383 43 779 909",
+      "whatsapp",
+      "viber",
+      "email",
+      "instagram",
+      "facebook",
+    ]);
+  });
+
+  it("carries the request into the channels that can take a message", () => {
+    const summary = "Emri: Test";
+    const byKey = Object.fromEntries(
+      fallbackChannels(sq, summary).map((channel) => [
+        channel.key,
+        channel.href,
+      ]),
+    );
+
+    expect(byKey.whatsapp).toContain(`text=${encodeURIComponent(summary)}`);
+    expect(byKey.email).toContain(`body=${encodeURIComponent(summary)}`);
+    expect(byKey.email).toContain("subject=");
+
+    // Dialling and profile links cannot carry one, so they stay bare.
+    expect(byKey["phone-+383 48 306 376"]).toBe("tel:+38348306376");
+    expect(byKey.viber).not.toContain("text");
+    expect(byKey.instagram).toBe(clinic.social.instagram.url);
+  });
+
+  it("names each channel by something the patient can recognise", () => {
+    const byKey = Object.fromEntries(
+      fallbackChannels(sq).map((channel) => [channel.key, channel.value]),
+    );
+    expect(byKey.whatsapp).toBe("+383 48 306 376");
+    expect(byKey.viber).toBe("+383 48 306 376");
+    expect(byKey.instagram).toBe("@azalea.dent");
+    // Never the bare word "Facebook" twice over: the page is the clinic's own.
+    expect(byKey.facebook).toBe(clinic.name);
+  });
+
+  it("labels each channel in both languages", () => {
+    for (const dict of [sq, en]) {
+      for (const channel of fallbackChannels(dict)) {
+        expect(channel.label.length).toBeGreaterThan(0);
+        expect(channel.value.length).toBeGreaterThan(0);
+      }
+    }
   });
 });

@@ -3,8 +3,8 @@
 import { useId, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { Check, Instagram, WhatsApp } from "@/components/ui/Icons";
-import { clinic, whatsappHref } from "@/content/clinic";
+import { FallbackChannels } from "@/components/layout/ContactChannels";
+import { Check } from "@/components/ui/Icons";
 import { services } from "@/content/services";
 import {
   TIME_SLOTS,
@@ -19,7 +19,13 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { cn } from "@/lib/utils";
 
-type Status = "idle" | "submitting" | "success" | "unconfigured" | "failed" | "error";
+type Status =
+  | "idle"
+  | "submitting"
+  | "success"
+  | "unconfigured"
+  | "failed"
+  | "error";
 
 const fieldClasses =
   "min-h-12 w-full rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-3 text-[0.95rem] text-ink-900 transition-colors placeholder:text-ink-500 hover:border-ink-900/35 focus:border-ink-900 focus:outline-none";
@@ -67,7 +73,9 @@ export function AppointmentForm({
       }
       setErrors(translated);
       setStatus("idle");
-      document.getElementById(fieldId(Object.keys(found)[0] ?? "name"))?.focus();
+      document
+        .getElementById(fieldId(Object.keys(found)[0] ?? "name"))
+        ?.focus();
       return;
     }
 
@@ -131,7 +139,6 @@ export function AppointmentForm({
     time: labels.time,
     message: labels.message,
   });
-  const waLink = whatsappHref(summary);
 
   return (
     <form onSubmit={handleSubmit} noValidate className="w-full">
@@ -216,7 +223,11 @@ export function AppointmentForm({
             onChange={(event) => update("service", event.target.value)}
             aria-invalid={Boolean(errors.service)}
             aria-describedby={errors.service ? errorId("service") : undefined}
-            className={cn(fieldClasses, "appearance-none pr-10", errors.service && "border-red-700")}
+            className={cn(
+              fieldClasses,
+              "appearance-none pr-10",
+              errors.service && "border-red-700",
+            )}
           >
             <option value="">{labels.servicePlaceholder}</option>
             {services.map((service) => (
@@ -318,7 +329,10 @@ export function AppointmentForm({
           <span>{labels.consent}</span>
         </label>
         {errors.consent && (
-          <p id={errorId("consent")} className="mt-2 text-[0.85rem] text-red-700">
+          <p
+            id={errorId("consent")}
+            className="mt-2 text-[0.85rem] text-red-700"
+          >
             {errors.consent}
           </p>
         )}
@@ -347,28 +361,17 @@ export function AppointmentForm({
             <p className="mt-2.5 text-[0.93rem] leading-relaxed text-ink-600">
               {dict.appointment[status].body}
             </p>
-            <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
-              {waLink && (
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-sm bg-ink-900 px-6 text-[0.72rem] font-medium tracking-[0.14em] text-bone-50 uppercase transition-colors hover:bg-ink-700"
-                >
-                  <WhatsApp className="h-4 w-4" />
-                  {dict.appointment.unconfigured.viaWhatsapp}
-                </a>
-              )}
-              <a
-                href={clinic.social.instagram.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-sm border border-ink-900/25 px-6 text-[0.72rem] font-medium tracking-[0.14em] text-ink-900 uppercase transition-colors hover:border-ink-900"
-              >
-                <Instagram className="h-4 w-4" />
-                {dict.appointment.unconfigured.viaInstagram}
-              </a>
-            </div>
+
+            {/* Every channel, not a chosen few: the request has just failed,
+                so the patient should not have to go looking for another way
+                to reach the clinic. */}
+            <p className="mt-6 text-[0.7rem] font-medium tracking-[0.14em] text-ink-500 uppercase">
+              {dict.appointment.fallback.heading}
+            </p>
+            <FallbackChannels dict={dict} summary={summary} className="mt-3" />
+            <p className="mt-4 text-[0.85rem] leading-relaxed text-ink-600">
+              {dict.appointment.fallback.note}
+            </p>
           </div>
         )}
       </div>

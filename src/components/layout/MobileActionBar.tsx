@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import { clinic, telHref, whatsappHref } from "@/content/clinic";
-import { Instagram, Phone, WhatsApp } from "@/components/ui/Icons";
+import { InstagramBrand, WhatsAppBrand } from "@/components/ui/BrandIcons";
+import { Phone } from "@/components/ui/Icons";
 import { path, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 
@@ -47,7 +48,7 @@ export function MobileActionBar({
             className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-sm border border-ink-900/20 text-ink-900"
           >
             <span className="sr-only">{dict.actions.whatsapp}</span>
-            <WhatsApp className="h-5 w-5" />
+            <WhatsAppBrand className="h-5 w-5" />
           </a>
         )}
 
@@ -59,7 +60,7 @@ export function MobileActionBar({
             className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-sm border border-ink-900/20 text-ink-900"
           >
             <span className="sr-only">{dict.actions.instagram}</span>
-            <Instagram className="h-5 w-5" />
+            <InstagramBrand className="h-5 w-5" />
           </a>
         )}
       </div>
