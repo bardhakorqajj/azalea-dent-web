@@ -6,7 +6,13 @@ import { useEffect, useState } from "react";
 
 import { Logo } from "@/components/ui/Logo";
 import { Close, Menu } from "@/components/ui/Icons";
-import { locales, localeNames, path, type Locale } from "@/i18n/config";
+import {
+  locales,
+  localeFlags,
+  localeNames,
+  path,
+  type Locale,
+} from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { cn } from "@/lib/utils";
 
@@ -169,7 +175,9 @@ export function Header({ locale, dict }: HeaderProps) {
                   )}
                 >
                   <span className="sr-only">{localeNames[option]}</span>
-                  <span aria-hidden="true">{option}</span>
+                  <span aria-hidden="true" className="text-[1.1rem] leading-none">
+                    {localeFlags[option]}
+                  </span>
                 </Link>
               </span>
             ))}
@@ -237,6 +245,9 @@ export function Header({ locale, dict }: HeaderProps) {
                   option === locale ? "text-ink-900 underline underline-offset-4" : "text-ink-500",
                 )}
               >
+                <span aria-hidden="true" className="mr-2 text-[1.05rem]">
+                  {localeFlags[option]}
+                </span>
                 {localeNames[option]}
               </Link>
             ))}

@@ -15,6 +15,15 @@ export const localeNames: Record<Locale, string> = {
   en: "English",
 };
 
+/**
+ * Shown in place of the language code. Every flag is paired with the language
+ * name for screen readers, since a flag is a country rather than a language.
+ */
+export const localeFlags: Record<Locale, string> = {
+  sq: "🇦🇱",
+  en: "🇬🇧",
+};
+
 export function isLocale(value: string): value is Locale {
   return (locales as readonly string[]).includes(value);
 }

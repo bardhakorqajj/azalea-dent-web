@@ -77,3 +77,15 @@ describe("initials", () => {
     expect(initials("Arta")).toBe("A");
   });
 });
+
+describe("localeFlags", () => {
+  it("gives every locale a flag and a spoken name", async () => {
+    const { locales, localeFlags, localeNames } = await import("@/i18n/config");
+    for (const locale of locales) {
+      expect(localeFlags[locale], `${locale} has no flag`).toBeTruthy();
+      expect(localeNames[locale], `${locale} has no name`).toBeTruthy();
+    }
+    expect(localeFlags.sq).toBe("🇦🇱");
+    expect(localeFlags.en).toBe("🇬🇧");
+  });
+});
