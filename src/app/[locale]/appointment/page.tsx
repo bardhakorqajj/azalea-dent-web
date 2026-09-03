@@ -73,29 +73,31 @@ export default async function AppointmentPage({
             </div>
 
             <aside className="lg:col-span-5">
-              <div className="border border-ink-900/12 bg-bone-100 p-7 sm:p-9">
-                <h2 className="font-display text-[1.5rem] text-ink-900">
+              <div className="border border-ink-900/12 bg-bone-100 p-7 sm:p-9 dark:border-bone-100/12 dark:bg-ink-900">
+                <h2 className="font-display text-[1.5rem] text-ink-900 dark:text-bone-50">
                   {dict.appointment.directTitle}
                 </h2>
                 <ContactChannelList
                   dict={dict}
-                  className="mt-5 border-t border-ink-900/10"
+                  className="mt-5 border-t border-ink-900/10 dark:border-bone-100/12"
                 />
                 <MessagingLinks dict={dict} className="mt-6" />
 
                 {clinic.hours.length > 0 && (
                   <div className="mt-8">
-                    <h3 className="eyebrow text-ink-500">{dict.visit.hoursTitle}</h3>
+                    <h3 className="eyebrow text-ink-500 dark:text-bone-300">
+                      {dict.visit.hoursTitle}
+                    </h3>
                     <dl className="mt-3 space-y-2 text-[0.95rem]">
                       {clinic.hours.map((rule) => (
                         <div
                           key={rule.days.join("-")}
                           className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-0.5"
                         >
-                          <dt className="whitespace-nowrap text-ink-600">
+                          <dt className="whitespace-nowrap text-ink-600 dark:text-bone-300">
                             {formatDayRange(rule.days, locale)}
                           </dt>
-                          <dd className="whitespace-nowrap text-ink-900 tabular-nums">
+                          <dd className="whitespace-nowrap text-ink-900 tabular-nums dark:text-bone-50">
                             {formatHours(rule, dict.visit.closed)}
                           </dd>
                         </div>

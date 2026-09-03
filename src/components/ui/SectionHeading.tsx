@@ -38,7 +38,7 @@ export function SectionHeading({
           className={cn(
             "eyebrow flex items-center gap-3",
             align === "center" && "justify-center",
-            isDark ? "text-gold-400" : "text-gold-700",
+            isDark ? "text-gold-400" : "text-gold-700 dark:text-gold-400",
           )}
         >
           <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />
@@ -48,7 +48,7 @@ export function SectionHeading({
       <Heading
         className={cn(
           "mt-5 text-[2rem] leading-[1.12] sm:text-[2.6rem] lg:text-[3.1rem]",
-          isDark ? "text-bone-50" : "text-ink-900",
+          isDark ? "text-bone-50" : "text-ink-900 dark:text-bone-50",
         )}
       >
         {title}
@@ -58,7 +58,7 @@ export function SectionHeading({
           className={cn(
             "mt-5 text-[1.0625rem] leading-relaxed",
             align === "center" && "mx-auto",
-            isDark ? "text-bone-200/80" : "text-ink-600",
+            isDark ? "text-bone-200/80" : "text-ink-600 dark:text-bone-300",
           )}
         >
           {lead}

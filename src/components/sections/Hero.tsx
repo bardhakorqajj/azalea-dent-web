@@ -23,19 +23,22 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   );
 
   return (
-    <section className="relative bg-bone-50 pt-20 lg:pt-24">
+    <section className="relative bg-bone-50 pt-20 lg:pt-24 dark:bg-ink-950">
       <div className="mx-auto grid w-full max-w-[100rem] items-stretch lg:grid-cols-12">
         <div className="order-2 flex flex-col justify-center px-6 py-14 sm:px-8 sm:py-20 lg:order-1 lg:col-span-6 lg:py-32 lg:pr-16 lg:pl-12 xl:col-span-6">
-          <p className="eyebrow flex items-center gap-3 text-gold-700">
-            <AzaleaMark className="h-6 w-6 shrink-0 text-gold-500" weight={3.6} />
+          <p className="eyebrow flex items-center gap-3 text-gold-700 dark:text-gold-400">
+            <AzaleaMark
+              className="h-6 w-6 shrink-0 text-gold-500 dark:text-gold-400"
+              weight={3.6}
+            />
             {dict.hero.eyebrow}
           </p>
 
-          <h1 className="mt-7 max-w-xl text-[2.6rem] leading-[1.05] text-ink-900 sm:text-[3.4rem] lg:text-[3.9rem] xl:text-[4.4rem]">
+          <h1 className="mt-7 max-w-xl text-[2.6rem] leading-[1.05] text-ink-900 sm:text-[3.4rem] lg:text-[3.9rem] xl:text-[4.4rem] dark:text-bone-50">
             {dict.hero.title}
           </h1>
 
-          <p className="mt-7 max-w-lg text-[1.0625rem] leading-relaxed text-ink-600">
+          <p className="mt-7 max-w-lg text-[1.0625rem] leading-relaxed text-ink-600 dark:text-bone-300">
             {dict.hero.lead}
           </p>
 
@@ -48,15 +51,18 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </ButtonLink>
           </div>
 
-          <ul className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-ink-900/10 pt-7">
+          <ul className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-ink-900/10 pt-7 dark:border-bone-100/12">
             {featured.map((service, index) => (
               <li key={service.slug} className="flex items-center gap-4">
                 {index > 0 && (
-                  <span aria-hidden="true" className="h-3 w-px bg-ink-900/15" />
+                  <span
+                    aria-hidden="true"
+                    className="h-3 w-px bg-ink-900/15 dark:bg-bone-100/20"
+                  />
                 )}
                 <Link
                   href={`${path(locale, "/services")}/${service.slug}`}
-                  className="text-[0.8rem] tracking-wide text-ink-500 underline-offset-4 transition-colors hover:text-ink-900 hover:underline hover:decoration-gold-500"
+                  className="text-[0.8rem] tracking-wide text-ink-500 underline-offset-4 transition-colors hover:text-ink-900 hover:underline hover:decoration-gold-500 dark:text-bone-300 dark:hover:text-bone-50"
                 >
                   {service.title[locale]}
                 </Link>

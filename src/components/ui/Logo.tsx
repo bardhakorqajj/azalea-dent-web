@@ -13,7 +13,7 @@ type LogoProps = {
 export function Logo({ className, markOnly = false }: LogoProps) {
   return (
     <span className={`inline-flex items-center gap-3 ${className ?? ""}`}>
-      <AzaleaMark className="h-9 w-9 shrink-0 text-gold-500" />
+      <AzaleaMark className="h-9 w-9 shrink-0 text-gold-500 dark:text-gold-400" />
       {!markOnly && (
         <span className="flex flex-col leading-none">
           <span className="text-[0.98rem] font-semibold tracking-[0.16em] uppercase">

@@ -54,17 +54,19 @@ export default async function ContactPage({
         eyebrow={dict.contact.eyebrow}
         title={dict.contact.title}
         lead={dict.contact.lead}
-        breadcrumbs={[{ href: path(locale, "/contact"), label: dict.nav.contact }]}
+        breadcrumbs={[
+          { href: path(locale, "/contact"), label: dict.nav.contact },
+        ]}
       />
 
       <Section surface="bone">
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <h2 className="font-display text-[1.6rem] text-ink-900">
+              <h2 className="font-display text-[1.6rem] text-ink-900 dark:text-bone-50">
                 {dict.contact.formTitle}
               </h2>
-              <p className="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-ink-600">
+              <p className="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-ink-600 dark:text-bone-300">
                 {dict.appointment.lead}
               </p>
               <div className="mt-9">
@@ -82,7 +84,10 @@ export default async function ContactPage({
       <JsonLd
         data={breadcrumbSchema([
           { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          { name: dict.contact.title, url: absoluteUrl(path(locale, "/contact")) },
+          {
+            name: dict.contact.title,
+            url: absoluteUrl(path(locale, "/contact")),
+          },
         ])}
       />
     </>

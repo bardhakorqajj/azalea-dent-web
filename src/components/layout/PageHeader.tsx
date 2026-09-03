@@ -24,13 +24,16 @@ export function PageHeader({
   breadcrumbs?: Crumb[];
 }) {
   return (
-    <div className="border-b border-ink-900/8 bg-bone-100 pt-32 pb-16 sm:pt-40 sm:pb-20 lg:pt-48 lg:pb-24">
+    <div className="border-b border-ink-900/8 bg-bone-100 pt-32 pb-16 sm:pt-40 sm:pb-20 lg:pt-48 lg:pb-24 dark:border-bone-100/10 dark:bg-ink-900">
       <Container>
         {breadcrumbs && breadcrumbs.length > 0 && (
           <nav aria-label="Breadcrumb" className="mb-8">
-            <ol className="flex flex-wrap items-center gap-2 text-[0.78rem] text-ink-500">
+            <ol className="flex flex-wrap items-center gap-2 text-[0.78rem] text-ink-500 dark:text-bone-300">
               <li>
-                <Link href={path(locale)} className="hover:text-ink-900">
+                <Link
+                  href={path(locale)}
+                  className="hover:text-ink-900 dark:hover:text-bone-50"
+                >
                   {dict.nav.home}
                 </Link>
               </li>
@@ -38,9 +41,14 @@ export function PageHeader({
                 <li key={crumb.href} className="flex items-center gap-2">
                   <span aria-hidden="true">/</span>
                   {index === breadcrumbs.length - 1 ? (
-                    <span className="text-ink-700">{crumb.label}</span>
+                    <span className="text-ink-700 dark:text-bone-100">
+                      {crumb.label}
+                    </span>
                   ) : (
-                    <Link href={crumb.href} className="hover:text-ink-900">
+                    <Link
+                      href={crumb.href}
+                      className="hover:text-ink-900 dark:hover:text-bone-50"
+                    >
                       {crumb.label}
                     </Link>
                   )}
@@ -50,17 +58,20 @@ export function PageHeader({
           </nav>
         )}
 
-        <p className="eyebrow flex items-center gap-3 text-gold-700">
-          <AzaleaMark className="h-6 w-6 shrink-0 text-gold-500" weight={3.6} />
+        <p className="eyebrow flex items-center gap-3 text-gold-700 dark:text-gold-400">
+          <AzaleaMark
+            className="h-6 w-6 shrink-0 text-gold-500 dark:text-gold-400"
+            weight={3.6}
+          />
           {eyebrow ?? dict.hero.eyebrow}
         </p>
 
-        <h1 className="mt-6 max-w-3xl text-[2.4rem] leading-[1.08] text-ink-900 sm:text-[3.1rem] lg:text-[3.6rem]">
+        <h1 className="mt-6 max-w-3xl text-[2.4rem] leading-[1.08] text-ink-900 sm:text-[3.1rem] lg:text-[3.6rem] dark:text-bone-50">
           {title}
         </h1>
 
         {lead && (
-          <p className="mt-6 max-w-2xl text-[1.0625rem] leading-relaxed text-ink-600">
+          <p className="mt-6 max-w-2xl text-[1.0625rem] leading-relaxed text-ink-600 dark:text-bone-300">
             {lead}
           </p>
         )}

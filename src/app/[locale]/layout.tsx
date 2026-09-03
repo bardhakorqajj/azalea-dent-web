@@ -45,9 +45,33 @@ export function generateStaticParams() {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#14171a",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbf9f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c0e0f" },
+  ],
+  colorScheme: "light dark",
 };
+
+/**
+ * Sets `data-theme` before the browser paints, from a stored choice or the OS
+ * setting, so the page never flashes the wrong theme on load. Runs as a
+ * blocking inline script rather than a `useEffect`, which would only run
+ * after hydration — too late to prevent the flash it exists to avoid.
+ */
+const THEME_INIT_SCRIPT = `
+  (function () {
+    try {
+      var stored = localStorage.getItem("theme");
+      var theme =
+        stored === "light" || stored === "dark"
+          ? stored
+          : window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    } catch (e) {}
+  })();
+`;
 
 export async function generateMetadata({
   params,
@@ -103,13 +127,24 @@ export default async function LocaleLayout({
   const dict = getDictionary(locale);
 
   return (
-    <html lang={htmlLang[locale]} className={`${inter.variable} ${displaySerif.variable}`}>
+    <html
+      lang={htmlLang[locale]}
+      className={`${inter.variable} ${displaySerif.variable}`}
+      // The inline script below sets data-theme before hydration, so the
+      // attribute React sees on mount never matches the server-rendered
+      // markup — expected, not a real mismatch.
+      suppressHydrationWarning
+    >
       <head>
+        {/* Static string, not user input. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+
         {/* Scroll-reveal is progressive: without JS the content is simply visible. */}
         <noscript>
           <style
             dangerouslySetInnerHTML={{
-              __html: "[data-reveal]{opacity:1!important;transform:none!important}",
+              __html:
+                "[data-reveal]{opacity:1!important;transform:none!important}",
             }}
           />
         </noscript>
@@ -117,7 +152,7 @@ export default async function LocaleLayout({
       <body className="min-h-screen antialiased">
         <a
           href="#main"
-          className="sr-only rounded-sm bg-ink-900 px-5 py-3 text-bone-50 focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100]"
+          className="sr-only rounded-sm bg-ink-900 px-5 py-3 text-bone-50 focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] dark:bg-gold-400 dark:text-ink-950"
         >
           {dict.nav.skipToContent}
         </a>

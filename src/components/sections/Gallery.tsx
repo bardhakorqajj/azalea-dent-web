@@ -15,7 +15,13 @@ import { interpolate } from "@/lib/utils";
  * hidden. Arrow buttons and the native keyboard scroll both work, so the strip
  * is reachable without a trackpad gesture. Each tile opens in a lightbox.
  */
-export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+export function Gallery({
+  locale,
+  dict,
+}: {
+  locale: Locale;
+  dict: Dictionary;
+}) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const triggerRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -36,8 +42,10 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
     const timer = window.setInterval(() => {
       const tile = strip.querySelector("li");
       if (!tile) return;
-      const gap = parseFloat(getComputedStyle(tile.parentElement!).columnGap) || 0;
-      const atEnd = strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
+      const gap =
+        parseFloat(getComputedStyle(tile.parentElement!).columnGap) || 0;
+      const atEnd =
+        strip.scrollLeft + strip.clientWidth >= strip.scrollWidth - 4;
       strip.scrollTo({
         left: atEnd ? 0 : strip.scrollLeft + tile.clientWidth + gap,
         behavior: "smooth",
@@ -73,7 +81,8 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
         step(-1);
       } else if (event.key === "Tab") {
         // Keep focus inside the dialog.
-        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>("button");
+        const focusable =
+          dialogRef.current?.querySelectorAll<HTMLElement>("button");
         if (!focusable || focusable.length === 0) return;
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
@@ -117,42 +126,42 @@ export function Gallery({ locale, dict }: { locale: Locale; dict: Dictionary }) 
           className="scrollbar-none overflow-x-auto overscroll-x-contain scroll-smooth pb-2"
         >
           <ul className="flex snap-x snap-mandatory gap-5 sm:gap-6">
-          {galleryOrder.map((key, index) => {
-            const photo = photos[key];
-            return (
-              <li
-                key={key}
-                className="w-[80%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]"
-              >
-                <figure className="group">
-                  <button
-                    type="button"
-                    ref={(node) => {
-                      triggerRefs.current[index] = node;
-                    }}
-                    onClick={() => setOpenIndex(index)}
-                    className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-bone-200"
-                  >
-                    <span className="sr-only">{dict.gallery.open}</span>
-                    <Image
-                      src={photo.src}
-                      alt={photo.alt[locale]}
-                      placeholder="blur"
-                      sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 80vw"
-                      className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
-                      style={{ objectPosition: photo.focus }}
-                    />
-                  </button>
-                  <figcaption className="eyebrow mt-3 flex items-center gap-2.5 text-ink-500">
-                    <span className="text-gold-700 tabular-nums">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    {photo.caption[locale]}
-                  </figcaption>
-                </figure>
-              </li>
-            );
-          })}
+            {galleryOrder.map((key, index) => {
+              const photo = photos[key];
+              return (
+                <li
+                  key={key}
+                  className="w-[80%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]"
+                >
+                  <figure className="group">
+                    <button
+                      type="button"
+                      ref={(node) => {
+                        triggerRefs.current[index] = node;
+                      }}
+                      onClick={() => setOpenIndex(index)}
+                      className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-bone-200 dark:bg-ink-800"
+                    >
+                      <span className="sr-only">{dict.gallery.open}</span>
+                      <Image
+                        src={photo.src}
+                        alt={photo.alt[locale]}
+                        placeholder="blur"
+                        sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 80vw"
+                        className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                        style={{ objectPosition: photo.focus }}
+                      />
+                    </button>
+                    <figcaption className="eyebrow mt-3 flex items-center gap-2.5 text-ink-500 dark:text-bone-300">
+                      <span className="text-gold-700 tabular-nums dark:text-gold-400">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      {photo.caption[locale]}
+                    </figcaption>
+                  </figure>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

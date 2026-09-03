@@ -54,7 +54,10 @@ export function ServicesIndex({
                   lead={lead ?? dict.services.lead}
                 >
                   {variant === "home" && (
-                    <ButtonLink href={path(locale, "/services")} variant="secondary">
+                    <ButtonLink
+                      href={path(locale, "/services")}
+                      variant="secondary"
+                    >
                       {dict.actions.allTreatments}
                     </ButtonLink>
                   )}
@@ -69,9 +72,12 @@ export function ServicesIndex({
           </div>
 
           <div className="lg:col-span-8">
-            <ul className="border-t border-ink-900/12">
+            <ul className="border-t border-ink-900/12 dark:border-bone-100/12">
               {items.map((service, index) => (
-                <li key={service.slug} className="border-b border-ink-900/12">
+                <li
+                  key={service.slug}
+                  className="border-b border-ink-900/12 dark:border-bone-100/12"
+                >
                   <Reveal delay={Math.min(index * 40, 200)}>
                     <Link
                       href={`${path(locale, "/services")}/${service.slug}`}
@@ -79,23 +85,23 @@ export function ServicesIndex({
                     >
                       <span
                         aria-hidden="true"
-                        className="font-display text-[0.9rem] text-gold-700 tabular-nums"
+                        className="font-display text-[0.9rem] text-gold-700 tabular-nums dark:text-gold-400"
                       >
                         {String(index + 1).padStart(2, "0")}
                       </span>
 
                       <span className="min-w-0">
-                        <span className="block font-display text-[1.4rem] leading-snug text-ink-900 transition-transform duration-500 group-hover:translate-x-1 sm:text-[1.6rem]">
+                        <span className="block font-display text-[1.4rem] leading-snug text-ink-900 transition-transform duration-500 group-hover:translate-x-1 sm:text-[1.6rem] dark:text-bone-50">
                           {service.title[locale]}
                         </span>
-                        <span className="mt-2 block max-w-xl text-[0.95rem] leading-relaxed text-ink-500">
+                        <span className="mt-2 block max-w-xl text-[0.95rem] leading-relaxed text-ink-500 dark:text-bone-300">
                           {service.summary[locale]}
                         </span>
                       </span>
 
                       <span
                         aria-hidden="true"
-                        className="self-center text-ink-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gold-500"
+                        className="self-center text-ink-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gold-500 dark:text-bone-400 dark:group-hover:text-gold-400"
                       >
                         &rarr;
                       </span>

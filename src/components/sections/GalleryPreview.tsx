@@ -56,7 +56,7 @@ export function GalleryPreview({
                       style={{ objectPosition: photo.focus }}
                     />
                   </div>
-                  <figcaption className="eyebrow mt-3 text-ink-500">
+                  <figcaption className="eyebrow mt-3 text-ink-500 dark:text-bone-300">
                     {photo.caption[locale]}
                   </figcaption>
                 </figure>

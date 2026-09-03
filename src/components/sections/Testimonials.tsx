@@ -30,14 +30,16 @@ export function Testimonials({
           {clinic.testimonials.map((testimonial, index) => (
             <li key={testimonial.author}>
               <Reveal delay={Math.min(index * 70, 210)}>
-                <figure className="flex h-full flex-col border-t border-ink-900/15 pt-7">
-                  <blockquote className="font-display text-[1.2rem] leading-relaxed text-ink-800">
+                <figure className="flex h-full flex-col border-t border-ink-900/15 pt-7 dark:border-bone-100/15">
+                  <blockquote className="font-display text-[1.2rem] leading-relaxed text-ink-800 dark:text-bone-100">
                     &ldquo;{testimonial.quote[locale]}&rdquo;
                   </blockquote>
-                  <figcaption className="eyebrow mt-6 text-ink-500">
+                  <figcaption className="eyebrow mt-6 text-ink-500 dark:text-bone-300">
                     {testimonial.author}
                     {testimonial.source && (
-                      <span className="ml-2 text-ink-500">· {testimonial.source}</span>
+                      <span className="ml-2 text-ink-500 dark:text-bone-300">
+                        · {testimonial.source}
+                      </span>
                     )}
                   </figcaption>
                 </figure>

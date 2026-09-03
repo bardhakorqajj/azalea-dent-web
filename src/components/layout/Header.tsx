@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Logo } from "@/components/ui/Logo";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Close, Menu } from "@/components/ui/Icons";
 import {
   locales,
@@ -116,14 +117,14 @@ export function Header({ locale, dict }: HeaderProps) {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         scrolled || open
-          ? "border-b border-ink-900/10 bg-bone-50/95 backdrop-blur-md"
-          : "border-b border-transparent bg-bone-50",
+          ? "border-b border-ink-900/10 bg-bone-50/95 backdrop-blur-md dark:border-bone-100/12 dark:bg-ink-950/95"
+          : "border-b border-transparent bg-bone-50 dark:bg-ink-950",
       )}
     >
       <div className="mx-auto flex h-20 w-full max-w-[100rem] items-center justify-between gap-6 px-6 sm:px-8 lg:h-24 lg:px-12">
         <Link
           href={path(locale)}
-          className="shrink-0 text-ink-900"
+          className="shrink-0 text-ink-900 dark:text-bone-50"
           aria-label={`Azalea Dent, ${dict.nav.home}`}
         >
           <Logo />
@@ -140,8 +141,8 @@ export function Header({ locale, dict }: HeaderProps) {
                     "relative py-2 text-[0.82rem] font-medium tracking-wide transition-colors",
                     "after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-gold-500 after:transition-transform after:duration-300 hover:after:scale-x-100",
                     isActive(link.href)
-                      ? "text-ink-900 after:scale-x-100"
-                      : "text-ink-600 hover:text-ink-900",
+                      ? "text-ink-900 after:scale-x-100 dark:text-bone-50"
+                      : "text-ink-600 hover:text-ink-900 dark:text-bone-300 dark:hover:text-bone-50",
                   )}
                 >
                   {link.label}
@@ -160,7 +161,10 @@ export function Header({ locale, dict }: HeaderProps) {
             {locales.map((option, index) => (
               <span key={option} className="flex items-center gap-1.5">
                 {index > 0 && (
-                  <span aria-hidden="true" className="text-ink-300">
+                  <span
+                    aria-hidden="true"
+                    className="text-ink-300 dark:text-bone-400"
+                  >
                     /
                   </span>
                 )}
@@ -171,8 +175,8 @@ export function Header({ locale, dict }: HeaderProps) {
                   className={cn(
                     "px-0.5 py-1 transition-colors",
                     option === locale
-                      ? "text-ink-900"
-                      : "text-ink-500 hover:text-ink-900",
+                      ? "text-ink-900 dark:text-bone-50"
+                      : "text-ink-500 hover:text-ink-900 dark:text-bone-400 dark:hover:text-bone-50",
                   )}
                 >
                   <span className="sr-only">{localeNames[option]}</span>
@@ -187,9 +191,13 @@ export function Header({ locale, dict }: HeaderProps) {
             ))}
           </div>
 
+          <span className="hidden lg:inline-flex">
+            <ThemeToggle dict={dict} />
+          </span>
+
           <Link
             href={path(locale, "/appointment")}
-            className="hidden min-h-11 items-center rounded-sm bg-ink-900 px-6 text-[0.7rem] font-medium tracking-[0.14em] text-bone-50 uppercase transition-colors duration-300 hover:bg-ink-700 lg:inline-flex"
+            className="hidden min-h-11 items-center rounded-sm bg-ink-900 px-6 text-[0.7rem] font-medium tracking-[0.14em] text-bone-50 uppercase transition-colors duration-300 hover:bg-ink-700 lg:inline-flex dark:bg-gold-400 dark:text-ink-950 dark:hover:bg-gold-300"
           >
             {dict.nav.appointment}
           </Link>
@@ -199,7 +207,7 @@ export function Header({ locale, dict }: HeaderProps) {
             onClick={() => setOpen(!open)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="-mr-2 inline-flex h-12 w-12 items-center justify-center text-ink-900 lg:hidden"
+            className="-mr-2 inline-flex h-12 w-12 items-center justify-center text-ink-900 lg:hidden dark:text-bone-50"
           >
             <span className="sr-only">
               {open ? dict.nav.closeMenu : dict.nav.openMenu}
@@ -216,17 +224,20 @@ export function Header({ locale, dict }: HeaderProps) {
       <div
         id="mobile-menu"
         hidden={!open}
-        className="border-t border-ink-900/10 bg-bone-50 lg:hidden"
+        className="border-t border-ink-900/10 bg-bone-50 lg:hidden dark:border-bone-100/12 dark:bg-ink-950"
       >
         <nav aria-label={dict.nav.menu} className="px-6 pt-4 pb-8 sm:px-8">
           <ul className="flex flex-col">
             {[{ href: path(locale), label: dict.nav.home }, ...links].map(
               (link) => (
-                <li key={link.href} className="border-b border-ink-900/8">
+                <li
+                  key={link.href}
+                  className="border-b border-ink-900/8 dark:border-bone-100/10"
+                >
                   <Link
                     href={link.href}
                     aria-current={isActive(link.href) ? "page" : undefined}
-                    className="flex min-h-14 items-center font-display text-[1.6rem] text-ink-900"
+                    className="flex min-h-14 items-center font-display text-[1.6rem] text-ink-900 dark:text-bone-50"
                   >
                     {link.label}
                   </Link>
@@ -237,13 +248,15 @@ export function Header({ locale, dict }: HeaderProps) {
 
           <Link
             href={path(locale, "/appointment")}
-            className="mt-7 inline-flex min-h-13 w-full items-center justify-center rounded-sm bg-ink-900 px-6 text-[0.72rem] font-medium tracking-[0.14em] text-bone-50 uppercase"
+            className="mt-7 inline-flex min-h-13 w-full items-center justify-center rounded-sm bg-ink-900 px-6 text-[0.72rem] font-medium tracking-[0.14em] text-bone-50 uppercase dark:bg-gold-400 dark:text-ink-950"
           >
             {dict.nav.appointment}
           </Link>
 
           <div className="mt-7 flex items-center gap-2 text-[0.75rem] tracking-[0.1em] uppercase">
-            <span className="text-ink-500">{dict.nav.language}</span>
+            <span className="text-ink-500 dark:text-bone-400">
+              {dict.nav.language}
+            </span>
             {locales.map((option) => (
               <Link
                 key={option}
@@ -253,8 +266,8 @@ export function Header({ locale, dict }: HeaderProps) {
                 className={cn(
                   "px-2 py-2",
                   option === locale
-                    ? "text-ink-900 underline underline-offset-4"
-                    : "text-ink-500",
+                    ? "text-ink-900 underline underline-offset-4 dark:text-bone-50"
+                    : "text-ink-500 dark:text-bone-400",
                 )}
               >
                 <span aria-hidden="true" className="mr-2 text-[1.05rem]">
@@ -263,6 +276,13 @@ export function Header({ locale, dict }: HeaderProps) {
                 {localeNames[option]}
               </Link>
             ))}
+          </div>
+
+          <div className="mt-5 flex items-center justify-between border-t border-ink-900/8 pt-5 dark:border-bone-100/10">
+            <span className="text-[0.75rem] tracking-[0.1em] text-ink-500 uppercase dark:text-bone-400">
+              {dict.nav.theme.label}
+            </span>
+            <ThemeToggle dict={dict} />
           </div>
         </nav>
       </div>

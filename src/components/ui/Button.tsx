@@ -6,9 +6,11 @@ type Variant = "primary" | "secondary" | "onDark" | "onDarkOutline";
 type Size = "md" | "sm";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-ink-900 text-bone-50 hover:bg-ink-700",
+  primary:
+    "bg-ink-900 text-bone-50 hover:bg-ink-700 dark:bg-gold-400 dark:text-ink-950 dark:hover:bg-gold-300",
   secondary:
-    "border border-ink-900/25 text-ink-900 hover:border-ink-900 hover:bg-ink-900 hover:text-bone-50",
+    "border border-ink-900/25 text-ink-900 hover:border-ink-900 hover:bg-ink-900 hover:text-bone-50 dark:border-bone-100/25 dark:text-bone-50 dark:hover:border-bone-100 dark:hover:bg-bone-100 dark:hover:text-ink-950",
+  // Already tuned for a dark accent band, so unaffected by site theme.
   onDark: "bg-bone-50 text-ink-950 hover:bg-gold-300",
   onDarkOutline:
     "border border-bone-100/30 text-bone-100 hover:border-gold-400 hover:text-gold-300",
@@ -60,7 +62,12 @@ export function ButtonLink({
 
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={classes}
+      >
         {content}
       </a>
     );

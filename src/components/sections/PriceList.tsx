@@ -19,12 +19,12 @@ export function PriceGroupTable({
       {group.items.map((item) => (
         <div
           key={item.name.sq}
-          className="flex items-baseline justify-between gap-6 border-b border-ink-900/8 py-3.5"
+          className="flex items-baseline justify-between gap-6 border-b border-ink-900/8 py-3.5 dark:border-bone-100/10"
         >
-          <dt className="text-[0.98rem] leading-snug text-ink-700">
+          <dt className="text-[0.98rem] leading-snug text-ink-700 dark:text-bone-200">
             {item.name[locale]}
           </dt>
-          <dd className="shrink-0 text-[0.98rem] font-medium whitespace-nowrap text-ink-900 tabular-nums">
+          <dd className="shrink-0 text-[0.98rem] font-medium whitespace-nowrap text-ink-900 tabular-nums dark:text-bone-50">
             {formatPrice(item.price)}
           </dd>
         </div>
@@ -49,7 +49,7 @@ export function PriceList({
     <Section surface="bone">
       <Container>
         <Reveal>
-          <p className="max-w-2xl border-l-2 border-gold-500 pl-5 text-[0.95rem] leading-relaxed text-ink-600">
+          <p className="max-w-2xl border-l-2 border-gold-500 pl-5 text-[0.95rem] leading-relaxed text-ink-600 dark:border-gold-400 dark:text-bone-300">
             {dict.prices.note}
           </p>
         </Reveal>
@@ -60,7 +60,7 @@ export function PriceList({
               <section aria-labelledby={`price-${group.id}`}>
                 <h2
                   id={`price-${group.id}`}
-                  className="eyebrow border-b border-ink-900/15 pb-4 font-sans text-gold-700"
+                  className="eyebrow border-b border-ink-900/15 pb-4 font-sans text-gold-700 dark:border-bone-100/15 dark:text-gold-400"
                 >
                   {group.title[locale]}
                 </h2>
@@ -72,11 +72,11 @@ export function PriceList({
         </div>
 
         <Reveal>
-          <div className="mt-16 border-t border-ink-900/12 pt-10">
-            <h2 className="font-display text-[1.5rem] text-ink-900">
+          <div className="mt-16 border-t border-ink-900/12 pt-10 dark:border-bone-100/12">
+            <h2 className="font-display text-[1.5rem] text-ink-900 dark:text-bone-50">
               {dict.prices.ctaTitle}
             </h2>
-            <p className="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-ink-600">
+            <p className="mt-3 max-w-xl text-[0.98rem] leading-relaxed text-ink-600 dark:text-bone-300">
               {dict.prices.ctaBody}
             </p>
             <ButtonLink

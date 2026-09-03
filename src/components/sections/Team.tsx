@@ -14,7 +14,7 @@ function Portrait({ member, sizes }: { member: TeamMember; sizes: string }) {
   const photo = member.photo ? teamPhotos[member.photo] : undefined;
 
   return (
-    <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full bg-ink-900">
+    <div className="relative mx-auto aspect-square w-full overflow-hidden rounded-full bg-ink-900 dark:bg-ink-950">
       {photo ? (
         <Image
           src={photo}
@@ -38,10 +38,14 @@ function Portrait({ member, sizes }: { member: TeamMember; sizes: string }) {
 function Details({ member, locale }: { member: TeamMember; locale: Locale }) {
   return (
     <>
-      <h3 className="text-[1.4rem] leading-snug text-ink-900">{member.name}</h3>
-      <p className="eyebrow mt-2.5 text-gold-700">{member.role[locale]}</p>
+      <h3 className="text-[1.4rem] leading-snug text-ink-900 dark:text-bone-50">
+        {member.name}
+      </h3>
+      <p className="eyebrow mt-2.5 text-gold-700 dark:text-gold-400">
+        {member.role[locale]}
+      </p>
       {member.bio && (
-        <p className="mx-auto mt-4 max-w-md text-[0.98rem] leading-relaxed text-ink-600">
+        <p className="mx-auto mt-4 max-w-md text-[0.98rem] leading-relaxed text-ink-600 dark:text-bone-300">
           {member.bio[locale]}
         </p>
       )}

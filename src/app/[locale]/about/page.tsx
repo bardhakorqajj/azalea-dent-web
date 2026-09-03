@@ -70,10 +70,10 @@ export default async function AboutPage({
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <Reveal>
-                <h2 className="font-display text-[1.75rem] text-ink-900 sm:text-[2.1rem]">
+                <h2 className="font-display text-[1.75rem] text-ink-900 sm:text-[2.1rem] dark:text-bone-50">
                   {dict.about.storyTitle}
                 </h2>
-                <div className="mt-7 space-y-5 text-[1.0625rem] leading-relaxed text-ink-700">
+                <div className="mt-7 space-y-5 text-[1.0625rem] leading-relaxed text-ink-700 dark:text-bone-200">
                   {dict.about.story.map((paragraph) => (
                     <p key={paragraph.slice(0, 24)}>{paragraph}</p>
                   ))}
@@ -81,10 +81,10 @@ export default async function AboutPage({
               </Reveal>
 
               <Reveal delay={80}>
-                <h2 className="mt-14 font-display text-[1.75rem] text-ink-900 sm:text-[2.1rem]">
+                <h2 className="mt-14 font-display text-[1.75rem] text-ink-900 sm:text-[2.1rem] dark:text-bone-50">
                   {dict.about.approachTitle}
                 </h2>
-                <div className="mt-7 space-y-5 text-[1.0625rem] leading-relaxed text-ink-700">
+                <div className="mt-7 space-y-5 text-[1.0625rem] leading-relaxed text-ink-700 dark:text-bone-200">
                   {dict.about.approach.map((paragraph) => (
                     <p key={paragraph.slice(0, 24)}>{paragraph}</p>
                   ))}
@@ -92,7 +92,7 @@ export default async function AboutPage({
               </Reveal>
 
               <Reveal delay={120}>
-                <h2 className="mt-14 eyebrow text-ink-500">
+                <h2 className="mt-14 eyebrow text-ink-500 dark:text-bone-300">
                   {dict.about.servicesTitle}
                 </h2>
                 <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -100,9 +100,12 @@ export default async function AboutPage({
                     <li key={service.slug}>
                       <Link
                         href={`${path(locale, "/services")}/${service.slug}`}
-                        className="group flex items-center gap-3 border-b border-ink-900/10 py-3 text-[0.98rem] text-ink-700 transition-colors hover:text-ink-900"
+                        className="group flex items-center gap-3 border-b border-ink-900/10 py-3 text-[0.98rem] text-ink-700 transition-colors hover:text-ink-900 dark:border-bone-100/12 dark:text-bone-200 dark:hover:text-bone-50"
                       >
-                        <span aria-hidden="true" className="h-px w-4 shrink-0 bg-gold-500" />
+                        <span
+                          aria-hidden="true"
+                          className="h-px w-4 shrink-0 bg-gold-500 dark:bg-gold-400"
+                        />
                         {service.title[locale]}
                       </Link>
                     </li>
@@ -123,7 +126,7 @@ export default async function AboutPage({
                     style={{ objectPosition: photos.reception.focus }}
                   />
                 </div>
-                <p className="eyebrow mt-3 text-ink-500">
+                <p className="eyebrow mt-3 text-ink-500 dark:text-bone-300">
                   {photos.reception.caption[locale]}
                 </p>
               </Reveal>
@@ -139,7 +142,7 @@ export default async function AboutPage({
                     style={{ objectPosition: photos.glassDetail.focus }}
                   />
                 </div>
-                <p className="eyebrow mt-3 text-ink-500">
+                <p className="eyebrow mt-3 text-ink-500 dark:text-bone-300">
                   {photos.glassDetail.caption[locale]}
                 </p>
               </Reveal>

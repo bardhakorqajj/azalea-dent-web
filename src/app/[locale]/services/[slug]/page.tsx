@@ -72,7 +72,9 @@ export default async function ServicePage({
 
   const dict = getDictionary(locale);
   const photo = photos.operatoryDaylight;
-  const priceGroup = priceGroups.find((group) => group.id === service.priceGroupId);
+  const priceGroup = priceGroups.find(
+    (group) => group.id === service.priceGroupId,
+  );
   const url = absoluteUrl(`${path(locale, "/services")}/${slug}`);
 
   return (
@@ -85,7 +87,10 @@ export default async function ServicePage({
         lead={service.summary[locale]}
         breadcrumbs={[
           { href: path(locale, "/services"), label: dict.nav.services },
-          { href: `${path(locale, "/services")}/${slug}`, label: service.title[locale] },
+          {
+            href: `${path(locale, "/services")}/${slug}`,
+            label: service.title[locale],
+          },
         ]}
       />
 
@@ -94,34 +99,36 @@ export default async function ServicePage({
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
               <Reveal>
-                <div className="space-y-6 text-[1.0625rem] leading-relaxed text-ink-700">
+                <div className="space-y-6 text-[1.0625rem] leading-relaxed text-ink-700 dark:text-bone-200">
                   {service.body.map((paragraph) => (
-                    <p key={paragraph[locale].slice(0, 24)}>{paragraph[locale]}</p>
+                    <p key={paragraph[locale].slice(0, 24)}>
+                      {paragraph[locale]}
+                    </p>
                   ))}
                 </div>
               </Reveal>
 
               <Reveal delay={80}>
-                <h2 className="mt-14 font-display text-[1.6rem] text-ink-900">
+                <h2 className="mt-14 font-display text-[1.6rem] text-ink-900 dark:text-bone-50">
                   {dict.services.stepsTitle}
                 </h2>
-                <ol className="mt-8 border-t border-ink-900/12">
+                <ol className="mt-8 border-t border-ink-900/12 dark:border-bone-100/12">
                   {service.steps.map((step, index) => (
                     <li
                       key={step.title[locale]}
-                      className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-ink-900/12 py-6 sm:grid-cols-[3.5rem_1fr] sm:gap-x-6"
+                      className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-ink-900/12 py-6 sm:grid-cols-[3.5rem_1fr] sm:gap-x-6 dark:border-bone-100/12"
                     >
                       <span
                         aria-hidden="true"
-                        className="font-display text-[0.9rem] text-gold-700 tabular-nums"
+                        className="font-display text-[0.9rem] text-gold-700 tabular-nums dark:text-gold-400"
                       >
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <div>
-                        <h3 className="text-[1.15rem] text-ink-900">
+                        <h3 className="text-[1.15rem] text-ink-900 dark:text-bone-50">
                           {step.title[locale]}
                         </h3>
-                        <p className="mt-2 max-w-xl text-[0.95rem] leading-relaxed text-ink-600">
+                        <p className="mt-2 max-w-xl text-[0.95rem] leading-relaxed text-ink-600 dark:text-bone-300">
                           {step.detail[locale]}
                         </p>
                       </div>
@@ -130,13 +137,13 @@ export default async function ServicePage({
                 </ol>
                 {priceGroup && (
                   <>
-                    <h2 className="mt-14 font-display text-[1.6rem] text-ink-900">
+                    <h2 className="mt-14 font-display text-[1.6rem] text-ink-900 dark:text-bone-50">
                       {dict.prices.title}
                     </h2>
-                    <div className="mt-8 border-t border-ink-900/12">
+                    <div className="mt-8 border-t border-ink-900/12 dark:border-bone-100/12">
                       <PriceGroupTable group={priceGroup} locale={locale} />
                     </div>
-                    <p className="mt-5 text-[0.9rem] leading-relaxed text-ink-500">
+                    <p className="mt-5 text-[0.9rem] leading-relaxed text-ink-500 dark:text-bone-300">
                       {dict.prices.note}
                     </p>
                     <ButtonLink
@@ -165,17 +172,20 @@ export default async function ServicePage({
                   />
                 </div>
 
-                <div className="mt-8 border-t border-ink-900/15 pt-7">
-                  <h2 className="eyebrow text-ink-500">
+                <div className="mt-8 border-t border-ink-900/15 pt-7 dark:border-bone-100/15">
+                  <h2 className="eyebrow text-ink-500 dark:text-bone-300">
                     {dict.services.highlightsTitle}
                   </h2>
                   <ul className="mt-5 space-y-3.5">
                     {service.highlights.map((item) => (
                       <li
                         key={item[locale]}
-                        className="flex gap-3 text-[0.95rem] leading-relaxed text-ink-700"
+                        className="flex gap-3 text-[0.95rem] leading-relaxed text-ink-700 dark:text-bone-200"
                       >
-                        <span aria-hidden="true" className="mt-2 h-px w-4 shrink-0 bg-gold-500" />
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 h-px w-4 shrink-0 bg-gold-500 dark:bg-gold-400"
+                        />
                         {item[locale]}
                       </li>
                     ))}
@@ -215,11 +225,20 @@ export default async function ServicePage({
         lead={dict.services.lead}
       />
 
-      <JsonLd data={serviceSchema(service.title[locale], service.summary[locale], url)} />
+      <JsonLd
+        data={serviceSchema(
+          service.title[locale],
+          service.summary[locale],
+          url,
+        )}
+      />
       <JsonLd
         data={breadcrumbSchema([
           { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          { name: dict.services.pageTitle, url: absoluteUrl(path(locale, "/services")) },
+          {
+            name: dict.services.pageTitle,
+            url: absoluteUrl(path(locale, "/services")),
+          },
           { name: service.title[locale], url },
         ])}
       />

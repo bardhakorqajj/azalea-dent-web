@@ -21,6 +21,11 @@ export const en: Dictionary = {
     closeMenu: "Close menu",
     skipToContent: "Skip to content",
     language: "Language",
+    theme: {
+      label: "Theme",
+      toggleToDark: "Switch to dark theme",
+      toggleToLight: "Switch to light theme",
+    },
   },
 
   actions: {

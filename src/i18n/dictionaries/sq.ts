@@ -19,6 +19,11 @@ export const sq = {
     closeMenu: "Mbyll menynë",
     skipToContent: "Kalo te përmbajtja",
     language: "Gjuha",
+    theme: {
+      label: "Tema",
+      toggleToDark: "Kalo te tema e errët",
+      toggleToLight: "Kalo te tema e çelët",
+    },
   },
 
   actions: {

@@ -12,8 +12,9 @@ type SectionProps = {
 };
 
 const surfaces = {
-  bone: "bg-bone-50 text-ink-900",
-  "bone-warm": "bg-bone-100 text-ink-900",
+  bone: "bg-bone-50 text-ink-900 dark:bg-ink-950 dark:text-bone-50",
+  "bone-warm": "bg-bone-100 text-ink-900 dark:bg-ink-900 dark:text-bone-50",
+  // Already dark by design — unaffected by site theme.
   ink: "bg-ink-950 text-bone-100",
 };
 

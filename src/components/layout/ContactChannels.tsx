@@ -142,20 +142,24 @@ export function ContactChannelList({
           key={group.key}
           className={cn(
             "flex gap-4 border-b py-4",
-            isDark ? "border-bone-100/12" : "border-ink-900/10",
+            isDark
+              ? "border-bone-100/12"
+              : "border-ink-900/10 dark:border-bone-100/12",
           )}
         >
           <group.Icon
             className={cn(
               "mt-1 h-5 w-5 shrink-0",
-              isDark ? "text-gold-400" : "text-gold-700",
+              isDark ? "text-gold-400" : "text-gold-700 dark:text-gold-400",
             )}
           />
           <div className="min-w-0">
             <p
               className={cn(
                 "eyebrow",
-                isDark ? "text-bone-300/60" : "text-ink-500",
+                isDark
+                  ? "text-bone-300/60"
+                  : "text-ink-500 dark:text-bone-300/60",
               )}
             >
               {group.label}
@@ -168,7 +172,7 @@ export function ContactChannelList({
                   "mt-1 block min-h-8 text-[0.98rem] transition-colors",
                   isDark
                     ? "text-bone-100 hover:text-gold-300"
-                    : "text-ink-900 hover:text-gold-700",
+                    : "text-ink-900 hover:text-gold-700 dark:text-bone-100 dark:hover:text-gold-300",
                 )}
               >
                 {item.value}
@@ -202,7 +206,7 @@ export function MessagingLinks({ dict, tone = "light", className }: ToneProps) {
               "inline-flex min-h-11 w-full items-center justify-center gap-2.5 rounded-sm border px-3 text-[0.78rem] transition-colors",
               isDark
                 ? "border-bone-100/25 text-bone-100 hover:border-gold-400 hover:text-gold-300"
-                : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900",
+                : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900 dark:border-bone-100/25 dark:text-bone-100 dark:hover:border-gold-400 dark:hover:text-gold-300",
             )}
           >
             {/* Brand marks carry their own colour, so no text class here. */}
@@ -290,7 +294,7 @@ export function ChannelIconLinks({
               "inline-flex h-12 w-12 items-center justify-center rounded-sm border transition-colors",
               isDark
                 ? "border-bone-100/25 text-bone-100 hover:border-gold-400 hover:text-gold-300"
-                : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900",
+                : "border-ink-900/20 text-ink-800 hover:border-ink-900 hover:text-ink-900 dark:border-bone-100/25 dark:text-bone-100 dark:hover:border-gold-400 dark:hover:text-gold-300",
             )}
           >
             <span className="sr-only">{link.label}</span>
@@ -414,14 +418,14 @@ export function FallbackChannels({
             {...(channel.href.startsWith("http")
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
-            className="flex min-h-14 w-full items-center gap-3 rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-2.5 transition-colors hover:border-ink-900 hover:bg-bone-100"
+            className="flex min-h-14 w-full items-center gap-3 rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-2.5 transition-colors hover:border-ink-900 hover:bg-bone-100 dark:border-bone-100/20 dark:bg-ink-900 dark:hover:border-bone-100 dark:hover:bg-ink-800"
           >
-            <channel.Icon className="h-5 w-5 shrink-0 text-gold-700" />
+            <channel.Icon className="h-5 w-5 shrink-0 text-gold-700 dark:text-gold-400" />
             <span className="flex min-w-0 flex-col">
-              <span className="text-[0.7rem] font-medium tracking-[0.14em] text-ink-500 uppercase">
+              <span className="text-[0.7rem] font-medium tracking-[0.14em] text-ink-500 uppercase dark:text-bone-300">
                 {channel.label}
               </span>
-              <span className="truncate text-[0.92rem] text-ink-900">
+              <span className="truncate text-[0.92rem] text-ink-900 dark:text-bone-50">
                 {channel.value}
               </span>
             </span>

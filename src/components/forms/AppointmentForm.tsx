@@ -28,7 +28,7 @@ type Status =
   | "error";
 
 const fieldClasses =
-  "min-h-12 w-full rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-3 text-[0.95rem] text-ink-900 transition-colors placeholder:text-ink-500 hover:border-ink-900/35 focus:border-ink-900 focus:outline-none";
+  "min-h-12 w-full rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-3 text-[0.95rem] text-ink-900 transition-colors placeholder:text-ink-500 hover:border-ink-900/35 focus:border-ink-900 focus:outline-none dark:border-bone-100/20 dark:bg-ink-900 dark:text-bone-50 dark:placeholder:text-bone-400 dark:hover:border-bone-100/35 dark:focus:border-bone-100";
 
 export function AppointmentForm({
   locale,
@@ -109,20 +109,20 @@ export function AppointmentForm({
 
   if (status === "success") {
     return (
-      <div className="border border-ink-900/15 bg-bone-50 p-8 sm:p-10">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ink-900 text-bone-50">
+      <div className="border border-ink-900/15 bg-bone-50 p-8 sm:p-10 dark:border-bone-100/15 dark:bg-ink-900">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-ink-900 text-bone-50 dark:bg-gold-400 dark:text-ink-950">
           <Check className="h-6 w-6" />
         </span>
-        <h3 className="mt-6 text-[1.5rem] text-ink-900">
+        <h3 className="mt-6 text-[1.5rem] text-ink-900 dark:text-bone-50">
           {dict.appointment.success.title}
         </h3>
-        <p className="mt-3 max-w-md text-[0.98rem] leading-relaxed text-ink-600">
+        <p className="mt-3 max-w-md text-[0.98rem] leading-relaxed text-ink-600 dark:text-bone-300">
           {dict.appointment.success.body}
         </p>
         <button
           type="button"
           onClick={() => setStatus("idle")}
-          className="mt-7 text-[0.85rem] text-ink-900 underline underline-offset-4 hover:text-gold-500"
+          className="mt-7 text-[0.85rem] text-ink-900 underline underline-offset-4 hover:text-gold-500 dark:text-bone-50 dark:hover:text-gold-400"
         >
           {dict.appointment.success.again}
         </button>
@@ -161,7 +161,10 @@ export function AppointmentForm({
             onChange={(event) => update("name", event.target.value)}
             aria-invalid={Boolean(errors.name)}
             aria-describedby={errors.name ? errorId("name") : undefined}
-            className={cn(fieldClasses, errors.name && "border-red-700")}
+            className={cn(
+              fieldClasses,
+              errors.name && "border-red-700 dark:border-red-500",
+            )}
           />
         </Field>
 
@@ -184,7 +187,10 @@ export function AppointmentForm({
             onChange={(event) => update("phone", event.target.value)}
             aria-invalid={Boolean(errors.phone)}
             aria-describedby={errors.phone ? errorId("phone") : undefined}
-            className={cn(fieldClasses, errors.phone && "border-red-700")}
+            className={cn(
+              fieldClasses,
+              errors.phone && "border-red-700 dark:border-red-500",
+            )}
           />
         </Field>
 
@@ -204,7 +210,10 @@ export function AppointmentForm({
             onChange={(event) => update("email", event.target.value)}
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? errorId("email") : undefined}
-            className={cn(fieldClasses, errors.email && "border-red-700")}
+            className={cn(
+              fieldClasses,
+              errors.email && "border-red-700 dark:border-red-500",
+            )}
           />
         </Field>
 
@@ -226,7 +235,7 @@ export function AppointmentForm({
             className={cn(
               fieldClasses,
               "appearance-none pr-10",
-              errors.service && "border-red-700",
+              errors.service && "border-red-700 dark:border-red-500",
             )}
           >
             <option value="">{labels.servicePlaceholder}</option>
@@ -256,12 +265,17 @@ export function AppointmentForm({
             onChange={(event) => update("date", event.target.value)}
             aria-invalid={Boolean(errors.date)}
             aria-describedby={errors.date ? errorId("date") : undefined}
-            className={cn(fieldClasses, errors.date && "border-red-700")}
+            className={cn(
+              fieldClasses,
+              errors.date && "border-red-700 dark:border-red-500",
+            )}
           />
         </Field>
 
         <fieldset className="sm:col-span-1">
-          <legend className="eyebrow text-ink-500">{labels.time}</legend>
+          <legend className="eyebrow text-ink-500 dark:text-bone-300">
+            {labels.time}
+          </legend>
           <div className="mt-3 grid grid-cols-3 gap-2">
             {TIME_SLOTS.map((slot) => {
               const slotLabel =
@@ -277,8 +291,8 @@ export function AppointmentForm({
                   className={cn(
                     "flex min-h-12 cursor-pointer items-center justify-center rounded-sm border px-2 text-center text-[0.8rem] transition-colors",
                     checked
-                      ? "border-ink-900 bg-ink-900 text-bone-50"
-                      : "border-ink-900/20 bg-bone-50 text-ink-600 hover:border-ink-900/40",
+                      ? "border-ink-900 bg-ink-900 text-bone-50 dark:border-gold-400 dark:bg-gold-400 dark:text-ink-950"
+                      : "border-ink-900/20 bg-bone-50 text-ink-600 hover:border-ink-900/40 dark:border-bone-100/20 dark:bg-ink-900 dark:text-bone-300 dark:hover:border-bone-100/40",
                   )}
                 >
                   <input
@@ -299,7 +313,7 @@ export function AppointmentForm({
         <div className="sm:col-span-2">
           <label
             htmlFor={fieldId("message")}
-            className="eyebrow block text-ink-500"
+            className="eyebrow block text-ink-500 dark:text-bone-300"
           >
             {labels.message}
           </label>
@@ -316,7 +330,7 @@ export function AppointmentForm({
       </div>
 
       <div className="mt-7">
-        <label className="flex cursor-pointer items-start gap-3 text-[0.9rem] leading-relaxed text-ink-600">
+        <label className="flex cursor-pointer items-start gap-3 text-[0.9rem] leading-relaxed text-ink-600 dark:text-bone-300">
           <input
             id={fieldId("consent")}
             type="checkbox"
@@ -324,14 +338,14 @@ export function AppointmentForm({
             onChange={(event) => update("consent", event.target.checked)}
             aria-invalid={Boolean(errors.consent)}
             aria-describedby={errors.consent ? errorId("consent") : undefined}
-            className="mt-0.5 h-5 w-5 shrink-0 rounded-xs border-ink-900/30 accent-ink-900"
+            className="mt-0.5 h-5 w-5 shrink-0 rounded-xs border-ink-900/30 accent-ink-900 dark:border-bone-100/30 dark:accent-gold-400"
           />
           <span>{labels.consent}</span>
         </label>
         {errors.consent && (
           <p
             id={errorId("consent")}
-            className="mt-2 text-[0.85rem] text-red-700"
+            className="mt-2 text-[0.85rem] text-red-700 dark:text-red-400"
           >
             {errors.consent}
           </p>
@@ -348,28 +362,28 @@ export function AppointmentForm({
 
       <div aria-live="polite">
         {status === "error" && (
-          <p className="mt-6 border-l-2 border-red-700 bg-red-50 px-4 py-3 text-[0.9rem] text-red-900">
+          <p className="mt-6 border-l-2 border-red-700 bg-red-50 px-4 py-3 text-[0.9rem] text-red-900 dark:border-red-500 dark:bg-red-950/40 dark:text-red-200">
             {dict.appointment.errors.generic}
           </p>
         )}
 
         {(status === "unconfigured" || status === "failed") && (
-          <div className="mt-6 border border-gold-500/50 bg-gold-300/10 p-6">
-            <h3 className="text-[1.15rem] text-ink-900">
+          <div className="mt-6 border border-gold-500/50 bg-gold-300/10 p-6 dark:border-gold-400/40 dark:bg-gold-400/10">
+            <h3 className="text-[1.15rem] text-ink-900 dark:text-bone-50">
               {dict.appointment[status].title}
             </h3>
-            <p className="mt-2.5 text-[0.93rem] leading-relaxed text-ink-600">
+            <p className="mt-2.5 text-[0.93rem] leading-relaxed text-ink-600 dark:text-bone-300">
               {dict.appointment[status].body}
             </p>
 
             {/* Every channel, not a chosen few: the request has just failed,
                 so the patient should not have to go looking for another way
                 to reach the clinic. */}
-            <p className="mt-6 text-[0.7rem] font-medium tracking-[0.14em] text-ink-500 uppercase">
+            <p className="mt-6 text-[0.7rem] font-medium tracking-[0.14em] text-ink-500 uppercase dark:text-bone-300">
               {dict.appointment.fallback.heading}
             </p>
             <FallbackChannels dict={dict} summary={summary} className="mt-3" />
-            <p className="mt-4 text-[0.85rem] leading-relaxed text-ink-600">
+            <p className="mt-4 text-[0.85rem] leading-relaxed text-ink-600 dark:text-bone-300">
               {dict.appointment.fallback.note}
             </p>
           </div>
@@ -398,17 +412,26 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="eyebrow block text-ink-500">
+      <label
+        htmlFor={id}
+        className="eyebrow block text-ink-500 dark:text-bone-300"
+      >
         {label}
         {required && (
-          <span className="ml-1.5 text-gold-700" title={requiredLabel}>
+          <span
+            className="ml-1.5 text-gold-700 dark:text-gold-400"
+            title={requiredLabel}
+          >
             *
           </span>
         )}
       </label>
       <div className="mt-3">{children}</div>
       {error && (
-        <p id={errorId} className="mt-2 text-[0.85rem] text-red-700">
+        <p
+          id={errorId}
+          className="mt-2 text-[0.85rem] text-red-700 dark:text-red-400"
+        >
           {error}
         </p>
       )}
