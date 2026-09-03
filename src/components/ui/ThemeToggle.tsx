@@ -75,8 +75,10 @@ function subscribe(listener: () => void) {
 
 /**
  * Light/dark switch, styled as a track with the clinic mark rather than a
- * sun. The mark sits fixed at the dark end and fades in as the thumb slides
- * away from it.
+ * sun. The mark sits fixed at the left, where the thumb rests in light mode,
+ * and only appears once dark mode has moved the thumb away — so light mode
+ * shows a plain track and dark mode reveals the mark rather than the two
+ * ever overlapping.
  *
  * The thumb position and mark opacity are plain `dark:` utility classes, not
  * driven by JS state, so they are correct from the very first paint — the
@@ -112,7 +114,7 @@ export function ThemeToggle({
 
       <AzaleaMark
         weight={5}
-        className="pointer-events-none absolute right-1 h-3 w-3 text-gold-400 opacity-100 transition-opacity duration-300 dark:opacity-0"
+        className="pointer-events-none absolute left-1 h-3 w-3 text-gold-400 opacity-0 transition-opacity duration-300 dark:opacity-100"
       />
 
       <span

@@ -253,35 +253,50 @@ export function Header({ locale, dict }: HeaderProps) {
             {dict.nav.appointment}
           </Link>
 
-          <div className="mt-7 flex items-center gap-2 text-[0.75rem] tracking-[0.1em] uppercase">
-            <span className="text-ink-500 dark:text-bone-400">
-              {dict.nav.language}
-            </span>
-            {locales.map((option) => (
-              <Link
-                key={option}
-                href={swapLocale(option)}
-                hrefLang={option}
-                aria-current={option === locale ? "true" : undefined}
-                className={cn(
-                  "px-2 py-2",
-                  option === locale
-                    ? "text-ink-900 underline underline-offset-4 dark:text-bone-50"
-                    : "text-ink-500 dark:text-bone-400",
-                )}
-              >
-                <span aria-hidden="true" className="mr-2 text-[1.05rem]">
-                  {localeFlags[option]}
+          <div className="mt-7 flex items-center gap-4">
+            <div
+              className="flex items-center gap-1.5 text-[0.75rem] tracking-[0.1em] uppercase"
+              role="group"
+              aria-label={dict.nav.language}
+            >
+              {locales.map((option, index) => (
+                <span key={option} className="flex items-center gap-1.5">
+                  {index > 0 && (
+                    <span
+                      aria-hidden="true"
+                      className="text-ink-300 dark:text-bone-400"
+                    >
+                      /
+                    </span>
+                  )}
+                  <Link
+                    href={swapLocale(option)}
+                    hrefLang={option}
+                    aria-current={option === locale ? "true" : undefined}
+                    className={cn(
+                      "px-1 py-2",
+                      option === locale
+                        ? "text-ink-900 dark:text-bone-50"
+                        : "text-ink-500 dark:text-bone-400",
+                    )}
+                  >
+                    <span className="sr-only">{localeNames[option]}</span>
+                    <span
+                      aria-hidden="true"
+                      className="text-[1.15rem] leading-none"
+                    >
+                      {localeFlags[option]}
+                    </span>
+                  </Link>
                 </span>
-                {localeNames[option]}
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="mt-5 flex items-center justify-between border-t border-ink-900/8 pt-5 dark:border-bone-100/10">
-            <span className="text-[0.75rem] tracking-[0.1em] text-ink-500 uppercase dark:text-bone-400">
-              {dict.nav.theme.label}
-            </span>
+            <span
+              aria-hidden="true"
+              className="h-4 w-px bg-ink-900/15 dark:bg-bone-100/20"
+            />
+
             <ThemeToggle dict={dict} />
           </div>
         </nav>
