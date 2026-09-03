@@ -238,6 +238,10 @@ export const sq = {
      * Shown when no email/webhook backend is configured. The form never claims a
      * request was received when nothing received it.
      */
+    failed: {
+      title: "Kërkesa nuk u dërgua",
+      body: "Ndodhi një problem teknik gjatë dërgimit, prandaj kërkesa juaj nuk mbërriti te klinika. Na kontaktoni direkt me një nga mënyrat më poshtë.",
+    },
     unconfigured: {
       title: "Dërgimi online nuk është aktiv ende",
       body: "Formulari nuk është lidhur ende me një shërbim emaili, prandaj kërkesa juaj nuk u dërgua. Na kontaktoni direkt me një nga mënyrat më poshtë dhe ju kthejmë përgjigje sa më shpejt.",

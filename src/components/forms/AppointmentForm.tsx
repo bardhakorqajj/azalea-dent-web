@@ -19,7 +19,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { cn } from "@/lib/utils";
 
-type Status = "idle" | "submitting" | "success" | "unconfigured" | "error";
+type Status = "idle" | "submitting" | "success" | "unconfigured" | "failed" | "error";
 
 const fieldClasses =
   "min-h-12 w-full rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-3 text-[0.95rem] text-ink-900 transition-colors placeholder:text-ink-500 hover:border-ink-900/35 focus:border-ink-900 focus:outline-none";
@@ -87,9 +87,13 @@ export function AppointmentForm({
         return;
       }
 
-      /* 501 means no email or webhook destination is configured yet. The form
-         must not claim the request was received when nothing received it. */
-      setStatus(response.status === 501 ? "unconfigured" : "error");
+      /* 501: nothing is configured to receive the request.
+         502: every configured channel failed to deliver.
+         Both must offer a way through rather than claiming success, and
+         neither is the patient's fault. */
+      if (response.status === 501) setStatus("unconfigured");
+      else if (response.status === 502) setStatus("failed");
+      else setStatus("error");
     } catch {
       setStatus("error");
     }
@@ -335,13 +339,13 @@ export function AppointmentForm({
           </p>
         )}
 
-        {status === "unconfigured" && (
+        {(status === "unconfigured" || status === "failed") && (
           <div className="mt-6 border border-gold-500/50 bg-gold-300/10 p-6">
             <h3 className="text-[1.15rem] text-ink-900">
-              {dict.appointment.unconfigured.title}
+              {dict.appointment[status].title}
             </h3>
             <p className="mt-2.5 text-[0.93rem] leading-relaxed text-ink-600">
-              {dict.appointment.unconfigured.body}
+              {dict.appointment[status].body}
             </p>
             <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
               {waLink && (

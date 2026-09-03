@@ -236,6 +236,10 @@ export const en: Dictionary = {
       body: "We will contact you shortly to confirm the date and time. An appointment is only booked once the clinic confirms it.",
       again: "Send another request",
     },
+    failed: {
+      title: "The request was not sent",
+      body: "A technical problem stopped your request from reaching the clinic. Please contact us directly using one of the options below.",
+    },
     unconfigured: {
       title: "Online sending is not active yet",
       body: "The form is not yet connected to an email service, so your request was not sent. Please contact us directly using one of the options below and we will get back to you as soon as we can.",
