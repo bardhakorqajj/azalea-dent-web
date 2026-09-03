@@ -138,9 +138,9 @@ how you would connect Zapier, Make, n8n, a Google Sheet or a clinic CRM.
 
 ### Also set
 
-| Name                   | Value                     | Environments |
-| ---------------------- | ------------------------- | ------------ |
-| `NEXT_PUBLIC_SITE_URL` | `https://azalea-dent.org` | Production   |
+| Name       | Value                     | Environments |
+| ---------- | ------------------------- | ------------ |
+| `SITE_URL` | `https://azalea-dent.org` | Production   |
 
 This is the address the site calls itself in `sitemap.xml`, in the canonical
 tags search engines read, and in the preview card that appears when someone
@@ -171,6 +171,12 @@ XML — that is normal. The only thing to look at is the addresses inside it:
 - They still read `azalea-dent.vercel.app` → the variable was not picked up.
   Check the Key for a typo and that **Production** was ticked, then redeploy
   again.
+
+The name is `SITE_URL`, with no `NEXT_PUBLIC_` prefix. That prefix means "send
+this to the browser", and Vercel warns when it sees one on a private variable.
+The site only reads this on the server, so it does not need the prefix. If an
+older deployment already has `NEXT_PUBLIC_SITE_URL` set, it still works and can
+be left alone or renamed at leisure.
 
 ### Checking it works
 

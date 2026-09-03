@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { isLocale, path, stripLocale } from "@/i18n/config";
-import { languageAlternates } from "@/lib/site";
+import { absoluteUrl, languageAlternates, siteUrl } from "@/lib/site";
 import { formatDayRange, formatHours } from "@/lib/hours";
 import { cn, initials, interpolate } from "@/lib/utils";
 
@@ -123,5 +123,60 @@ describe("languageAlternates", () => {
       en: "/en",
       "x-default": "/",
     });
+  });
+});
+
+describe("siteUrl", () => {
+  const ORIGINAL = { ...process.env };
+
+  afterEach(() => {
+    process.env = { ...ORIGINAL };
+  });
+
+  function env(values: Record<string, string | undefined>) {
+    for (const key of [
+      "SITE_URL",
+      "NEXT_PUBLIC_SITE_URL",
+      "VERCEL_PROJECT_PRODUCTION_URL",
+    ]) {
+      delete process.env[key];
+    }
+    Object.assign(process.env, values);
+  }
+
+  it("prefers the explicit domain over Vercel's generated one", () => {
+    env({
+      SITE_URL: "https://azalea-dent.org",
+      VERCEL_PROJECT_PRODUCTION_URL: "azalea-dent.vercel.app",
+    });
+    expect(siteUrl()).toBe("https://azalea-dent.org");
+    expect(absoluteUrl("/prices")).toBe("https://azalea-dent.org/prices");
+  });
+
+  it("still honours the old NEXT_PUBLIC_ name, so a rename cannot break a live site", () => {
+    env({ NEXT_PUBLIC_SITE_URL: "https://azalea-dent.org" });
+    expect(siteUrl()).toBe("https://azalea-dent.org");
+  });
+
+  it("lets the unprefixed name win when both are set", () => {
+    env({
+      SITE_URL: "https://azalea-dent.org",
+      NEXT_PUBLIC_SITE_URL: "https://old.example.com",
+    });
+    expect(siteUrl()).toBe("https://azalea-dent.org");
+  });
+
+  it("trims trailing slashes so URLs never come out doubled", () => {
+    env({ SITE_URL: "https://azalea-dent.org//" });
+    expect(siteUrl()).toBe("https://azalea-dent.org");
+    expect(absoluteUrl("/prices")).toBe("https://azalea-dent.org/prices");
+  });
+
+  it("falls back to the Vercel domain, then to localhost", () => {
+    env({ VERCEL_PROJECT_PRODUCTION_URL: "azalea-dent.vercel.app" });
+    expect(siteUrl()).toBe("https://azalea-dent.vercel.app");
+
+    env({});
+    expect(siteUrl()).toBe("http://localhost:3000");
   });
 });
