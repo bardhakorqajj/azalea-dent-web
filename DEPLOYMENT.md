@@ -88,7 +88,7 @@ Testing mode is fine to start, but `onboarding@resend.dev` is a shared sender
 and Outlook/Hotmail filters it aggressively, so **check the Junk folder** for
 the first few requests. Once the domain is bought (step 4), verify it:
 
-1. Resend → **Domains → Add Domain**, enter `azalea-dent.com`.
+1. Resend → **Domains → Add Domain**, enter `azalea-dent.org`.
 2. Add the DKIM and SPF records Resend shows at your DNS provider, alongside
    the Vercel records from step 5. They do not conflict — Vercel's are `A` and
    `CNAME` on `@` and `www`; Resend's are `TXT`/`CNAME` on their own names.
@@ -96,7 +96,7 @@ the first few requests. Once the domain is bought (step 4), verify it:
 
    | Name                     | Value                                  |
    | ------------------------ | -------------------------------------- |
-   | `APPOINTMENT_FROM_EMAIL` | `Azalea Dent <takime@azalea-dent.com>` |
+   | `APPOINTMENT_FROM_EMAIL` | `Azalea Dent <takime@azalea-dent.org>` |
 
 4. Redeploy.
 
@@ -104,7 +104,7 @@ After this, mail is sent from the clinic's own domain, lands in the inbox
 rather than Junk, and can be delivered to any address — so a second recipient
 can be added later with `APPOINTMENT_TO_EMAIL`.
 
-Note that this sends _from_ `azalea-dent.com` without creating a mailbox there.
+Note that this sends _from_ `azalea-dent.org` without creating a mailbox there.
 Replies still work: each request sets `Reply-To` to the patient's own address,
 so hitting reply in Hotmail answers the patient.
 
@@ -140,14 +140,41 @@ how you would connect Zapier, Make, n8n, a Google Sheet or a clinic CRM.
 
 | Name                   | Value                     | Environments |
 | ---------------------- | ------------------------- | ------------ |
-| `NEXT_PUBLIC_SITE_URL` | `https://azalea-dent.com` | Production   |
+| `NEXT_PUBLIC_SITE_URL` | `https://azalea-dent.org` | Production   |
+
+This is the address the site calls itself in `sitemap.xml`, in the canonical
+tags search engines read, and in the preview card that appears when someone
+shares a link on WhatsApp or Facebook. Without it, Vercel falls back to the
+`.vercel.app` address, so all of those point at the wrong place.
+
+#### Where the environment variable screen is
+
+1. **vercel.com** → log in.
+2. Click the project, **azalea-dent**.
+3. Top row of tabs → **Settings** (last one).
+4. Menu down the left side → **Environment Variables**.
+5. **Key** is the name from the table above, **Value** is the value. Type them
+   in without quotes.
+6. Under **Environments**, tick the boxes the table names. Production is the
+   live site; Preview is the per-branch test deployments.
+7. **Save**.
 
 Changing an environment variable does **not** redeploy on its own: trigger a
-redeploy afterwards (step 9).
+redeploy afterwards (step 9), or nothing changes on the live site.
+
+#### Checking the variable took effect
+
+Open `https://azalea-dent.org/sitemap.xml` after the redeploy. It is a wall of
+XML — that is normal. The only thing to look at is the addresses inside it:
+
+- They read `azalea-dent.org` → it worked.
+- They still read `azalea-dent.vercel.app` → the variable was not picked up.
+  Check the Key for a typo and that **Production** was ticked, then redeploy
+  again.
 
 ### Checking it works
 
-After deploying, send yourself a request from `/sq/appointment`. On success the
+After deploying, send yourself a request from `/appointment`. On success the
 form shows a confirmation; if nothing is configured it says plainly that
 nothing was sent and offers WhatsApp, Viber and Instagram instead. Vercel's
 **Logs** tab records the reason for any delivery that failed.
@@ -161,28 +188,25 @@ like `azalea-dent-web.vercel.app`. Check it before connecting the domain.
 
 ### Buying it
 
-Check `azalea-dent.com` is free at any registrar's search box before planning
-around it; if it is taken, `azaleadent.com` or `azaleadent-ks.com` are the
-usual fallbacks. A `.com` renews yearly — check the _renewal_ price, not just
-the first-year offer, because deep first-year discounts often triple on
-renewal.
+`azalea-dent.org` was bought through Vercel itself (**Domains → Buy**), which
+means Vercel is both the registrar and the DNS host: there are no nameservers
+to point and no records to copy anywhere. Adding the domain to the project is
+all that is needed.
 
-Reasonable registrars: **Cloudflare Registrar** (sells at wholesale cost with
-no markup, but you must use Cloudflare DNS), **Porkbun**, **Namecheap**. Any
-registrar works — the site does not care where the domain is bought.
+Two things to check once, under **Domains → the domain → Edit**: that
+**auto-renew** is on, and that **WHOIS privacy** is on so the clinic's details
+are not published in the public domain record. A lapsed domain takes the
+website and the email sender down together.
 
-Turn on **WHOIS privacy** (free at all three) so the clinic's details are not
-published in the public domain record, and turn on **auto-renew**. A lapsed
-domain takes the website and the email sender down together.
-
-You do **not** need a hosting package, website builder, or email plan from the
-registrar. Vercel hosts the site; the clinic already has Hotmail for email.
+Both the apex (`azalea-dent.org`) and `www.azalea-dent.org` should be listed,
+each showing _Valid Configuration_, with one of them redirecting to the other
+so there is a single canonical address.
 
 ### Connecting it
 
 1. **Settings → Domains → Add**.
-2. Enter the apex domain: `azalea-dent.com`.
-3. Add `www.azalea-dent.com` as well. Vercel will offer to redirect one to the
+2. Enter the apex domain: `azalea-dent.org`.
+3. Add `www.azalea-dent.org` as well. Vercel will offer to redirect one to the
    other — **redirect `www` → apex** (or the reverse, but pick one and keep it,
    so there is only ever one canonical address).
 4. Vercel then shows the exact DNS records to create. **Use the values Vercel
@@ -194,7 +218,7 @@ At your domain registrar (where you bought the domain), in its DNS editor:
 
 | Type    | Name / Host                       | Value                  | TTL         |
 | ------- | --------------------------------- | ---------------------- | ----------- |
-| `A`     | `@` (the apex, `azalea-dent.com`) | `76.76.21.21`          | Auto / 3600 |
+| `A`     | `@` (the apex, `azalea-dent.org`) | `76.76.21.21`          | Auto / 3600 |
 | `CNAME` | `www`                             | `cname.vercel-dns.com` | Auto / 3600 |
 
 Notes:
@@ -249,18 +273,28 @@ can commit straight to the production branch instead.
 
 ## 9. Redeploying and rolling back
 
-**Redeploy** (after changing an environment variable):
-Vercel dashboard → **Deployments** → the most recent one → **⋯ → Redeploy**.
+**Redeploy** — needed after every environment variable change, because a
+variable only reaches a build made after it was saved:
 
-**Roll back:**
-**Deployments** → find the last good deployment → **⋯ → Promote to Production**.
+1. Project → the **Deployments** tab along the top.
+2. The newest deployment is the top row. At its right-hand end, click the
+   **⋯** (three dots).
+3. **Redeploy**, then **Redeploy** again in the dialog that opens. The
+   _Use existing Build Cache_ box can be left however it comes.
+4. Two to three minutes later the status reads **Ready** and it is live.
+
+**Roll back** — when a deployment turns out to be broken:
+
+1. **Deployments** → find the last row that was working.
+2. **⋯ → Promote to Production**.
+
 It goes live in seconds, because Vercel keeps every past build. Then fix the
 problem in git at your own pace.
 
 ## 10. After going live
 
 - Add the site to **Google Search Console**, verify via the DNS `TXT` record,
-  and submit `https://azalea-dent.com/sitemap.xml`.
+  and submit `https://azalea-dent.org/sitemap.xml`.
 - Create or claim the **Google Business Profile** for the clinic — for a local
   clinic that drives more traffic than anything on the website itself. Make the
   name, address, phone and opening hours match `src/content/clinic.ts` exactly.
