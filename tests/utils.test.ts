@@ -1,7 +1,13 @@
 import { afterEach, describe, expect, it } from "vitest";
 
 import { isLocale, path, stripLocale } from "@/i18n/config";
-import { absoluteUrl, languageAlternates, siteUrl } from "@/lib/site";
+import {
+  absoluteUrl,
+  canonicalHost,
+  isUnlistedDeployment,
+  languageAlternates,
+  siteUrl,
+} from "@/lib/site";
 import { formatDayRange, formatHours } from "@/lib/hours";
 import { cn, initials, interpolate } from "@/lib/utils";
 
@@ -178,5 +184,70 @@ describe("siteUrl", () => {
 
     env({});
     expect(siteUrl()).toBe("http://localhost:3000");
+  });
+});
+
+describe("canonicalHost", () => {
+  const ORIGINAL = { ...process.env };
+  afterEach(() => {
+    process.env = { ...ORIGINAL };
+  });
+
+  function env(values: Record<string, string | undefined>) {
+    for (const key of ["SITE_URL", "NEXT_PUBLIC_SITE_URL", "VERCEL_ENV"]) {
+      delete process.env[key];
+    }
+    Object.assign(process.env, values);
+  }
+
+  it("names the one host production should answer on", () => {
+    env({ VERCEL_ENV: "production", SITE_URL: "https://azalea-dent.org" });
+    expect(canonicalHost()).toBe("azalea-dent.org");
+  });
+
+  /* A redirect that fired on a preview would send someone testing a branch to
+     the live site, so every case below must stay null. */
+  it("leaves preview and development deployments alone", () => {
+    env({ VERCEL_ENV: "preview", SITE_URL: "https://azalea-dent.org" });
+    expect(canonicalHost()).toBeNull();
+
+    env({ VERCEL_ENV: "development", SITE_URL: "https://azalea-dent.org" });
+    expect(canonicalHost()).toBeNull();
+  });
+
+  it("leaves anything not running on Vercel alone", () => {
+    env({ SITE_URL: "https://azalea-dent.org" });
+    expect(canonicalHost()).toBeNull();
+  });
+
+  it("stays silent rather than guessing when no domain is configured", () => {
+    // Without this, the fallback would make the site redirect to itself.
+    env({ VERCEL_ENV: "production" });
+    expect(canonicalHost()).toBeNull();
+  });
+
+  it("stays silent on a malformed domain instead of redirecting nowhere", () => {
+    env({ VERCEL_ENV: "production", SITE_URL: "azalea-dent.org" });
+    expect(canonicalHost()).toBeNull();
+  });
+});
+
+describe("isUnlistedDeployment", () => {
+  const ORIGINAL = { ...process.env };
+  afterEach(() => {
+    process.env = { ...ORIGINAL };
+  });
+
+  it("hides previews from search engines but not the live site", () => {
+    process.env.VERCEL_ENV = "preview";
+    expect(isUnlistedDeployment()).toBe(true);
+
+    process.env.VERCEL_ENV = "production";
+    expect(isUnlistedDeployment()).toBe(false);
+  });
+
+  it("does not block a deployment that is not on Vercel at all", () => {
+    delete process.env.VERCEL_ENV;
+    expect(isUnlistedDeployment()).toBe(false);
   });
 });

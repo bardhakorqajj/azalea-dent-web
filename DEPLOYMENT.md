@@ -218,6 +218,38 @@ so there is a single canonical address.
 4. Vercel then shows the exact DNS records to create. **Use the values Vercel
    shows you**, not values from a tutorial — they change over time.
 
+### One address, not three
+
+Vercel permanently assigns `azalea-dent.vercel.app` to production and will not
+let you remove it, so without help the site would answer on three addresses at
+once: the apex, `www`, and the `.vercel.app` one. Search engines treat that as
+three copies of the same site, and the `.vercel.app` name is not the one to put
+in front of patients.
+
+`middleware.ts` handles it. On the production deployment, a request arriving on
+any host other than the one in `SITE_URL` is sent there with a 308, path
+intact. `www.azalea-dent.org/appointment` and
+`azalea-dent.vercel.app/sq/prices` both land on the real domain in a single
+hop.
+
+This only ever fires on production, and only when `SITE_URL` is set explicitly,
+so:
+
+- **Preview deployments keep their own URLs.** A branch deploy is built with
+  `VERCEL_ENV=preview` and is left alone — it has to be, or testing a branch
+  would bounce you to the live site.
+- **Local development is untouched**, since `VERCEL_ENV` is not set there.
+- **A missing `SITE_URL` changes nothing**, rather than redirecting somewhere
+  wrong.
+
+Preview deployments also serve `robots.txt` as `Disallow: /`, so a branch URL
+cannot end up in Google competing with the real domain. `robots.txt` is
+generated at build time, so each deployment gets the right one for what it is.
+
+Nothing needs configuring for any of this — it follows `SITE_URL`. It does mean
+that if you ever change the domain, changing `SITE_URL` and redeploying moves
+everything at once.
+
 ## 5. DNS records
 
 At your domain registrar (where you bought the domain), in its DNS editor:

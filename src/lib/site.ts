@@ -30,6 +30,46 @@ export function absoluteUrl(pathname: string): string {
 }
 
 /**
+ * The single hostname the live site should answer on, or `null` when there is
+ * nothing to enforce.
+ *
+ * Vercel permanently assigns `<project>.vercel.app` to production and it cannot
+ * be removed, so without this the site would answer on two addresses at once:
+ * bad for search engines, and it puts a stand-in address in front of patients.
+ * Requests to any other host are sent here instead.
+ *
+ * Deliberately narrow. It returns a host only on the production deployment and
+ * only when the domain was configured explicitly, so preview deployments keep
+ * their own generated URLs, local development is untouched, and a missing
+ * `SITE_URL` can never cause a redirect to the wrong place.
+ */
+export function canonicalHost(): string | null {
+  if (process.env.VERCEL_ENV !== "production") return null;
+
+  const explicit = process.env.SITE_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
+  if (!explicit) return null;
+
+  try {
+    return new URL(explicit).host;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Whether this deployment should be kept out of search results.
+ *
+ * True for Vercel's preview and development deployments, whose URLs would
+ * otherwise be indexed as copies of the real site. Anything not running on
+ * Vercel — local development, or another host entirely — is left alone rather
+ * than being blocked on a guess.
+ */
+export function isUnlistedDeployment(): boolean {
+  const env = process.env.VERCEL_ENV;
+  return env !== undefined && env !== "production";
+}
+
+/**
  * The `hreflang` map for one page, built from `path()` so it follows the
  * prefix rules rather than repeating them. `x-default` points at the default
  * language, which is the unprefixed address.
