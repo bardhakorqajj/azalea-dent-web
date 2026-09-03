@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: `${clinic.name} ${clinic.descriptor}`,
     short_name: clinic.name,
-    start_url: "/sq",
+    start_url: "/",
     display: "standalone",
     background_color: "#fbf9f6",
     theme_color: "#14171a",

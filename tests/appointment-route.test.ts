@@ -17,7 +17,10 @@ function makeRequest(overrides: Record<string, unknown> = {}) {
   return new Request("http://localhost/api/appointment", {
     method: "POST",
     // A distinct address per call, so the rate limiter does not trip.
-    headers: { "Content-Type": "application/json", "x-forwarded-for": `10.0.0.${seq}` },
+    headers: {
+      "Content-Type": "application/json",
+      "x-forwarded-for": `10.0.0.${seq}`,
+    },
     body: JSON.stringify({
       name: "Arta Berisha",
       phone: "+383 44 123 456",
@@ -93,7 +96,10 @@ describe("POST /api/appointment", () => {
 
     const response = await POST(makeRequest());
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ ok: true, delivered: ["email", "sms"] });
+    expect(await response.json()).toEqual({
+      ok: true,
+      delivered: ["email", "sms"],
+    });
 
     const email = calls.find((c) => c.url.includes("resend.com"));
     expect(email).toBeDefined();
@@ -130,10 +136,56 @@ describe("POST /api/appointment", () => {
 
   it("reports failure when every channel fails", async () => {
     Object.assign(process.env, CREDENTIALS);
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("nope", { status: 500 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("nope", { status: 500 })),
+    );
 
     const response = await POST(makeRequest());
     expect(response.status).toBe(502);
     expect(await response.json()).toEqual({ error: "delivery_failed" });
+  });
+});
+
+describe("what the clinic reads", () => {
+  beforeEach(() => {
+    Object.assign(process.env, CREDENTIALS);
+  });
+
+  /** Reads the JSON body the stubbed fetch was called with for Resend. */
+  async function sentEmail(overrides: Record<string, unknown> = {}) {
+    const fetchMock = vi.fn(
+      async (_url: string | URL | Request, _init?: RequestInit) =>
+        new Response("{}", { status: 200 }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await POST(makeRequest(overrides));
+
+    const call = fetchMock.mock.calls.find(([url]) =>
+      String(url).includes("api.resend.com"),
+    );
+    if (!call) throw new Error("no email was sent");
+    return JSON.parse(String(call[1]?.body));
+  }
+
+  it("names the time slot in Albanian, not as the form's internal value", async () => {
+    const body = await sentEmail({ time: "morning" });
+    expect(body.text).toContain("Ora:      Paradite");
+    expect(body.text).not.toContain("morning");
+  });
+
+  it("stays Albanian even when the patient used the English site", async () => {
+    const body = await sentEmail({ locale: "en", time: "evening" });
+    expect(body.text).toContain("Ora:      Në mbrëmje");
+    expect(body.text).toContain("Trajtimi: Kirurgji orale");
+    // The language the patient used is still recorded, so the reply matches it.
+    expect(body.text).toContain("(EN)");
+  });
+
+  it("spells out an unsure patient rather than sending the raw slug", async () => {
+    const body = await sentEmail({ service: "other" });
+    expect(body.text).toContain("Trajtimi: Nuk jam i sigurt / tjetër");
+    expect(body.text).not.toContain("Trajtimi: other");
   });
 });

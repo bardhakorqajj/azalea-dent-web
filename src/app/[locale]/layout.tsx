@@ -17,7 +17,7 @@ import {
 } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { dentistSchema } from "@/lib/schema";
-import { absoluteUrl, siteUrl } from "@/lib/site";
+import { absoluteUrl, languageAlternates, siteUrl } from "@/lib/site";
 import "@/styles/globals.css";
 
 const inter = Inter({
@@ -68,11 +68,7 @@ export async function generateMetadata({
     applicationName: clinic.name,
     alternates: {
       canonical: path(locale),
-      languages: {
-        sq: "/sq",
-        en: "/en",
-        "x-default": "/sq",
-      },
+      languages: languageAlternates(),
     },
     openGraph: {
       type: "website",

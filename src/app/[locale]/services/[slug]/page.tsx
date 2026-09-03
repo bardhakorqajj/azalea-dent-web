@@ -22,7 +22,7 @@ import {
 } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { breadcrumbSchema, serviceSchema } from "@/lib/schema";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, languageAlternates } from "@/lib/site";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -48,8 +48,7 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       languages: {
-        sq: `/sq/services/${slug}`,
-        en: `/en/services/${slug}`,
+        ...languageAlternates(`/services/${slug}`),
       },
     },
     openGraph: {

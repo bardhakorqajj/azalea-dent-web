@@ -28,8 +28,25 @@ export function isLocale(value: string): value is Locale {
   return (locales as readonly string[]).includes(value);
 }
 
-/** Builds a locale-prefixed href, e.g. `path("sq", "/contact") === "/sq/contact"`. */
+/**
+ * Builds an href for a page in a given language.
+ *
+ * The default language is served without a prefix, so Albanian pages read as
+ * `/` and `/contact` rather than `/sq/` and `/sq/contact`; other languages keep
+ * theirs, e.g. `/en/contact`. `middleware.ts` maps the unprefixed paths back
+ * onto the `[locale]` routes and redirects `/sq/...` here, so there is exactly
+ * one address per page.
+ */
 export function path(locale: Locale, href = "/"): string {
-  if (href === "/") return `/${locale}`;
-  return `/${locale}${href}`;
+  const prefix = locale === defaultLocale ? "" : `/${locale}`;
+  if (href === "/") return prefix || "/";
+  return `${prefix}${href}`;
+}
+
+/** Drops a leading locale segment, e.g. `/en/contact` → `/contact`. */
+export function stripLocale(pathname: string): string {
+  const [, first, ...rest] = pathname.split("/");
+  if (first && isLocale(first))
+    return `/${rest.join("/")}`.replace(/\/$/, "") || "/";
+  return pathname;
 }

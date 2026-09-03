@@ -6,12 +6,6 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
-  async redirects() {
-    return [
-      // The Albanian site is the canonical entry point.
-      { source: "/", destination: "/sq", permanent: false },
-    ];
-  },
   async headers() {
     return [
       {

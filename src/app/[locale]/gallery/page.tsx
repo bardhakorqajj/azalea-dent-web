@@ -10,7 +10,7 @@ import { Section } from "@/components/ui/Section";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, languageAlternates } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -26,7 +26,7 @@ export async function generateMetadata({
     description: dict.meta.galleryDescription,
     alternates: {
       canonical: path(locale, "/gallery"),
-      languages: { sq: "/sq/gallery", en: "/en/gallery" },
+      languages: languageAlternates("/gallery"),
     },
     openGraph: {
       title: `${dict.gallery.title} | Azalea Dent`,

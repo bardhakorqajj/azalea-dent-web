@@ -11,6 +11,7 @@ import {
   localeFlags,
   localeNames,
   path,
+  stripLocale,
   type Locale,
 } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
@@ -100,13 +101,13 @@ export function Header({ locale, dict }: HeaderProps) {
   }, [open]);
 
   /** Same page, other language. */
-  const swapLocale = (target: Locale) => {
-    const rest = pathname.replace(/^\/(sq|en)/, "");
-    return `/${target}${rest}`;
-  };
+  const swapLocale = (target: Locale) => path(target, stripLocale(pathname));
 
   const isActive = (href: string) => {
-    if (isHome) return activeSection !== null && href === path(locale, `/${activeSection}`);
+    if (isHome)
+      return (
+        activeSection !== null && href === path(locale, `/${activeSection}`)
+      );
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
@@ -175,7 +176,10 @@ export function Header({ locale, dict }: HeaderProps) {
                   )}
                 >
                   <span className="sr-only">{localeNames[option]}</span>
-                  <span aria-hidden="true" className="text-[1.1rem] leading-none">
+                  <span
+                    aria-hidden="true"
+                    className="text-[1.1rem] leading-none"
+                  >
                     {localeFlags[option]}
                   </span>
                 </Link>
@@ -200,7 +204,11 @@ export function Header({ locale, dict }: HeaderProps) {
             <span className="sr-only">
               {open ? dict.nav.closeMenu : dict.nav.openMenu}
             </span>
-            {open ? <Close className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {open ? (
+              <Close className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         </div>
       </div>
@@ -212,17 +220,19 @@ export function Header({ locale, dict }: HeaderProps) {
       >
         <nav aria-label={dict.nav.menu} className="px-6 pt-4 pb-8 sm:px-8">
           <ul className="flex flex-col">
-            {[{ href: path(locale), label: dict.nav.home }, ...links].map((link) => (
-              <li key={link.href} className="border-b border-ink-900/8">
-                <Link
-                  href={link.href}
-                  aria-current={isActive(link.href) ? "page" : undefined}
-                  className="flex min-h-14 items-center font-display text-[1.6rem] text-ink-900"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {[{ href: path(locale), label: dict.nav.home }, ...links].map(
+              (link) => (
+                <li key={link.href} className="border-b border-ink-900/8">
+                  <Link
+                    href={link.href}
+                    aria-current={isActive(link.href) ? "page" : undefined}
+                    className="flex min-h-14 items-center font-display text-[1.6rem] text-ink-900"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ),
+            )}
           </ul>
 
           <Link
@@ -242,7 +252,9 @@ export function Header({ locale, dict }: HeaderProps) {
                 aria-current={option === locale ? "true" : undefined}
                 className={cn(
                   "px-2 py-2",
-                  option === locale ? "text-ink-900 underline underline-offset-4" : "text-ink-500",
+                  option === locale
+                    ? "text-ink-900 underline underline-offset-4"
+                    : "text-ink-500",
                 )}
               >
                 <span aria-hidden="true" className="mr-2 text-[1.05rem]">

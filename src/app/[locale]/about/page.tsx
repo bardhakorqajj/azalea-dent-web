@@ -17,7 +17,7 @@ import { services } from "@/content/services";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, languageAlternates } from "@/lib/site";
 import Link from "next/link";
 
 export async function generateMetadata({
@@ -34,7 +34,7 @@ export async function generateMetadata({
     description: dict.meta.aboutDescription,
     alternates: {
       canonical: path(locale, "/about"),
-      languages: { sq: "/sq/about", en: "/en/about" },
+      languages: languageAlternates("/about"),
     },
     openGraph: {
       title: `${dict.about.title} | Azalea Dent`,

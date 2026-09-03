@@ -16,7 +16,7 @@ import { formatDayRange, formatHours } from "@/lib/hours";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, languageAlternates } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -32,7 +32,7 @@ export async function generateMetadata({
     description: dict.meta.appointmentDescription,
     alternates: {
       canonical: path(locale, "/appointment"),
-      languages: { sq: "/sq/appointment", en: "/en/appointment" },
+      languages: languageAlternates("/appointment"),
     },
     openGraph: {
       title: `${dict.appointment.title} | Azalea Dent`,

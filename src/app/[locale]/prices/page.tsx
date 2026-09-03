@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl } from "@/lib/site";
+import { absoluteUrl, languageAlternates } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -24,7 +24,7 @@ export async function generateMetadata({
     description: dict.meta.pricesDescription,
     alternates: {
       canonical: path(locale, "/prices"),
-      languages: { sq: "/sq/prices", en: "/en/prices" },
+      languages: languageAlternates("/prices"),
     },
     openGraph: {
       title: `${dict.prices.title} | Azalea Dent`,

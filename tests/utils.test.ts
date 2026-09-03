@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { isLocale, path } from "@/i18n/config";
+import { isLocale, path, stripLocale } from "@/i18n/config";
+import { languageAlternates } from "@/lib/site";
 import { formatDayRange, formatHours } from "@/lib/hours";
 import { cn, initials, interpolate } from "@/lib/utils";
 
@@ -12,14 +13,19 @@ describe("cn", () => {
 
 describe("interpolate", () => {
   it("replaces known tokens and leaves unknown ones alone", () => {
-    expect(interpolate("{current} nga {total}", { current: 2, total: 5 })).toBe("2 nga 5");
+    expect(interpolate("{current} nga {total}", { current: 2, total: 5 })).toBe(
+      "2 nga 5",
+    );
     expect(interpolate("{missing}", {})).toBe("{missing}");
   });
 });
 
 describe("path", () => {
   it("builds locale-prefixed hrefs", () => {
-    expect(path("sq")).toBe("/sq");
+    // The default language is published without a prefix.
+    expect(path("sq")).toBe("/");
+    expect(path("sq", "/contact")).toBe("/contact");
+    expect(path("en")).toBe("/en");
     expect(path("en", "/contact")).toBe("/en/contact");
   });
 });
@@ -59,9 +65,9 @@ describe("formatHours", () => {
   });
 
   it("uses the closed label when there are no hours", () => {
-    expect(formatHours({ days: ["sun"], opens: null, closes: null }, "Mbyllur")).toBe(
-      "Mbyllur",
-    );
+    expect(
+      formatHours({ days: ["sun"], opens: null, closes: null }, "Mbyllur"),
+    ).toBe("Mbyllur");
   });
 });
 
@@ -87,5 +93,35 @@ describe("localeFlags", () => {
     }
     expect(localeFlags.sq).toBe("🇦🇱");
     expect(localeFlags.en).toBe("🇬🇧");
+  });
+});
+
+describe("stripLocale", () => {
+  it("removes a leading language segment and leaves everything else alone", () => {
+    expect(stripLocale("/en/contact")).toBe("/contact");
+    expect(stripLocale("/sq/services/protetike")).toBe("/services/protetike");
+    expect(stripLocale("/en")).toBe("/");
+    expect(stripLocale("/contact")).toBe("/contact");
+    expect(stripLocale("/")).toBe("/");
+  });
+
+  it("keeps a path whose first segment merely looks like one", () => {
+    // "english" is not a locale, so it is a page name.
+    expect(stripLocale("/english")).toBe("/english");
+  });
+});
+
+describe("languageAlternates", () => {
+  it("points each language at its own address, unprefixed for the default", () => {
+    expect(languageAlternates("/prices")).toEqual({
+      sq: "/prices",
+      en: "/en/prices",
+      "x-default": "/prices",
+    });
+    expect(languageAlternates()).toEqual({
+      sq: "/",
+      en: "/en",
+      "x-default": "/",
+    });
   });
 });

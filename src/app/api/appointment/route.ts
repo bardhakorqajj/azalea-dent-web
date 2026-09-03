@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getService } from "@/content/services";
 import { isLocale, defaultLocale } from "@/i18n/config";
+import { sq } from "@/i18n/dictionaries/sq";
 import { resolveChannels, type Channel } from "@/lib/delivery";
 import {
   validateAppointment,
@@ -31,6 +32,14 @@ import {
  */
 
 export const runtime = "nodejs";
+
+/** The time slots as the clinic reads them, not as the form stores them. */
+const TIME_LABELS: Record<AppointmentRequest["time"] & string, string> = {
+  "": "",
+  morning: sq.appointment.form.timeMorning,
+  afternoon: sq.appointment.form.timeAfternoon,
+  evening: sq.appointment.form.timeEvening,
+};
 
 /** Best-effort throttle. Serverless instances are short-lived, so this trims
  *  obvious floods rather than acting as a hard guarantee. */
@@ -165,8 +174,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "validation", fields: errors }, { status: 422 });
   }
 
+  /* The clinic reads these messages, so they are written in Albanian whichever
+     language the patient used. Only the note at the end records that, so a
+     reply can be sent in the right language. */
   const service = getService(appointment.service);
-  const serviceLabel = service ? service.title[locale] : appointment.service;
+  const serviceLabel = service
+    ? service.title.sq
+    : appointment.service === "other"
+      ? sq.appointment.form.serviceOther
+      : appointment.service;
+  const timeLabel = appointment.time ? TIME_LABELS[appointment.time] : "";
 
   const summary = [
     `Emri:     ${appointment.name}`,
@@ -174,7 +191,7 @@ export async function POST(request: Request) {
     appointment.email ? `Email:    ${appointment.email}` : null,
     `Trajtimi: ${serviceLabel}`,
     `Data:     ${appointment.date}`,
-    appointment.time ? `Ora:      ${appointment.time}` : null,
+    timeLabel ? `Ora:      ${timeLabel}` : null,
     appointment.message ? `\nMesazhi:\n${appointment.message}` : null,
     `\nDërguar nga faqja (${locale.toUpperCase()}) më ${new Date().toISOString()}.`,
   ]
@@ -184,7 +201,7 @@ export async function POST(request: Request) {
   const sms = [
     `Azalea Dent - kerkese e re`,
     `${appointment.name}, ${appointment.phone}`,
-    `${serviceLabel}, ${appointment.date}${appointment.time ? ` (${appointment.time})` : ""}`,
+    `${serviceLabel}, ${appointment.date}${timeLabel ? ` (${timeLabel})` : ""}`,
   ].join("\n");
 
   const channels = resolveChannels(process.env);
