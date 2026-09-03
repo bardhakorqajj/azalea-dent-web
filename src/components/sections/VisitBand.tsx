@@ -28,8 +28,8 @@ export function VisitBand({ locale, dict }: { locale: Locale; dict: Dictionary }
       data-surface="dark"
       className="surface-grain bg-ink-950 text-bone-100"
     >
-      <div className="grid lg:grid-cols-2 lg:items-center">
-        <div className="relative aspect-[3/2] w-full lg:self-center">
+      <div className="grid lg:grid-cols-2">
+        <div className="relative h-[62vw] max-h-[34rem] min-h-[18rem] w-full lg:h-full lg:max-h-none lg:min-h-[34rem]">
           <Image
             src={photo.src}
             alt={photo.alt[locale]}

@@ -27,7 +27,7 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
       <div className="mx-auto grid w-full max-w-[100rem] items-stretch lg:grid-cols-12">
         <div className="order-2 flex flex-col justify-center px-6 py-14 sm:px-8 sm:py-20 lg:order-1 lg:col-span-6 lg:py-32 lg:pr-16 lg:pl-12 xl:col-span-6">
           <p className="eyebrow flex items-center gap-3 text-gold-700">
-            <AzaleaMark className="h-5 w-5 text-gold-500" weight={4} />
+            <AzaleaMark className="h-6 w-6 shrink-0 text-gold-500" weight={3.6} />
             {dict.hero.eyebrow}
           </p>
 

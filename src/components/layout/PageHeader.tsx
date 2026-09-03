@@ -51,7 +51,7 @@ export function PageHeader({
         )}
 
         <p className="eyebrow flex items-center gap-3 text-gold-700">
-          <AzaleaMark className="h-5 w-5 text-gold-500" weight={4} />
+          <AzaleaMark className="h-6 w-6 shrink-0 text-gold-500" weight={3.6} />
           {eyebrow ?? dict.hero.eyebrow}
         </p>
 
