@@ -48,7 +48,7 @@ export const en: Dictionary = {
 
   hero: {
     eyebrow: "Dental clinic in Prishtina",
-    title: "Dental care, clearly explained.",
+    title: "Dental care, devoted to your smile.",
     lead: "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants, we talk through every treatment plan with you before it begins.",
     imageCaption: "The treatment room",
     scroll: "Scroll",

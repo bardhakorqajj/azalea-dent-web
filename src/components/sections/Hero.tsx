@@ -29,7 +29,7 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             {dict.hero.eyebrow}
           </p>
 
-          <h1 className="mt-7 max-w-xl text-[2.6rem] leading-[1.05] text-ink-900 sm:text-[3.4rem] lg:text-[3.9rem] xl:text-[4.4rem] dark:text-bone-50">
+          <h1 className="mt-7 max-w-xl text-[2.4rem] leading-[1.07] text-ink-900 sm:text-[3.1rem] lg:text-[3rem] xl:text-[3.9rem] dark:text-bone-50">
             {dict.hero.title}
           </h1>
 

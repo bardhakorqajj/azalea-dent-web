@@ -46,7 +46,7 @@ export const sq = {
 
   hero: {
     eyebrow: "Klinikë dentare në Prishtinë",
-    title: "Kujdes dentar, i shpjeguar qartë.",
+    title: "Kujdes dentar, me përkushtim ndaj buzëqeshjes suaj.",
     lead: "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia, çdo plan trajtimi e diskutojmë bashkë me ju përpara se të fillojë.",
     imageCaption: "Dhoma e trajtimit",
     scroll: "Zbrit",
