@@ -17,11 +17,6 @@ import type { Dictionary } from "@/i18n/get-dictionary";
 export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const photo = photos.operatoryOak;
 
-  /* Three treatments surfaced as a quick index into the services page. */
-  const featured = services.filter((service) =>
-    ["kirurgji-orale", "protetike", "estetike-dentare"].includes(service.slug),
-  );
-
   return (
     <section className="relative bg-bone-50 pt-20 lg:pt-24 dark:bg-ink-950">
       <div className="mx-auto grid w-full max-w-[100rem] items-stretch lg:grid-cols-12">
@@ -51,18 +46,16 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
             </ButtonLink>
           </div>
 
-          <ul className="mt-12 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-ink-900/10 pt-7 dark:border-bone-100/12">
-            {featured.map((service, index) => (
-              <li key={service.slug} className="flex items-center gap-4">
-                {index > 0 && (
-                  <span
-                    aria-hidden="true"
-                    className="h-3 w-px bg-ink-900/15 dark:bg-bone-100/20"
-                  />
-                )}
+          {/* All eight treatments as a quick index into the services page.
+              Chips rather than a divided row: the names are long enough to
+              wrap, and a hairline divider between them would then land at the
+              start of a line. */}
+          <ul className="mt-12 flex flex-wrap gap-2 border-t border-ink-900/10 pt-7 dark:border-bone-100/12">
+            {services.map((service) => (
+              <li key={service.slug}>
                 <Link
                   href={`${path(locale, "/services")}/${service.slug}`}
-                  className="text-[0.8rem] tracking-wide text-ink-500 underline-offset-4 transition-colors hover:text-ink-900 hover:underline hover:decoration-gold-500 dark:text-bone-300 dark:hover:text-bone-50"
+                  className="inline-flex min-h-9 items-center rounded-sm border border-ink-900/15 px-3 text-[0.78rem] tracking-wide text-ink-600 transition-colors hover:border-ink-900/40 hover:text-ink-900 dark:border-bone-100/15 dark:text-bone-300 dark:hover:border-bone-100/40 dark:hover:text-bone-50"
                 >
                   {service.title[locale]}
                 </Link>
