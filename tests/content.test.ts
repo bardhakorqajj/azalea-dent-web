@@ -11,7 +11,7 @@ import {
   whatsappHref,
 } from "@/content/clinic";
 import { fallbackChannels } from "@/components/layout/ContactChannels";
-import { galleryOrder, photos } from "@/content/images";
+import { galleryOrder, photos, workPhotos } from "@/content/images";
 import { formatPrice, priceGroups, priceItemCount } from "@/content/prices";
 import { getService, services, serviceSlugs } from "@/content/services";
 import { locales } from "@/i18n/config";
@@ -78,6 +78,23 @@ describe("photos", () => {
   it("orders the gallery from real photo keys only", () => {
     for (const key of galleryOrder) expect(photos[key]).toBeDefined();
     expect(new Set(galleryOrder).size).toBe(galleryOrder.length);
+  });
+
+  it("opens the gallery with the street sign, before the entrance", () => {
+    // The sequence follows how a patient meets the clinic, from the road in.
+    expect(galleryOrder.slice(0, 2)).toEqual(["streetSign", "facadeNight"]);
+  });
+
+  it("holds treatment photographs to the same standard as the rest", () => {
+    // Empty for now, so the "Puna jonë" section stays hidden; whatever is
+    // added has to carry alt text and a caption in both languages like
+    // every other photograph on the site.
+    for (const photo of workPhotos) {
+      for (const locale of locales) {
+        expect(photo.alt[locale].length).toBeGreaterThan(10);
+        expect(photo.caption[locale].length).toBeGreaterThan(0);
+      }
+    }
   });
 });
 

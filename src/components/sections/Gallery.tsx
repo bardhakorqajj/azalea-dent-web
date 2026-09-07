@@ -4,23 +4,33 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Close } from "@/components/ui/Icons";
-import { galleryOrder, photos } from "@/content/images";
+import { galleryOrder, photos, type Photo } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { interpolate } from "@/lib/utils";
 
+/** The clinic's rooms, in the order a patient meets them. */
+const CLINIC_PHOTOS: Photo[] = galleryOrder.map((key) => photos[key]);
+
 /**
- * The clinic photographs as a horizontal strip: every tile the same size, in
- * the order a patient meets the space, scrolled sideways with the scrollbar
- * hidden. Arrow buttons and the native keyboard scroll both work, so the strip
- * is reachable without a trackpad gesture. Each tile opens in a lightbox.
+ * Photographs as a horizontal strip: every tile the same size, scrolled
+ * sideways with the scrollbar hidden. Arrow buttons and the native keyboard
+ * scroll both work, so the strip is reachable without a trackpad gesture.
+ * Each tile opens in a lightbox.
+ *
+ * Takes its photographs as a prop so the same strip serves both the clinic
+ * rooms and the treatment gallery, each with its own accessible name.
  */
 export function Gallery({
   locale,
   dict,
+  items = CLINIC_PHOTOS,
+  label,
 }: {
   locale: Locale;
   dict: Dictionary;
+  items?: Photo[];
+  label?: string;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const triggerRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -28,7 +38,7 @@ export function Gallery({
   const stripRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  const total = galleryOrder.length;
+  const total = items.length;
 
   /* The strip advances on its own, and holds still while someone is reading
      it, has the lightbox open, or has asked for reduced motion. */
@@ -105,8 +115,7 @@ export function Gallery({
     };
   }, [openIndex, close, step]);
 
-  const active = openIndex === null ? null : galleryOrder[openIndex];
-  const activePhoto = active ? photos[active] : null;
+  const activePhoto = openIndex === null ? null : (items[openIndex] ?? null);
 
   return (
     <>
@@ -117,7 +126,7 @@ export function Gallery({
           ref={stripRef}
           tabIndex={0}
           role="region"
-          aria-label={dict.gallery.title}
+          aria-label={label ?? dict.gallery.title}
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocusCapture={() => setPaused(true)}
@@ -126,11 +135,10 @@ export function Gallery({
           className="scrollbar-none overflow-x-auto overscroll-x-contain scroll-smooth pb-2"
         >
           <ul className="flex snap-x snap-mandatory gap-5 sm:gap-6">
-            {galleryOrder.map((key, index) => {
-              const photo = photos[key];
+            {items.map((photo, index) => {
               return (
                 <li
-                  key={key}
+                  key={photo.caption.sq}
                   className="w-[80%] shrink-0 snap-start sm:w-[46%] lg:w-[31%]"
                 >
                   <figure className="group">

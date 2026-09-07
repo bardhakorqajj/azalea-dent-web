@@ -5,6 +5,7 @@ import glassDetail from "@/assets/images/glass-detail.jpg";
 import operatoryDaylight from "@/assets/images/operatory-daylight.jpg";
 import operatoryOak from "@/assets/images/operatory-oak.jpg";
 import reception from "@/assets/images/reception.jpg";
+import streetSign from "@/assets/images/street-sign.jpg";
 
 import type { Localised } from "./services";
 
@@ -74,6 +75,20 @@ export const photos = {
     },
     focus: "center center",
   },
+  streetSign: {
+    src: streetSign,
+    alt: {
+      sq: "Tabela e ndriçuar e Azalea Dent mbi rrugë në mbrëmje, me logon e azaleas, emrin e klinikës dhe numrin e telefonit, para qiellit në perëndim.",
+      en: "The illuminated Azalea Dent sign above the street in the evening, with the azalea logo, the clinic name and the phone number, against the sunset sky.",
+    },
+    caption: {
+      sq: "Tabela e klinikës",
+      en: "The clinic sign",
+    },
+    /* Portrait frame: holds the whole sign, logo included, in the gallery's
+       landscape crop while keeping some of the sunset behind it. */
+    focus: "center 10%",
+  },
   glassDetail: {
     src: glassDetail,
     alt: {
@@ -91,10 +106,22 @@ export const photos = {
 export type PhotoKey = keyof typeof photos;
 
 /**
- * Gallery order — arranged as a sequence rather than a plain grid: arrival,
- * waiting, the corridor, then the treatment room.
+ * Gallery order — arranged as a sequence rather than a plain grid: the sign
+ * from the street, arrival, waiting, the corridor, then the treatment room.
  */
+/**
+ * Treatment photographs — the clinic's own cases, shown under "Puna jonë".
+ *
+ * Empty until real ones are added, and the section stays hidden while it is:
+ * an empty gallery is worse than no gallery. Add them the same way as the
+ * photographs above — a static import from `@/assets/images`, alt text in
+ * both languages, and a caption. Every case needs the patient's permission
+ * before it goes online.
+ */
+export const workPhotos: Photo[] = [];
+
 export const galleryOrder: PhotoKey[] = [
+  "streetSign",
   "facadeNight",
   "reception",
   "glassDetail",

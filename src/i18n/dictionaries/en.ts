@@ -49,8 +49,7 @@ export const en: Dictionary = {
   hero: {
     eyebrow: "Dental clinic in Prishtina",
     title: "Dental care, clearly explained.",
-    lead:
-      "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants, we talk through every treatment plan with you before it begins.",
+    lead: "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants, we talk through every treatment plan with you before it begins.",
     imageCaption: "The treatment room",
     scroll: "Scroll",
   },
@@ -71,8 +70,7 @@ export const en: Dictionary = {
   services: {
     eyebrow: "Treatments",
     title: "What we offer",
-    lead:
-      "Every treatment is carried out at the clinic, from a routine check-up to surgical procedures.",
+    lead: "Every treatment is carried out at the clinic, from a routine check-up to surgical procedures.",
     pageTitle: "Treatments",
     pageLead:
       "The eight areas of treatment at Azalea Dent, explained step by step: what they cover, how they work and what to expect.",
@@ -87,10 +85,8 @@ export const en: Dictionary = {
   prices: {
     eyebrow: "Prices",
     title: "Price list",
-    lead:
-      "What treatment at Azalea Dent costs, following the same list displayed at the clinic.",
-    note:
-      "Prices are in euro. The final treatment plan and its cost are set after an examination at the clinic.",
+    lead: "What treatment at Azalea Dent costs, following the same list displayed at the clinic.",
+    note: "Prices are in euro. The final treatment plan and its cost are set after an examination at the clinic.",
     ctaTitle: "Cannot find the treatment you are looking for?",
     ctaBody:
       "Call or message us and we will tell you exactly what the treatment involves and what it costs.",
@@ -119,12 +115,17 @@ export const en: Dictionary = {
     ],
   },
 
+  work: {
+    eyebrow: "Gallery",
+    title: "Our work",
+    lead: "Cases from our day-to-day practice.",
+  },
+
   gallery: {
     eyebrow: "Gallery",
     title: "Inside the clinic",
     lead: "Real photographs of the space where your treatment takes place.",
-    pageLead:
-      "The entrance, the waiting area and the treatment room, exactly as they are.",
+    pageLead: "The entrance, the waiting area and the treatment room.",
     open: "Enlarge photograph",
     close: "Close",
     previous: "Previous photograph",
@@ -147,8 +148,7 @@ export const en: Dictionary = {
   visit: {
     eyebrow: "Visiting",
     title: "Find us here",
-    lead:
-      "The clinic is on the ground floor, with direct street access and an illuminated sign.",
+    lead: "The clinic is on the ground floor, with direct street access and an illuminated sign.",
     hoursTitle: "Opening hours",
     addressTitle: "Address",
     contactTitle: "Contact",
@@ -199,8 +199,7 @@ export const en: Dictionary = {
   appointment: {
     eyebrow: "Appointments",
     title: "Appointment request",
-    lead:
-      "Fill in the form and we will contact you to confirm the date and time. A request is not a confirmed appointment until we reply.",
+    lead: "Fill in the form and we will contact you to confirm the date and time. A request is not a confirmed appointment until we reply.",
     directTitle: "Or contact us directly",
     form: {
       name: "Full name",
@@ -277,8 +276,7 @@ export const en: Dictionary = {
   contact: {
     eyebrow: "Contact",
     title: "Contact the clinic",
-    lead:
-      "For an appointment, a question or a second opinion, write to us and we will reply.",
+    lead: "For an appointment, a question or a second opinion, write to us and we will reply.",
     formTitle: "Appointment request",
     infoTitle: "Clinic details",
   },

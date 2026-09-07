@@ -49,6 +49,13 @@ const PHOTOS = [
     // Trims foreground floor so the etched mark carries the frame.
     extract: { left: 0, top: 0, width: 1200, height: 790 },
   },
+  {
+    from: "street-sign.jpg",
+    to: "street-sign.jpg",
+    note: "Illuminated street sign at dusk",
+    // Left uncropped: the gallery tile frames it with object-position, and
+    // the lightbox shows the whole portrait frame including the sunset.
+  },
 ];
 
 const MAX_EDGE = 1600;

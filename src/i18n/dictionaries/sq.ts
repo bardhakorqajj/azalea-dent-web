@@ -47,8 +47,7 @@ export const sq = {
   hero: {
     eyebrow: "Klinikë dentare në Prishtinë",
     title: "Kujdes dentar, i shpjeguar qartë.",
-    lead:
-      "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia, çdo plan trajtimi e diskutojmë bashkë me ju përpara se të fillojë.",
+    lead: "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia, çdo plan trajtimi e diskutojmë bashkë me ju përpara se të fillojë.",
     imageCaption: "Dhoma e trajtimit",
     scroll: "Zbrit",
   },
@@ -69,8 +68,7 @@ export const sq = {
   services: {
     eyebrow: "Trajtimet",
     title: "Çfarë ofrojmë",
-    lead:
-      "Të gjitha trajtimet kryhen në klinikë, nga kontrolli i rregullt te ndërhyrjet kirurgjikale.",
+    lead: "Të gjitha trajtimet kryhen në klinikë, nga kontrolli i rregullt te ndërhyrjet kirurgjikale.",
     pageTitle: "Trajtimet",
     pageLead:
       "Tetë fushat e trajtimit në Azalea Dent, të shpjeguara hap pas hapi: çfarë përfshijnë, si zhvillohen dhe çfarë të prisni.",
@@ -85,10 +83,8 @@ export const sq = {
   prices: {
     eyebrow: "Çmimet",
     title: "Lista e çmimeve",
-    lead:
-      "Çmimet e shërbimeve stomatologjike në Azalea Dent, sipas listës që gjendet edhe në klinikë.",
-    note:
-      "Çmimet janë në euro. Plani përfundimtar i trajtimit dhe kostoja e tij përcaktohen pas ekzaminimit në klinikë.",
+    lead: "Çmimet e shërbimeve stomatologjike në Azalea Dent, sipas listës që gjendet edhe në klinikë.",
+    note: "Çmimet janë në euro. Plani përfundimtar i trajtimit dhe kostoja e tij përcaktohen pas ekzaminimit në klinikë.",
     ctaTitle: "Nuk e gjeni shërbimin që kërkoni?",
     ctaBody:
       "Na telefononi ose na shkruani dhe ju themi saktësisht se çfarë përfshin trajtimi dhe sa kushton.",
@@ -117,12 +113,17 @@ export const sq = {
     ],
   },
 
+  work: {
+    eyebrow: "Galeria",
+    title: "Puna jonë",
+    lead: "Raste nga praktika jonë e përditshme.",
+  },
+
   gallery: {
     eyebrow: "Galeria",
     title: "Brenda klinikës",
     lead: "Fotografi të vërteta të ambientit ku do të kryhet trajtimi juaj.",
-    pageLead:
-      "Hyrja, zona e pritjes dhe dhoma e trajtimit, ashtu siç janë në të vërtetë.",
+    pageLead: "Hyrja, zona e pritjes dhe dhoma e trajtimit.",
     open: "Zmadho fotografinë",
     close: "Mbyll",
     previous: "Fotografia e mëparshme",
@@ -145,8 +146,7 @@ export const sq = {
   visit: {
     eyebrow: "Vizita",
     title: "Na gjeni këtu",
-    lead:
-      "Klinika ndodhet në katin përdhes, me hyrje direkte nga rruga dhe tabelë të ndriçuar.",
+    lead: "Klinika ndodhet në katin përdhes, me hyrje direkte nga rruga dhe tabelë të ndriçuar.",
     hoursTitle: "Orari",
     addressTitle: "Adresa",
     contactTitle: "Kontakti",
@@ -197,8 +197,7 @@ export const sq = {
   appointment: {
     eyebrow: "Takimi",
     title: "Kërkesë për takim",
-    lead:
-      "Plotësoni formularin dhe ju kontaktojmë për të konfirmuar datën dhe orën. Kërkesa nuk është takim i konfirmuar derisa t'ju përgjigjemi.",
+    lead: "Plotësoni formularin dhe ju kontaktojmë për të konfirmuar datën dhe orën. Kërkesa nuk është takim i konfirmuar derisa t'ju përgjigjemi.",
     directTitle: "Ose na kontaktoni direkt",
     form: {
       name: "Emri dhe mbiemri",
@@ -262,8 +261,7 @@ export const sq = {
   about: {
     eyebrow: "Klinika",
     title: "Për Azalea Dent",
-    lead:
-      "Një klinikë dentare e ndërtuar që vizita të ndihet e qetë dhe e kuptueshme.",
+    lead: "Një klinikë dentare e ndërtuar që vizita të ndihet e qetë dhe e kuptueshme.",
     storyTitle: "Hapësira",
     story: [
       "Azalea Dent ndodhet në katin përdhes, me hyrje direkte nga rruga. Tabela e ndriçuar dhe lulja e azaleas, e njëjta që gjendet e gdhendur në xhamat brenda, janë shenja e parë e klinikës.",
@@ -281,8 +279,7 @@ export const sq = {
   contact: {
     eyebrow: "Kontakti",
     title: "Kontaktoni klinikën",
-    lead:
-      "Për një takim, një pyetje ose një mendim të dytë, na shkruani dhe ju kthejmë përgjigje.",
+    lead: "Për një takim, një pyetje ose një mendim të dytë, na shkruani dhe ju kthejmë përgjigje.",
     formTitle: "Kërkesë për takim",
     infoTitle: "Të dhënat e klinikës",
   },
