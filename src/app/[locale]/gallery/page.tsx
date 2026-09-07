@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { PageHeader } from "@/components/layout/PageHeader";
 import { CtaBand } from "@/components/sections/CtaBand";
 import { Gallery } from "@/components/sections/Gallery";
 import { Container } from "@/components/ui/Container";
@@ -50,20 +49,23 @@ export default async function GalleryPage({
 
   return (
     <>
-      <PageHeader
-        locale={locale}
-        dict={dict}
-        eyebrow={dict.gallery.eyebrow}
-        title={dict.gallery.title}
-        lead={dict.gallery.pageLead}
-        breadcrumbs={[
-          { href: path(locale, "/gallery"), label: dict.nav.gallery },
-        ]}
-      />
-
-      <Section surface="bone">
+      {/* Each set carries its own heading directly above its photographs, so
+          the two read as two galleries rather than a page title followed by a
+          loose strip. The top padding stands in for the page header this
+          replaced, clearing the fixed site header. */}
+      <Section
+        surface="bone"
+        spacing="none"
+        className="pt-32 pb-20 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28"
+      >
         <Container>
-          <Gallery locale={locale} dict={dict} />
+          <SectionHeading
+            as="h1"
+            title={dict.gallery.title}
+            lead={dict.gallery.pageLead}
+            className="mb-12"
+          />
+          <Gallery locale={locale} dict={dict} label={dict.gallery.title} />
         </Container>
       </Section>
 
@@ -72,7 +74,6 @@ export default async function GalleryPage({
         <Section surface="bone-warm">
           <Container>
             <SectionHeading
-              eyebrow={dict.work.eyebrow}
               title={dict.work.title}
               lead={dict.work.lead}
               className="mb-12"

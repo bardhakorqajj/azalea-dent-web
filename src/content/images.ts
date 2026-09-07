@@ -11,6 +11,15 @@ import work02 from "@/assets/images/work-02.jpg";
 import work03 from "@/assets/images/work-03.jpg";
 import work04 from "@/assets/images/work-04.jpg";
 import work05 from "@/assets/images/work-05.jpg";
+import work06 from "@/assets/images/work-06.jpg";
+import work07 from "@/assets/images/work-07.jpg";
+import work08 from "@/assets/images/work-08.jpg";
+import work09 from "@/assets/images/work-09.jpg";
+import work10 from "@/assets/images/work-10.jpg";
+import work11 from "@/assets/images/work-11.jpg";
+import work12 from "@/assets/images/work-12.jpg";
+import work13 from "@/assets/images/work-13.jpg";
+import work14 from "@/assets/images/work-14.jpg";
 
 import type { Localised } from "./services";
 
@@ -177,6 +186,105 @@ export const workPhotos: Photo[] = [
     caption: {
       sq: "Buzëqeshja, para dhe pas",
       en: "The smile, before and after",
+    },
+  },
+  {
+    src: work06,
+    alt: {
+      sq: "Para dhe pas: dhëmbët e sipërm të përparmë, fillimisht të çngjyrosur dhe të pabarabartë, pastaj të njëtrajtshëm.",
+      en: "Before and after: the upper front teeth, first discoloured and uneven, then uniform.",
+    },
+    caption: {
+      sq: "Dhëmbët e sipërm, para dhe pas",
+      en: "The upper teeth, before and after",
+    },
+  },
+  {
+    src: work07,
+    alt: {
+      sq: "Para dhe pas, nga afër dhe anash: sipërfaqja e dhëmbëve fillimisht me njolla, pastaj e pastër dhe e lëmuar.",
+      en: "Before and after, close up from the side: the tooth surface first stained, then clean and smooth.",
+    },
+    caption: {
+      sq: "Pamje anësore, para dhe pas",
+      en: "Side view, before and after",
+    },
+  },
+  {
+    src: work08,
+    alt: {
+      sq: "Para dhe pas: dhëmbët e përparmë me ngjyrë të verdhë dhe skaje të parregullta, pastaj më të çelët dhe më të rregullt.",
+      en: "Before and after: the front teeth yellowed with uneven edges, then lighter and more even.",
+    },
+    caption: {
+      sq: "Ngjyra e dhëmbëve, para dhe pas",
+      en: "Tooth shade, before and after",
+    },
+  },
+  {
+    src: work09,
+    alt: {
+      sq: "Para dhe pas: dhëmbët e sipërm dhe të poshtëm të konsumuar rëndë, pastaj të dy harqet e rikthyer.",
+      en: "Before and after: the upper and lower teeth heavily worn, then both arches restored.",
+    },
+    caption: {
+      sq: "Të dy harqet, para dhe pas",
+      en: "Both arches, before and after",
+    },
+  },
+  {
+    src: work10,
+    alt: {
+      sq: "Gjatë trajtimit: mishi i dhëmbëve i mbrojtur me një shtresë mbrojtëse blu përpara punës në dhëmbë.",
+      en: "During treatment: the gums shielded with a blue protective barrier before work on the teeth.",
+    },
+    caption: {
+      sq: "Gjatë trajtimit",
+      en: "During treatment",
+    },
+  },
+  {
+    src: work11,
+    alt: {
+      sq: "Para dhe pas, nga afër: dhëmbët e përparmë të sipërm, me ngjyrë më të ndriçuar pas trajtimit.",
+      en: "Before and after, close up: the upper front teeth, brighter in shade after treatment.",
+    },
+    caption: {
+      sq: "Nga afër, para dhe pas",
+      en: "Up close, before and after",
+    },
+  },
+  {
+    src: work12,
+    alt: {
+      sq: "Skanim dixhital i harkut para dhe pas, dhe aparati transparent i vendosur mbi dhëmbë.",
+      en: "A digital scan of the arch before and after, and the clear aligner in place over the teeth.",
+    },
+    caption: {
+      sq: "Skanim dhe aparat transparent",
+      en: "Scan and clear aligner",
+    },
+  },
+  {
+    src: work13,
+    alt: {
+      sq: "Para dhe pas: dhëmbë të konsumuar dhe të errësuar, pastaj një rresht i plotë dhëmbësh të rregullt.",
+      en: "Before and after: worn, darkened teeth, then a complete, even row of teeth.",
+    },
+    caption: {
+      sq: "Dhëmbë të konsumuar, para dhe pas",
+      en: "Worn teeth, before and after",
+    },
+  },
+  {
+    src: work14,
+    alt: {
+      sq: "Para dhe pas, ballore dhe anash: dhëmbët e konsumuar, pastaj puna e përfunduar e parë nga të dy anët.",
+      en: "Before and after, from the front and the side: the worn teeth, then the finished work seen from both.",
+    },
+    caption: {
+      sq: "Pamje ballore dhe anësore, para dhe pas",
+      en: "Front and side view, before and after",
     },
   },
 ];

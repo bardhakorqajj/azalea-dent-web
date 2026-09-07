@@ -101,7 +101,17 @@ export function Header({ locale, dict }: HeaderProps) {
     };
   }, [open]);
 
-  /** Same page, other language. */
+  /**
+   * Same page, other language.
+   *
+   * Rendered as a plain anchor rather than `next/link` on purpose. A soft
+   * navigation across the `[locale]` segment re-renders the root layout with a
+   * new `lang`, and React drops the `data-theme` attribute the theme script
+   * set on `<html>` — so a visitor reading in dark mode was thrown back to
+   * light every time they switched language. A real document navigation runs
+   * that script again and the theme holds. Switching language replaces every
+   * word on the page anyway, so there is little a soft navigation would save.
+   */
   const swapLocale = (target: Locale) => path(target, stripLocale(pathname));
 
   const isActive = (href: string) => {
@@ -168,7 +178,7 @@ export function Header({ locale, dict }: HeaderProps) {
                     /
                   </span>
                 )}
-                <Link
+                <a
                   href={swapLocale(option)}
                   hrefLang={option}
                   aria-current={option === locale ? "true" : undefined}
@@ -186,7 +196,7 @@ export function Header({ locale, dict }: HeaderProps) {
                   >
                     {localeFlags[option]}
                   </span>
-                </Link>
+                </a>
               </span>
             ))}
           </div>
@@ -269,7 +279,7 @@ export function Header({ locale, dict }: HeaderProps) {
                       /
                     </span>
                   )}
-                  <Link
+                  <a
                     href={swapLocale(option)}
                     hrefLang={option}
                     aria-current={option === locale ? "true" : undefined}
@@ -287,7 +297,7 @@ export function Header({ locale, dict }: HeaderProps) {
                     >
                       {localeFlags[option]}
                     </span>
-                  </Link>
+                  </a>
                 </span>
               ))}
             </div>
