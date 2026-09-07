@@ -285,3 +285,33 @@ export const priceItemCount = priceGroups.reduce(
   (total, group) => total + group.items.length,
   0,
 );
+
+/** Looks a treatment up by the name it carries on the printed sheet. */
+export function priceItemBySqName(name: string): PriceItem | undefined {
+  return priceGroups.flatMap((group) => group.items).find(
+    (item) => item.name.sq === name,
+  );
+}
+
+/**
+ * The entries the dental-implant page quotes, in the order it lists them.
+ *
+ * They are named rather than filtered so the page cannot start showing an
+ * unrelated treatment if the sheet is reordered. A unit test asserts every
+ * name here still resolves, so renaming one in the list above fails the build
+ * rather than silently emptying a row on that page.
+ */
+export const IMPLANT_PRICE_NAMES = [
+  "Implanti",
+  "Sinus lift",
+  "Kocka artificiale 1 g",
+  "Kurora zircon",
+  "Kurora full zircon",
+  "Kurora e-max",
+] as const;
+
+export function implantPrices(): PriceItem[] {
+  return IMPLANT_PRICE_NAMES.map(priceItemBySqName).filter(
+    (item): item is PriceItem => Boolean(item),
+  );
+}

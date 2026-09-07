@@ -7,8 +7,9 @@ import { PriceList } from "@/components/sections/PriceList";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -19,19 +20,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
-  return {
-    title: dict.prices.title,
+  return pageMetadata({
+    locale,
+    page: "/prices",
+    title: dict.meta.pricesTitle,
     description: dict.meta.pricesDescription,
-    alternates: {
-      canonical: path(locale, "/prices"),
-      languages: languageAlternates("/prices"),
-    },
-    openGraph: {
-      title: `${dict.prices.title} | Azalea Dent`,
-      description: dict.meta.pricesDescription,
-      url: absoluteUrl(path(locale, "/prices")),
-    },
-  };
+  });
 }
 
 export default async function PricesPage({
@@ -59,10 +53,15 @@ export default async function PricesPage({
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          { name: dict.prices.title, url: absoluteUrl(path(locale, "/prices")) },
-        ])}
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale, "/prices")),
+          name: dict.meta.pricesTitle,
+          description: dict.meta.pricesDescription,
+          breadcrumbs: [
+            { name: dict.nav.prices, url: absoluteUrl(path(locale, "/prices")) },
+          ],
+        })}
       />
     </>
   );

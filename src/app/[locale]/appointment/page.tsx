@@ -15,8 +15,9 @@ import { clinic } from "@/content/clinic";
 import { formatDayRange, formatHours } from "@/lib/hours";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -27,19 +28,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
-  return {
-    title: dict.appointment.title,
+  return pageMetadata({
+    locale,
+    page: "/appointment",
+    title: dict.meta.appointmentTitle,
     description: dict.meta.appointmentDescription,
-    alternates: {
-      canonical: path(locale, "/appointment"),
-      languages: languageAlternates("/appointment"),
-    },
-    openGraph: {
-      title: `${dict.appointment.title} | Azalea Dent`,
-      description: dict.meta.appointmentDescription,
-      url: absoluteUrl(path(locale, "/appointment")),
-    },
-  };
+  });
 }
 
 export default async function AppointmentPage({
@@ -114,13 +108,15 @@ export default async function AppointmentPage({
       <Faq dict={dict} />
 
       <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          {
-            name: dict.appointment.title,
-            url: absoluteUrl(path(locale, "/appointment")),
-          },
-        ])}
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale, "/appointment")),
+          name: dict.meta.appointmentTitle,
+          description: dict.meta.appointmentDescription,
+          breadcrumbs: [
+            { name: dict.nav.appointment, url: absoluteUrl(path(locale, "/appointment")) },
+          ],
+        })}
       />
     </>
   );

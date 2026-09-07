@@ -9,8 +9,9 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { Section } from "@/components/ui/Section";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -21,19 +22,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
-  return {
-    title: dict.contact.title,
+  return pageMetadata({
+    locale,
+    page: "/contact",
+    title: dict.meta.contactTitle,
     description: dict.meta.contactDescription,
-    alternates: {
-      canonical: path(locale, "/contact"),
-      languages: languageAlternates("/contact"),
-    },
-    openGraph: {
-      title: `${dict.contact.title} | Azalea Dent`,
-      description: dict.meta.contactDescription,
-      url: absoluteUrl(path(locale, "/contact")),
-    },
-  };
+  });
 }
 
 export default async function ContactPage({
@@ -82,13 +76,15 @@ export default async function ContactPage({
       </Section>
 
       <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          {
-            name: dict.contact.title,
-            url: absoluteUrl(path(locale, "/contact")),
-          },
-        ])}
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale, "/contact")),
+          name: dict.meta.contactTitle,
+          description: dict.meta.contactDescription,
+          breadcrumbs: [
+            { name: dict.nav.contact, url: absoluteUrl(path(locale, "/contact")) },
+          ],
+        })}
       />
     </>
   );

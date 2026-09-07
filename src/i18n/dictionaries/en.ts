@@ -48,8 +48,8 @@ export const en: Dictionary = {
 
   hero: {
     eyebrow: "Dental clinic in Prishtina",
-    title: "Dental care, clearly explained.",
-    lead: "Azalea Dent is a dental clinic with a calm waiting area and a fully equipped treatment room. From cleanings and fillings to root canals and implants, we talk through every treatment plan with you before it begins.",
+    title: "Dental care in Prishtina, clearly explained.",
+    lead: "Azalea Dent is a dental clinic in Prishtina, on Holger Petersen street, with a calm waiting area and a fully equipped treatment room. From check-ups, cleanings and fillings to root canals, crowns and dental implants, we talk through every treatment plan with you before it begins.",
     imageCaption: "The treatment room",
     scroll: "Scroll",
   },
@@ -70,8 +70,8 @@ export const en: Dictionary = {
   services: {
     eyebrow: "Treatments",
     title: "What we offer",
-    lead: "Every treatment is carried out at the clinic, from a routine check-up to surgical procedures.",
-    pageTitle: "Treatments",
+    lead: "Every treatment is carried out at the clinic, from a routine check-up to surgical procedures and dental implants.",
+    pageTitle: "Dental treatments",
     pageLead:
       "The eight areas of treatment at Azalea Dent, explained step by step: what they cover, how they work and what to expect.",
     highlightsTitle: "Good to know",
@@ -84,8 +84,8 @@ export const en: Dictionary = {
 
   prices: {
     eyebrow: "Prices",
-    title: "Price list",
-    lead: "What treatment at Azalea Dent costs, following the same list displayed at the clinic.",
+    title: "Dental treatment prices",
+    lead: "What treatment at Azalea Dent in Prishtina costs, following the same list displayed at the clinic.",
     note: "Prices are in euro. The final treatment plan and its cost are set after an examination at the clinic.",
     ctaTitle: "Cannot find the treatment you are looking for?",
     ctaBody:
@@ -125,7 +125,7 @@ export const en: Dictionary = {
     eyebrow: "Gallery",
     title: "Inside the clinic",
     lead: "Real photographs of the space where your treatment takes place.",
-    pageLead: "The entrance, the waiting area and the treatment room.",
+    pageLead: "The entrance, the waiting area and the treatment room at the Azalea Dent dental clinic in Prishtina.",
     open: "Enlarge photograph",
     close: "Close",
     previous: "Previous photograph",
@@ -148,7 +148,7 @@ export const en: Dictionary = {
   visit: {
     eyebrow: "Visiting",
     title: "Find us here",
-    lead: "The clinic is on the ground floor, with direct street access and an illuminated sign.",
+    lead: "The clinic is on Holger Petersen street in Prishtina, on the ground floor, with direct street access and an illuminated sign above the door.",
     hoursTitle: "Opening hours",
     addressTitle: "Address",
     contactTitle: "Contact",
@@ -192,6 +192,21 @@ export const en: Dictionary = {
         question: "How do I book an appointment?",
         answer:
           "Fill in the appointment request form on this site, or message us directly on Instagram. We will get in touch to confirm the date and time.",
+      },
+      {
+        question: "Where is the clinic and how do I find you?",
+        answer:
+          "Azalea Dent is on Holger Petersen street in Prishtina, on the ground floor, with its own entrance from the street and an illuminated sign above the door. The contact page has the map and a link for directions.",
+      },
+      {
+        question: "What are the clinic's opening hours?",
+        answer:
+          "The clinic is open Monday to Friday, from 14:00 to 20:00. We are closed on Saturday and Sunday.",
+      },
+      {
+        question: "How much does a dental check-up cost?",
+        answer:
+          "The prices for every treatment are published on the prices page, following the same list displayed at the clinic. The final plan and its cost are set after an examination.",
       },
     ],
   },
@@ -258,7 +273,7 @@ export const en: Dictionary = {
   about: {
     eyebrow: "The clinic",
     title: "About Azalea Dent",
-    lead: "A dental clinic built so that a visit feels calm and understandable.",
+    lead: "A dental clinic in Prishtina, built so that a visit feels calm and understandable.",
     storyTitle: "The space",
     story: [
       "Azalea Dent is on the ground floor, with direct access from the street. The illuminated sign and the azalea flower, the same one etched into the glass inside, are the first sign of the clinic.",
@@ -273,10 +288,85 @@ export const en: Dictionary = {
     servicesTitle: "Treatments at the clinic",
   },
 
+  implants: {
+    eyebrow: "Dental implants",
+    title: "Dental Implants in Prishtina",
+    lead: "An implant replaces the root of a missing tooth, and the crown is fitted on top of it. Treatment happens in stages and is planned in advance with an examination and imaging.",
+
+    whatTitle: "What a dental implant is",
+    what: [
+      "A dental implant is an artificial titanium root placed in the jawbone that takes over the role of the natural tooth root. Once the bone has healed around it, the crown is fixed on top — the visible part that does the chewing.",
+      "Unlike a bridge, an implant does not require the neighbouring teeth to be ground down to hold it. Unlike a removable denture, it stays fixed in the bone. That is why implants are used when a single tooth is missing, when several are, or when an existing denture needs support.",
+    ],
+
+    whenTitle: "When an implant is considered",
+    when: [
+      "When a single tooth is missing and the neighbouring teeth are healthy.",
+      "When several teeth are missing and a bridge would mean grinding down others.",
+      "When a removable denture does not hold well and needs support.",
+      "When a tooth has to be extracted and you want to replace it.",
+    ],
+
+    stagesTitle: "The stages of treatment",
+    stages: [
+      {
+        title: "Consultation and planning",
+        detail:
+          "An examination of the mouth and diagnostic imaging to assess the amount and quality of bone where the implant would go. This is where it is decided whether an implant is possible and what needs preparing first.",
+      },
+      {
+        title: "Preparing the bone, where needed",
+        detail:
+          "If there is not enough bone in height or width, bone graft material may be added before or during placement, or a sinus lift may be needed in the upper jaw. This is not required in every case.",
+      },
+      {
+        title: "Placing the implant",
+        detail:
+          "The procedure is carried out under local anaesthetic in a sterile setting. The implant is placed in the bone and the site is closed. You leave with written instructions for the days that follow.",
+      },
+      {
+        title: "Osseointegration",
+        detail:
+          "The period during which the bone heals and bonds to the surface of the implant. How long it takes depends on the case and the jaw, and is set out in your treatment plan. Check-ups happen during this time.",
+      },
+      {
+        title: "The crown on the implant",
+        detail:
+          "Once the implant has integrated, an impression is taken and the crown is made. The shade is matched to the neighbouring teeth. The crown is tried in, adjusted against the bite and fitted.",
+      },
+      {
+        title: "Follow-up",
+        detail:
+          "An implant is checked regularly, just like the other teeth. Professional cleaning and care at home are what keep the gum around it healthy.",
+      },
+    ],
+
+    goodToKnowTitle: "Good to know",
+    goodToKnow: [
+      "Treatment happens in stages, not in a single appointment.",
+      "Placement is carried out under local anaesthetic.",
+      "It is planned with an examination and diagnostic imaging.",
+      "Not every case needs a bone graft or a sinus lift.",
+      "Aftercare instructions are given in writing.",
+    ],
+
+    pricesTitle: "Prices related to implants",
+    pricesLead:
+      "The implant and the preparatory procedures are part of the oral surgery list. The crown fitted on top of the implant is priced separately by material, on the prosthetics list.",
+
+    relatedTitle: "Read further",
+    relatedLead:
+      "Implants are placed as part of oral surgery, and the crown on the implant as part of prosthetics.",
+
+    ctaTitle: "Questions about implants?",
+    ctaBody:
+      "Come in for a consultation: we will look at your case, tell you whether an implant is possible, and you leave with a clear plan of stages and costs.",
+  },
+
   contact: {
     eyebrow: "Contact",
-    title: "Contact the clinic",
-    lead: "For an appointment, a question or a second opinion, write to us and we will reply.",
+    title: "Contact the dental clinic",
+    lead: "For a dentist appointment, a question or a second opinion, write to us and we will reply. The clinic is in Prishtina, on Holger Petersen street.",
     formTitle: "Appointment request",
     infoTitle: "Clinic details",
   },
@@ -303,20 +393,38 @@ export const en: Dictionary = {
   },
 
   meta: {
-    homeTitle: "Azalea Dent | Dental Clinic in Prishtina",
+    homeTitle: "Dental Clinic in Prishtina | Azalea Dent",
     homeDescription:
-      "Dental clinic in Prishtina: general dentistry, paediatric dentistry, oral surgery, endodontics, prosthetics, aesthetics, orthodontics and periodontology. Every treatment plan is explained before it begins.",
+      "Azalea Dent is a dental clinic in Prishtina, Kosovo: dental implants, prosthetics, endodontics, oral surgery, orthodontics, cleaning and whitening. Open Monday to Friday, 14:00 – 20:00.",
+
+    servicesTitle: "Dental Treatments in Prishtina",
     servicesDescription:
-      "The eight areas of treatment at Azalea Dent in Prishtina: general dentistry, paediatric dentistry, oral surgery, endodontics, prosthetics, dental aesthetics, orthodontics and periodontology.",
+      "The eight areas of treatment at Azalea Dent, a dental clinic in Prishtina: general dentistry, oral surgery, dental implants, endodontics, prosthetics and orthodontics.",
+
+    aboutTitle: "About the Azalea Dent Dental Clinic in Prishtina",
     aboutDescription:
-      "Get to know Azalea Dent: the space, the approach to patients and the treatments offered.",
+      "Get to know Azalea Dent, a dental clinic in Prishtina: the space, the approach to patients and the treatments carried out at the clinic.",
+
+    galleryTitle: "Dental Clinic Gallery",
     galleryDescription:
-      "Photographs of the Azalea Dent clinic: the entrance, the waiting area and the treatment rooms.",
+      "Photographs of the Azalea Dent dental clinic in Prishtina: the entrance, the waiting area, the treatment room and cases from everyday practice.",
+
+    pricesTitle: "Dental Treatment Prices in Prishtina",
     pricesDescription:
-      "The full Azalea Dent price list in Prishtina: general dentistry, paediatric dentistry, oral surgery, endodontics, prosthetics, aesthetics, orthodontics and periodontology.",
+      "The full price list for dental treatment at Azalea Dent, Prishtina: check-ups, professional cleaning, fillings, endodontics, crowns, dentures, implants and whitening, all in euro.",
+
+    contactTitle: "Contact and Address in Prishtina",
     contactDescription:
-      "Contact Azalea Dent in Prishtina to book an appointment or ask a question about treatments. Open Monday to Friday, 14:00 – 20:00.",
+      "Contact the Azalea Dent dental clinic in Prishtina, Holger Petersen street. Phone +383 48 306 376, open Monday to Friday, 14:00 – 20:00.",
+
+    appointmentTitle: "Book a Dentist Appointment in Prishtina",
     appointmentDescription:
-      "Send an appointment request to the Azalea Dent dental clinic.",
+      "Send an appointment request to the Azalea Dent dental clinic in Prishtina. We will contact you to confirm the date and time.",
+
+    implantsTitle: "Dental Implants in Prishtina",
+    implantsDescription:
+      "Dental implants in Prishtina at Azalea Dent: how the treatment works, the stages involved, how long healing takes and what to know beforehand. Prices as per the clinic's list.",
+
+    serviceTitleSuffix: "in Prishtina",
   },
 };

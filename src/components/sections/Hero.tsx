@@ -61,6 +61,17 @@ export function Hero({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                 </Link>
               </li>
             ))}
+            {/* The treatment most often searched for by name, given its own
+                chip: it has a page of its own rather than a section inside
+                oral surgery. */}
+            <li>
+              <Link
+                href={path(locale, "/implante-dentare")}
+                className="inline-flex min-h-9 items-center rounded-sm border border-gold-500/50 px-3 text-[0.78rem] tracking-wide text-ink-700 transition-colors hover:border-gold-500 hover:text-ink-900 dark:border-gold-400/40 dark:text-bone-200 dark:hover:border-gold-400 dark:hover:text-bone-50"
+              >
+                {dict.implants.eyebrow}
+              </Link>
+            </li>
           </ul>
         </div>
 
