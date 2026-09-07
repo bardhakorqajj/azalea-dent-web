@@ -47,7 +47,7 @@ export const sq = {
   hero: {
     eyebrow: "Klinikë dentare në Prishtinë",
     title: "Kujdes dentar, me përkushtim ndaj buzëqeshjes suaj.",
-    lead: "Azalea Dent është një klinikë dentare me një ambient të qetë pritjeje dhe një dhomë trajtimi të pajisur plotësisht. Nga pastrimi dhe mbushjet te endodontia dhe implantologjia, çdo plan trajtimi e diskutojmë bashkë me ju përpara se të fillojë.",
+    lead: "Azalea Dent është klinikë dentare në Prishtinë, në rrugën Holger Petersen, me ambient të qetë pritjeje dhe dhomë trajtimi të pajisur plotësisht. Nga kontrolli, pastrimi dhe mbushjet te endodontia, protetika dhe implantet dentare, çdo plan trajtimi e diskutojmë bashkë me ju përpara se të fillojë.",
     imageCaption: "Dhoma e trajtimit",
     scroll: "Zbrit",
   },
@@ -68,8 +68,8 @@ export const sq = {
   services: {
     eyebrow: "Trajtimet",
     title: "Çfarë ofrojmë",
-    lead: "Të gjitha trajtimet kryhen në klinikë, nga kontrolli i rregullt te ndërhyrjet kirurgjikale.",
-    pageTitle: "Trajtimet",
+    lead: "Të gjitha trajtimet kryhen në klinikë, nga kontrolli i rregullt te ndërhyrjet kirurgjikale dhe implantet dentare.",
+    pageTitle: "Trajtimet dentare",
     pageLead:
       "Tetë fushat e trajtimit në Azalea Dent, të shpjeguara hap pas hapi: çfarë përfshijnë, si zhvillohen dhe çfarë të prisni.",
     highlightsTitle: "Të mira për t'u ditur",
@@ -82,8 +82,8 @@ export const sq = {
 
   prices: {
     eyebrow: "Çmimet",
-    title: "Lista e çmimeve",
-    lead: "Çmimet e shërbimeve stomatologjike në Azalea Dent, sipas listës që gjendet edhe në klinikë.",
+    title: "Çmimet e trajtimeve dentare",
+    lead: "Çmimet e shërbimeve stomatologjike në Azalea Dent, Prishtinë, sipas listës që gjendet edhe në klinikë.",
     note: "Çmimet janë në euro. Plani përfundimtar i trajtimit dhe kostoja e tij përcaktohen pas ekzaminimit në klinikë.",
     ctaTitle: "Nuk e gjeni shërbimin që kërkoni?",
     ctaBody:
@@ -123,7 +123,8 @@ export const sq = {
     eyebrow: "Galeria",
     title: "Brenda klinikës",
     lead: "Fotografi të vërteta të ambientit ku do të kryhet trajtimi juaj.",
-    pageLead: "Hyrja, zona e pritjes dhe dhoma e trajtimit.",
+    pageLead:
+      "Hyrja, zona e pritjes dhe dhoma e trajtimit e klinikës dentare Azalea Dent në Prishtinë.",
     open: "Zmadho fotografinë",
     close: "Mbyll",
     previous: "Fotografia e mëparshme",
@@ -146,7 +147,7 @@ export const sq = {
   visit: {
     eyebrow: "Vizita",
     title: "Na gjeni këtu",
-    lead: "Klinika ndodhet në katin përdhes, me hyrje direkte nga rruga dhe tabelë të ndriçuar.",
+    lead: "Klinika ndodhet në rrugën Holger Petersen në Prishtinë, në katin përdhes, me hyrje direkte nga rruga dhe tabelë të ndriçuar mbi hyrje.",
     hoursTitle: "Orari",
     addressTitle: "Adresa",
     contactTitle: "Kontakti",
@@ -190,6 +191,21 @@ export const sq = {
         question: "Si mund të caktoj një takim?",
         answer:
           "Plotësoni formularin e kërkesës për takim në këtë faqe, ose na shkruani direkt në Instagram. Ju kontaktojmë për të konfirmuar datën dhe orën.",
+      },
+      {
+        question: "Ku ndodhet klinika dhe si mund t'ju gjej?",
+        answer:
+          "Azalea Dent ndodhet në rrugën Holger Petersen në Prishtinë, në katin përdhes, me hyrje direkte nga rruga dhe tabelë të ndriçuar mbi hyrje. Në faqen e kontaktit gjeni hartën dhe lidhjen për navigim.",
+      },
+      {
+        question: "Cili është orari i klinikës?",
+        answer:
+          "Klinika është e hapur nga e hëna deri të premten, nga ora 14:00 deri në 20:00. Të shtunën dhe të dielën jemi mbyllur.",
+      },
+      {
+        question: "Sa kushton një kontroll te dentisti?",
+        answer:
+          "Çmimet e të gjitha trajtimeve janë të publikuara në faqen e çmimeve, sipas listës që gjendet edhe në klinikë. Plani përfundimtar dhe kostoja e tij përcaktohen pas ekzaminimit.",
       },
     ],
   },
@@ -261,7 +277,7 @@ export const sq = {
   about: {
     eyebrow: "Klinika",
     title: "Për Azalea Dent",
-    lead: "Një klinikë dentare e ndërtuar që vizita të ndihet e qetë dhe e kuptueshme.",
+    lead: "Një klinikë dentare në Prishtinë, e ndërtuar që vizita të ndihet e qetë dhe e kuptueshme.",
     storyTitle: "Hapësira",
     story: [
       "Azalea Dent ndodhet në katin përdhes, me hyrje direkte nga rruga. Tabela e ndriçuar dhe lulja e azaleas, e njëjta që gjendet e gdhendur në xhamat brenda, janë shenja e parë e klinikës.",
@@ -276,10 +292,94 @@ export const sq = {
     servicesTitle: "Trajtimet në klinikë",
   },
 
+  /**
+   * The dental-implant landing page. Implants are the treatment patients search
+   * for by name more than any other, but on the site they sit inside "Kirurgji
+   * orale" alongside extractions, so a search for "implante dentare" had no one
+   * page to land on. This is that page: it explains the treatment in full and
+   * links back into the oral-surgery and prosthetics pages for the rest.
+   *
+   * Nothing here promises an outcome, a success rate or a lifespan.
+   */
+  implants: {
+    eyebrow: "Implante dentare",
+    title: "Implante dentare në Prishtinë",
+    lead: "Një implant zëvendëson rrënjën e një dhëmbi që mungon, dhe mbi të vendoset kurora. Trajtimi zhvillohet në faza dhe planifikohet paraprakisht me ekzaminim dhe imazhe.",
+
+    whatTitle: "Çfarë është një implant dentar",
+    what: [
+      "Implanti dentar është një rrënjë artificiale prej titani që vendoset në kockën e nofullës dhe merr rolin e rrënjës natyrale të dhëmbit. Mbi të, pasi kocka është shëruar rreth tij, fiksohet kurora — pjesa e dukshme që kryen përtypjen.",
+      "Ndryshe nga një urë, implanti nuk kërkon që dhëmbët fqinjë të bluhen për ta mbajtur. Ndryshe nga një protezë e lëvizshme, ai qëndron i fiksuar në kockë. Kjo është arsyeja pse implantologjia përdoret kur mungon një dhëmb i vetëm, disa dhëmbë, ose kur një protezë ekzistuese ka nevojë për mbështetje.",
+    ],
+
+    whenTitle: "Kur merret parasysh një implant",
+    when: [
+      "Kur mungon një dhëmb i vetëm dhe dhëmbët fqinjë janë të shëndetshëm.",
+      "Kur mungojnë disa dhëmbë dhe një urë do të kërkonte bluarjen e dhëmbëve të tjerë.",
+      "Kur një protezë e lëvizshme nuk qëndron mirë dhe kërkon mbështetje.",
+      "Kur një dhëmb duhet nxjerrë dhe dëshironi ta zëvendësoni atë.",
+    ],
+
+    stagesTitle: "Fazat e trajtimit",
+    stages: [
+      {
+        title: "Konsulta dhe planifikimi",
+        detail:
+          "Ekzaminim i gojës dhe imazhe diagnostikuese për të parë sasinë dhe cilësinë e kockës në vendin ku do të vendoset implanti. Këtu përcaktohet nëse implanti është i mundur dhe çfarë duhet përgatitur paraprakisht.",
+      },
+      {
+        title: "Përgatitja e kockës, kur nevojitet",
+        detail:
+          "Nëse kocka nuk mjafton në lartësi ose gjerësi, para ose gjatë vendosjes së implantit mund të nevojitet shtimi i kockës artificiale, ose një sinus lift në nofullën e sipërme. Kjo nuk kërkohet në çdo rast.",
+      },
+      {
+        title: "Vendosja e implantit",
+        detail:
+          "Ndërhyrja kryhet me anestezi lokale, në ambient steril. Implanti vendoset në kockë dhe zona mbyllet. Në fund merrni udhëzime të shkruara për kujdesin në ditët në vijim.",
+      },
+      {
+        title: "Osteointegrimi",
+        detail:
+          "Periudha gjatë së cilës kocka shërohet dhe lidhet me sipërfaqen e implantit. Kohëzgjatja varet nga rasti dhe nga nofulla, dhe ju thuhet në planin e trajtimit. Gjatë kësaj kohe bëhen kontrolle.",
+      },
+      {
+        title: "Kurora mbi implant",
+        detail:
+          "Pasi implanti është integruar, merret masa dhe punohet kurora. Ngjyra zgjidhet për t'iu përshtatur dhëmbëve fqinjë. Kurora provohet, rregullohet me kafshimin dhe fiksohet.",
+      },
+      {
+        title: "Kontrollet",
+        detail:
+          "Implanti kontrollohet rregullisht, njësoj si dhëmbët e tjerë. Pastrimi profesional dhe kujdesi në shtëpi janë pjesa që e mban të shëndetshëm mishin rreth tij.",
+      },
+    ],
+
+    goodToKnowTitle: "Të mira për t'u ditur",
+    goodToKnow: [
+      "Trajtimi zhvillohet në faza, jo në një seancë të vetme.",
+      "Vendosja kryhet me anestezi lokale.",
+      "Planifikohet me ekzaminim dhe imazhe diagnostikuese.",
+      "Jo çdo rast kërkon shtim kocke ose sinus lift.",
+      "Udhëzimet për kujdesin pas ndërhyrjes jepen me shkrim.",
+    ],
+
+    pricesTitle: "Çmimet e lidhura me implantet",
+    pricesLead:
+      "Implanti dhe ndërhyrjet përgatitore janë pjesë e listës së kirurgjisë orale. Kurora që vendoset mbi implant çmohet veçmas, sipas materialit, në listën e protetikës.",
+
+    relatedTitle: "Lexoni më tej",
+    relatedLead:
+      "Implantologjia kryhet si pjesë e kirurgjisë orale, dhe kurora mbi implant si pjesë e protetikës.",
+
+    ctaTitle: "Keni pyetje për implantet?",
+    ctaBody:
+      "Ejani në një konsultë: shqyrtojmë rastin tuaj, ju themi nëse implanti është i mundur dhe dilni me një plan të qartë me faza dhe kosto.",
+  },
+
   contact: {
     eyebrow: "Kontakti",
-    title: "Kontaktoni klinikën",
-    lead: "Për një takim, një pyetje ose një mendim të dytë, na shkruani dhe ju kthejmë përgjigje.",
+    title: "Kontaktoni klinikën dentare",
+    lead: "Për një takim te stomatologu, një pyetje ose një mendim të dytë, na shkruani dhe ju kthejmë përgjigje. Klinika ndodhet në Prishtinë, në rrugën Holger Petersen.",
     formTitle: "Kërkesë për takim",
     infoTitle: "Të dhënat e klinikës",
   },
@@ -305,22 +405,47 @@ export const sq = {
     retry: "Provo sërish",
   },
 
+  /**
+   * Search metadata. Deliberately separate from the on-page headings: an `h1`
+   * is written for the person already reading the page, a `<title>` for
+   * someone scanning a results list who has not arrived yet and needs the
+   * treatment, the clinic and the city in the first few words.
+   */
   meta: {
-    homeTitle: "Azalea Dent | Klinikë dentare në Prishtinë",
+    homeTitle: "Klinikë Dentare në Prishtinë | Azalea Dent",
     homeDescription:
-      "Klinikë dentare në Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, endodonci, protetikë, estetikë, ortodonci dhe parodontologji. Çdo plan trajtimi shpjegohet përpara se të fillojë.",
+      "Azalea Dent është klinikë dentare në Prishtinë: implante dentare, protetikë, endodonci, kirurgji orale, ortodonci, pastrim dhe zbardhim dhëmbësh. Hapur e hënë – e premte, 14:00 – 20:00.",
+
+    servicesTitle: "Trajtimet dentare në Prishtinë",
     servicesDescription:
-      "Tetë fushat e trajtimit në Azalea Dent, Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, endodonci, protetikë, estetikë dentare, ortodonci dhe parodontologji.",
+      "Tetë fushat e trajtimit në klinikën dentare Azalea Dent në Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, implante dentare, endodonci, protetikë dhe ortodonci.",
+
+    aboutTitle: "Klinika dentare Azalea Dent në Prishtinë",
     aboutDescription:
-      "Njihuni me klinikën Azalea Dent: hapësira, qasja ndaj pacientit dhe trajtimet që ofrohen.",
+      "Njihuni me Azalea Dent, klinikë dentare në Prishtinë: hapësira, qasja ndaj pacientit dhe trajtimet që kryhen në klinikë.",
+
+    galleryTitle: "Galeria e klinikës dentare",
     galleryDescription:
-      "Fotografi të klinikës Azalea Dent: hyrja, zona e pritjes dhe dhomat e trajtimit.",
+      "Fotografi të klinikës dentare Azalea Dent në Prishtinë: hyrja, zona e pritjes, dhoma e trajtimit dhe raste nga puna e përditshme.",
+
+    pricesTitle: "Çmimet e trajtimeve dentare në Prishtinë",
     pricesDescription:
-      "Lista e plotë e çmimeve të Azalea Dent në Prishtinë: stomatologji e përgjithshme, pedodonci, kirurgji orale, endodonci, protetikë, estetikë, ortodonci dhe parodontologji.",
+      "Lista e plotë e çmimeve të trajtimeve dentare në Azalea Dent, Prishtinë: kontrolli, pastrimi, mbushjet, endodoncia, kurorat, protezat, implantet dhe zbardhimi.",
+
+    contactTitle: "Kontakti dhe adresa në Prishtinë",
     contactDescription:
-      "Kontaktoni Azalea Dent në Prishtinë për të caktuar një takim ose për një pyetje mbi trajtimet. Hapur e hënë – e premte, 14:00 – 20:00.",
+      "Kontaktoni klinikën dentare Azalea Dent në Prishtinë, rr. Holger Petersen. Telefon +383 48 306 376, hapur e hënë – e premte, 14:00 – 20:00.",
+
+    appointmentTitle: "Cakto takim te dentisti në Prishtinë",
     appointmentDescription:
-      "Dërgoni një kërkesë për takim në klinikën dentare Azalea Dent.",
+      "Dërgoni një kërkesë për takim në klinikën dentare Azalea Dent në Prishtinë. Ju kontaktojmë për të konfirmuar datën dhe orën.",
+
+    implantsTitle: "Implante Dentare në Prishtinë",
+    implantsDescription:
+      "Implante dentare në Prishtinë te Azalea Dent: si zhvillohet trajtimi, në sa faza, sa zgjat shërimi dhe çfarë duhet ditur paraprakisht. Çmimet sipas listës së klinikës.",
+
+    /** Appended to a treatment page's own title, e.g. "Protetikë … | …". */
+    serviceTitleSuffix: "në Prishtinë",
   },
 };
 

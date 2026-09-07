@@ -53,6 +53,7 @@ src/
     [locale]/                 Every page, per language
       page.tsx                Home
       services/               Treatments index + one page per treatment
+      implante-dentare/       Dental implants landing page
       about/  gallery/  contact/  appointment/
       layout.tsx              Root layout: fonts, header, footer, metadata
       not-found.tsx  error.tsx  opengraph-image.tsx
@@ -65,7 +66,7 @@ src/
     ui/                       Container, Section, Button, Reveal, icons, logo
   content/                    Clinic facts, treatments, image manifest
   i18n/                       Locale config + Albanian/English dictionaries
-  lib/                        Validation, structured data, hours, reveal, utils
+  lib/                        Validation, structured data, metadata, hours, utils
   styles/globals.css          Design tokens and base styles
   assets/images/              Optimised photography (imported, not public/)
 source-photos/                The clinic's original photographs
@@ -96,6 +97,24 @@ Albanian (`/sq`) is the default and `/` redirects to it; English lives at
 `/en`. `src/i18n/dictionaries/sq.ts` defines the `Dictionary` type, so a key
 missing from English fails the build. Both languages are fully pre-rendered,
 cross-linked with `hreflang`, and listed in the sitemap.
+
+### Search
+
+Every page builds its metadata through `src/lib/seo.ts`, which sets the title,
+description, canonical URL, `hreflang` alternates, Open Graph, the Twitter card
+and the robots directives from one call. Doing it in one place is what keeps
+the social cards describing the page they are on rather than inheriting the
+home page's, and it means a preview deployment emits `noindex` on the page as
+well as `Disallow: /` in `robots.txt` — a URL that is merely uncrawlable can
+still be indexed from an external link.
+
+Structured data is in `src/lib/schema.ts` and is published as a linked
+`@graph`: one `Dentist` node for the clinic (address, coordinates, opening
+hours, phone numbers, social profiles and a priced offer catalogue), a
+`WebSite`, and a `WebPage` plus `BreadcrumbList` per page. Treatment pages add
+a `MedicalProcedure` and a `Service`. Every value is derived from
+`content/clinic.ts`, `content/services.ts` and `content/prices.ts`, so the
+structured data cannot claim anything the page does not.
 
 ### Animation
 

@@ -23,13 +23,20 @@ Instagram and Facebook profiles, and the clinical team. Edit them there and
 every place that displays them updates at once: the footer, the contact page,
 the sticky mobile call button, and the `Dentist` structured data Google reads.
 
+`geo` holds the clinic's decimal coordinates, taken from its own Google Maps
+URL. They go into the `Dentist` structured data, which is what ties the site to
+that point on the map for local search — leave them set.
+
 Two fields are deliberately left empty and are **not** reported as missing:
 
-- `geo` — decimal coordinates. The address and the Maps link already place the
-  clinic. To switch it on for local SEO, set
-  `{ latitude: 42.6390286, longitude: 21.1638098 }`.
 - `testimonials` — the section stays hidden until real, attributable reviews
   are added. See section 3.
+- `foundingYear` — shown in structured data once it is confirmed.
+
+`alternateNames` lists other spellings of the clinic's name that patients
+search for ("Azalea", "Azalea Dent Prishtinë"). They are published as
+`alternateName` in the structured data. Add a spelling the clinic actually
+uses; do not add a name it does not.
 
 While you run `npm run dev`, a small panel in the corner lists anything still
 missing. It never appears on the live site, and it should currently be empty.
@@ -178,3 +185,36 @@ and the structured data are all generated from that one entry.
 that every language must provide. If you add a key there, TypeScript will
 refuse to build until `en.ts` has it too, so the two languages cannot drift
 apart.
+
+---
+
+## 9. Search metadata
+
+Each page's `<title>` and meta description live under `meta` in the two
+dictionary files, one pair per page. They are deliberately **not** the same as
+the headings on the page: an `h1` is written for someone already reading, a
+title tag for someone scanning a results list who has not arrived yet, so the
+title carries the treatment, the clinic and the city while the heading stays
+editorial.
+
+`npm test` checks that every title and description is unique and that the
+descriptions stay inside the length Google will actually display, so a page
+cannot quietly end up sharing a snippet with another.
+
+Prices are **not** repeated in the descriptions. They live in `prices.ts` and
+nowhere else, so there is nothing to keep in step when one changes.
+
+Everything else — canonical URLs, `hreflang`, Open Graph, the Twitter card and
+the robots directives — is built once in `src/lib/seo.ts` and used by every
+page. A new page needs one `pageMetadata({ ... })` call rather than six fields
+set by hand.
+
+## 10. The dental implant page
+
+`/implante-dentare` is a page of its own rather than one of the eight areas of
+treatment, because implants span two of them: the surgery is in "Kirurgji
+orale" and the crown on top is in "Protetikë". Its copy is under `implants` in
+the dictionaries, and the prices it quotes are named in `IMPLANT_PRICE_NAMES`
+in `prices.ts` so they come from the same sheet as everywhere else. A unit test
+asserts each of those names still resolves, so renaming one on the sheet fails
+the build rather than silently emptying the table.

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { CtaBand } from "@/components/sections/CtaBand";
@@ -11,9 +12,32 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { VisitBand } from "@/components/sections/VisitBand";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { isLocale } from "@/i18n/config";
+import { photos } from "@/content/images";
+import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { faqSchema } from "@/lib/schema";
+import { faqSchema, pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: raw } = await params;
+  const locale: Locale = isLocale(raw) ? raw : defaultLocale;
+  const dict = getDictionary(locale);
+
+  return pageMetadata({
+    locale,
+    page: "/",
+    title: dict.meta.homeTitle,
+    /* The home page names the clinic and the city on its own, so the
+       `%s | Azalea Dent` template would only repeat the brand. */
+    absoluteTitle: dict.meta.homeTitle,
+    description: dict.meta.homeDescription,
+  });
+}
 
 export default async function HomePage({
   params,
@@ -39,6 +63,15 @@ export default async function HomePage({
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd data={faqSchema(dict.faq.items.map((item) => ({ ...item })))} />
+      <JsonLd
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale)),
+          name: dict.meta.homeTitle,
+          description: dict.meta.homeDescription,
+          primaryImage: absoluteUrl(photos.operatoryOak.src.src),
+        })}
+      />
     </>
   );
 }

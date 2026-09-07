@@ -10,8 +10,9 @@ import { Section } from "@/components/ui/Section";
 import { workPhotos } from "@/content/images";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -22,19 +23,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
-  return {
-    title: dict.gallery.title,
+  return pageMetadata({
+    locale,
+    page: "/gallery",
+    title: dict.meta.galleryTitle,
     description: dict.meta.galleryDescription,
-    alternates: {
-      canonical: path(locale, "/gallery"),
-      languages: languageAlternates("/gallery"),
-    },
-    openGraph: {
-      title: `${dict.gallery.title} | Azalea Dent`,
-      description: dict.meta.galleryDescription,
-      url: absoluteUrl(path(locale, "/gallery")),
-    },
-  };
+  });
 }
 
 export default async function GalleryPage({
@@ -96,13 +90,15 @@ export default async function GalleryPage({
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          {
-            name: dict.gallery.title,
-            url: absoluteUrl(path(locale, "/gallery")),
-          },
-        ])}
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale, "/gallery")),
+          name: dict.meta.galleryTitle,
+          description: dict.meta.galleryDescription,
+          breadcrumbs: [
+            { name: dict.nav.gallery, url: absoluteUrl(path(locale, "/gallery")) },
+          ],
+        })}
       />
     </>
   );
