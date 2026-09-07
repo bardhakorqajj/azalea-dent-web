@@ -91,6 +91,32 @@ async function run() {
     );
   }
 
+  /* Treatment photographs for the "Puna jonë" gallery. These arrive in
+     batches and need no per-photo framing — they are already composed as
+     before/after pairs — so they are picked up by name rather than listed
+     one by one above. */
+  const sources = await readdir(SRC);
+  const work = sources
+    .filter((name) => /^work-\d+\.jpe?g$/i.test(name))
+    .sort();
+
+  for (const name of work) {
+    const info = await sharp(path.join(SRC, name))
+      .rotate()
+      .resize({
+        width: MAX_EDGE,
+        height: MAX_EDGE,
+        fit: "inside",
+        withoutEnlargement: true,
+      })
+      .jpeg({ quality: 82, progressive: true, mozjpeg: true })
+      .toFile(path.join(OUT, name));
+
+    console.log(
+      `${name.padEnd(24)} ${String(info.width).padStart(4)}x${String(info.height).padEnd(4)}  ${(info.size / 1024).toFixed(0)} kB  — treatment case`,
+    );
+  }
+
   const written = await readdir(OUT);
   console.log(`\n${written.length} assets in ${OUT}/`);
 }

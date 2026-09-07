@@ -82,6 +82,11 @@ export default async function GalleryPage({
               dict={dict}
               items={workPhotos}
               label={dict.work.title}
+              /* Before/after pairs are stacked vertically and carry the
+                 clinic's watermark, so the tile holds the whole frame
+                 rather than cropping to a landscape shape. */
+              aspect="aspect-[9/10]"
+              fit="object-contain"
             />
           </Container>
         </Section>

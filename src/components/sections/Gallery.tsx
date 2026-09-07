@@ -7,7 +7,7 @@ import { Close } from "@/components/ui/Icons";
 import { galleryOrder, photos, type Photo } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { interpolate } from "@/lib/utils";
+import { cn, interpolate } from "@/lib/utils";
 
 /** The clinic's rooms, in the order a patient meets them. */
 const CLINIC_PHOTOS: Photo[] = galleryOrder.map((key) => photos[key]);
@@ -19,18 +19,28 @@ const CLINIC_PHOTOS: Photo[] = galleryOrder.map((key) => photos[key]);
  * Each tile opens in a lightbox.
  *
  * Takes its photographs as a prop so the same strip serves both the clinic
- * rooms and the treatment gallery, each with its own accessible name.
+ * rooms and the treatment gallery, each with its own accessible name, tile
+ * shape and fit.
  */
 export function Gallery({
   locale,
   dict,
   items = CLINIC_PHOTOS,
   label,
+  aspect = "aspect-[4/3]",
+  fit = "object-cover",
 }: {
   locale: Locale;
   dict: Dictionary;
   items?: Photo[];
   label?: string;
+  /** Tile shape. Room photographs are landscape; before/after pairs are not. */
+  aspect?: string;
+  /**
+   * `object-contain` for photographs that must not lose an edge — a
+   * before/after pair cropped to a landscape tile would drop half the point.
+   */
+  fit?: string;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const triggerRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -148,7 +158,10 @@ export function Gallery({
                         triggerRefs.current[index] = node;
                       }}
                       onClick={() => setOpenIndex(index)}
-                      className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-bone-200 dark:bg-ink-800"
+                      className={cn(
+                        "relative block w-full cursor-zoom-in overflow-hidden bg-bone-200 dark:bg-ink-800",
+                        aspect,
+                      )}
                     >
                       <span className="sr-only">{dict.gallery.open}</span>
                       <Image
@@ -156,7 +169,10 @@ export function Gallery({
                         alt={photo.alt[locale]}
                         placeholder="blur"
                         sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 80vw"
-                        className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+                        className={cn(
+                          "h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]",
+                          fit,
+                        )}
                         style={{ objectPosition: photo.focus }}
                       />
                     </button>

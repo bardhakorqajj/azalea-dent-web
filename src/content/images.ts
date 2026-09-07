@@ -6,6 +6,11 @@ import operatoryDaylight from "@/assets/images/operatory-daylight.jpg";
 import operatoryOak from "@/assets/images/operatory-oak.jpg";
 import reception from "@/assets/images/reception.jpg";
 import streetSign from "@/assets/images/street-sign.jpg";
+import work01 from "@/assets/images/work-01.jpg";
+import work02 from "@/assets/images/work-02.jpg";
+import work03 from "@/assets/images/work-03.jpg";
+import work04 from "@/assets/images/work-04.jpg";
+import work05 from "@/assets/images/work-05.jpg";
 
 import type { Localised } from "./services";
 
@@ -118,7 +123,63 @@ export type PhotoKey = keyof typeof photos;
  * both languages, and a caption. Every case needs the patient's permission
  * before it goes online.
  */
-export const workPhotos: Photo[] = [];
+export const workPhotos: Photo[] = [
+  {
+    src: work01,
+    alt: {
+      sq: "Para dhe pas: dhëmbët e përparmë të sipërm, fillimisht të konsumuar dhe të parregullt, pastaj të njëtrajtshëm dhe të bardhë.",
+      en: "Before and after: the upper front teeth, first worn and uneven, then even and white.",
+    },
+    caption: {
+      sq: "Dhëmbët e përparmë, para dhe pas",
+      en: "The front teeth, before and after",
+    },
+  },
+  {
+    src: work02,
+    alt: {
+      sq: "Para dhe pas: dhëmbë të thyer dhe të zbrazëta në harkun e sipërm, pastaj një rresht i plotë dhëmbësh të rregullt.",
+      en: "Before and after: broken teeth and gaps in the upper arch, then a complete, even row of teeth.",
+    },
+    caption: {
+      sq: "Harku i sipërm, para dhe pas",
+      en: "The upper arch, before and after",
+    },
+  },
+  {
+    src: work03,
+    alt: {
+      sq: "Para dhe pas: dhëmbë të dëmtuar rëndë me mbushje të vjetra dhe gurëz, pastaj dhëmbë të rregullt e të bardhë.",
+      en: "Before and after: heavily damaged teeth with old fillings and tartar, then even, white teeth.",
+    },
+    caption: {
+      sq: "Dhëmbë të dëmtuar, para dhe pas",
+      en: "Damaged teeth, before and after",
+    },
+  },
+  {
+    src: work04,
+    alt: {
+      sq: "Pamje e afërt anësore e punës së përfunduar, me sipërfaqe të lëmuara dhe formë natyrale.",
+      en: "A close side view of the finished work, with smooth surfaces and a natural shape.",
+    },
+    caption: {
+      sq: "Detaj i punës së përfunduar",
+      en: "A detail of the finished work",
+    },
+  },
+  {
+    src: work05,
+    alt: {
+      sq: "Para dhe pas: buzëqeshja dhe pamja brenda gojës, para dhe pas trajtimit.",
+      en: "Before and after: the smile and the intraoral view, before and after treatment.",
+    },
+    caption: {
+      sq: "Buzëqeshja, para dhe pas",
+      en: "The smile, before and after",
+    },
+  },
+];
 
 export const galleryOrder: PhotoKey[] = [
   "streetSign",

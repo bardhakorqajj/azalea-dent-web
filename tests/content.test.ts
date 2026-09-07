@@ -86,9 +86,11 @@ describe("photos", () => {
   });
 
   it("holds treatment photographs to the same standard as the rest", () => {
-    // Empty for now, so the "Puna jonë" section stays hidden; whatever is
-    // added has to carry alt text and a caption in both languages like
-    // every other photograph on the site.
+    // The "Puna jonë" section only renders when there are photographs, and
+    // each one carries alt text and a caption in both languages like every
+    // other photograph on the site.
+    expect(workPhotos.length).toBeGreaterThan(0);
+
     for (const photo of workPhotos) {
       for (const locale of locales) {
         expect(photo.alt[locale].length).toBeGreaterThan(10);
