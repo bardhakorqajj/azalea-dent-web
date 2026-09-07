@@ -21,8 +21,9 @@ import {
   type Locale,
 } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema, serviceSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema, treatmentSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
@@ -40,23 +41,19 @@ export async function generateMetadata({
   const service = getService(slug);
   if (!service) return {};
 
-  const url = `${path(locale, "/services")}/${slug}`;
+  const dict = getDictionary(locale);
 
-  return {
-    title: service.title[locale],
+  /* The heading on the page is just the treatment ("Protetikë"); the title
+     tag adds the city, because the person reading it is still in a results
+     list and has not arrived yet. */
+  const title = `${service.title[locale]} ${dict.meta.serviceTitleSuffix}`;
+
+  return pageMetadata({
+    locale,
+    page: `/services/${slug}`,
+    title,
     description: service.summary[locale],
-    alternates: {
-      canonical: url,
-      languages: {
-        ...languageAlternates(`/services/${slug}`),
-      },
-    },
-    openGraph: {
-      title: `${service.title[locale]} | Azalea Dent`,
-      description: service.summary[locale],
-      url: absoluteUrl(url),
-    },
-  };
+  });
 }
 
 export default async function ServicePage({
@@ -76,6 +73,7 @@ export default async function ServicePage({
     (group) => group.id === service.priceGroupId,
   );
   const url = absoluteUrl(`${path(locale, "/services")}/${slug}`);
+  const treatment = treatmentSchema(service, locale);
 
   return (
     <>
@@ -226,21 +224,22 @@ export default async function ServicePage({
       />
 
       <JsonLd
-        data={serviceSchema(
-          service.title[locale],
-          service.summary[locale],
+        data={pageSchema({
+          locale,
           url,
-        )}
-      />
-      <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          {
-            name: dict.services.pageTitle,
-            url: absoluteUrl(path(locale, "/services")),
-          },
-          { name: service.title[locale], url },
-        ])}
+          name: `${service.title[locale]} ${dict.meta.serviceTitleSuffix}`,
+          description: service.summary[locale],
+          about: treatment.procedureId,
+          primaryImage: absoluteUrl(photo.src.src),
+          breadcrumbs: [
+            {
+              name: dict.services.pageTitle,
+              url: absoluteUrl(path(locale, "/services")),
+            },
+            { name: service.title[locale], url },
+          ],
+          extra: treatment.nodes,
+        })}
       />
     </>
   );

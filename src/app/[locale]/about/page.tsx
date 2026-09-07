@@ -16,8 +16,9 @@ import { photos } from "@/content/images";
 import { services } from "@/content/services";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 import Link from "next/link";
 
 export async function generateMetadata({
@@ -29,19 +30,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
-  return {
-    title: dict.about.title,
+  return pageMetadata({
+    locale,
+    page: "/about",
+    title: dict.meta.aboutTitle,
     description: dict.meta.aboutDescription,
-    alternates: {
-      canonical: path(locale, "/about"),
-      languages: languageAlternates("/about"),
-    },
-    openGraph: {
-      title: `${dict.about.title} | Azalea Dent`,
-      description: dict.meta.aboutDescription,
-      url: absoluteUrl(path(locale, "/about")),
-    },
-  };
+  });
 }
 
 export default async function AboutPage({
@@ -158,10 +152,15 @@ export default async function AboutPage({
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          { name: dict.about.title, url: absoluteUrl(path(locale, "/about")) },
-        ])}
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale, "/about")),
+          name: dict.meta.aboutTitle,
+          description: dict.meta.aboutDescription,
+          breadcrumbs: [
+            { name: dict.nav.about, url: absoluteUrl(path(locale, "/about")) },
+          ],
+        })}
       />
     </>
   );

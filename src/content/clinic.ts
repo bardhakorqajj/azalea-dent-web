@@ -51,6 +51,19 @@ export const clinic = {
   name: "Azalea Dent",
   descriptor: "Dental Clinic",
 
+  /**
+   * Other spellings of the same name that patients actually search for. These
+   * are name variants, not extra claims: they go into `alternateName` on the
+   * structured data so a search for "Azalea" or "Azalea Dent Prishtine"
+   * resolves to this clinic. Do not add a name the clinic does not use.
+   */
+  alternateNames: [
+    "Azalea",
+    "Azalea Dent Prishtinë",
+    "Azalea Dent Dental Clinic",
+    "Klinika Dentare Azalea Dent",
+  ] as string[],
+
   /** Verified — the clinic's Instagram profile. */
   social: {
     instagram: {
@@ -94,11 +107,15 @@ export const clinic = {
   } | null,
 
   /**
-   * Decimal coordinates for LocalBusiness schema. Left unset by choice — the
-   * address and the Maps link already place the clinic. To switch it on, use
-   * 42.6390286 / 21.1638098 (taken from the clinic's own Google Maps URL).
+   * Decimal coordinates, taken from the clinic's own Google Maps URL — the
+   * same pair `mapsEmbedUrl` below centres on. Published in the `Dentist`
+   * structured data, which is what lets Google tie the site to this point on
+   * the map rather than resolving the street address on its own.
    */
-  geo: null as { latitude: number; longitude: number } | null,
+  geo: { latitude: 42.6390286, longitude: 21.1638098 } as {
+    latitude: number;
+    longitude: number;
+  } | null,
 
   /** The clinic's Google Maps share link. */
   mapsUrl: "https://maps.app.goo.gl/izaVgzz7tqvfkv3C6" as string | null,

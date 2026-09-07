@@ -81,6 +81,17 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
                   </Link>
                 </li>
               ))}
+              {/* Implants span oral surgery and prosthetics and have a page of
+                  their own, so they sit alongside the eight rather than inside
+                  one of them. */}
+              <li>
+                <Link
+                  href={path(locale, "/implante-dentare")}
+                  className="text-[0.95rem] text-bone-200/75 transition-colors hover:text-gold-300"
+                >
+                  {dict.implants.eyebrow}
+                </Link>
+              </li>
             </ul>
           </nav>
 

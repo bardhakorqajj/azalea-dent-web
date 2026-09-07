@@ -7,8 +7,9 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { breadcrumbSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates } from "@/lib/site";
+import { pageSchema } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
   params,
@@ -19,19 +20,12 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
-  return {
-    title: dict.services.pageTitle,
+  return pageMetadata({
+    locale,
+    page: "/services",
+    title: dict.meta.servicesTitle,
     description: dict.meta.servicesDescription,
-    alternates: {
-      canonical: path(locale, "/services"),
-      languages: languageAlternates("/services"),
-    },
-    openGraph: {
-      title: `${dict.services.pageTitle} | Azalea Dent`,
-      description: dict.meta.servicesDescription,
-      url: absoluteUrl(path(locale, "/services")),
-    },
-  };
+  });
 }
 
 export default async function ServicesPage({
@@ -70,13 +64,15 @@ export default async function ServicesPage({
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd
-        data={breadcrumbSchema([
-          { name: dict.nav.home, url: absoluteUrl(path(locale)) },
-          {
-            name: dict.services.pageTitle,
-            url: absoluteUrl(path(locale, "/services")),
-          },
-        ])}
+        data={pageSchema({
+          locale,
+          url: absoluteUrl(path(locale, "/services")),
+          name: dict.meta.servicesTitle,
+          description: dict.meta.servicesDescription,
+          breadcrumbs: [
+            { name: dict.nav.services, url: absoluteUrl(path(locale, "/services")) },
+          ],
+        })}
       />
     </>
   );

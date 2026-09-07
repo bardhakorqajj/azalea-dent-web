@@ -17,7 +17,12 @@ import {
 } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { dentistSchema } from "@/lib/schema";
-import { absoluteUrl, languageAlternates, siteUrl } from "@/lib/site";
+import {
+  absoluteUrl,
+  isUnlistedDeployment,
+  languageAlternates,
+  siteUrl,
+} from "@/lib/site";
 import "@/styles/globals.css";
 
 const inter = Inter({
@@ -82,6 +87,11 @@ export async function generateMetadata({
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
   const dict = getDictionary(locale);
 
+  /* Site-wide defaults only. Every page supplies its own title, description,
+     canonical, hreflang, Open Graph, Twitter card and robots directives
+     through `pageMetadata`, which is what keeps the two social blocks in step
+     with the page instead of inheriting the home page's. What stays here is
+     what genuinely is the same everywhere. */
   return {
     metadataBase: new URL(siteUrl()),
     title: {
@@ -90,6 +100,10 @@ export async function generateMetadata({
     },
     description: dict.meta.homeDescription,
     applicationName: clinic.name,
+    authors: [{ name: clinic.name, url: siteUrl() }],
+    creator: clinic.name,
+    publisher: clinic.name,
+    category: "Dentistry",
     alternates: {
       canonical: path(locale),
       languages: languageAlternates(),
@@ -107,11 +121,23 @@ export async function generateMetadata({
       title: dict.meta.homeTitle,
       description: dict.meta.homeDescription,
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: { index: true, follow: true, "max-image-preview": "large" },
-    },
+    /* A preview deployment is the same site on a throwaway address. robots.txt
+       already disallows it, but a disallowed URL can still be indexed from an
+       external link — only `noindex` on the page keeps it out, and a blocked
+       crawler never gets to read it. */
+    robots: isUnlistedDeployment()
+      ? { index: false, follow: false, nocache: true }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+          },
+        },
+    formatDetection: { telephone: true, address: true, email: true },
   };
 }
 
