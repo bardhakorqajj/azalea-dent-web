@@ -31,7 +31,22 @@ export type ContentBlockDefinition = {
   label: LocalisedValue;
   /** The copy the site ships with, per language. */
   fallback: LocalisedValue;
+  /**
+   * Where this block sits in the site's dictionary, as a dot path — so
+   * `getPublicDictionary` can lay the override over the value the components
+   * already read, and no component needs to know the CMS exists.
+   *
+   * Derived from the key: every key here is `<group>.<path>` for the pages, and
+   * the home page's blocks drop the `home.` prefix because the dictionary has
+   * no "home" section — its copy is at the top level.
+   */
+  path: string;
 };
+
+/** The dictionary path a key refers to. */
+function dictionaryPath(key: string): string {
+  return key.startsWith("home.") ? key.slice("home.".length) : key;
+}
 
 function block(
   key: string,
@@ -40,7 +55,7 @@ function block(
   label: LocalisedValue,
   fallback: LocalisedValue,
 ): ContentBlockDefinition {
-  return { key, group, kind, label, fallback };
+  return { key, group, kind, label, fallback, path: dictionaryPath(key) };
 }
 
 export const contentBlocks: ContentBlockDefinition[] = [

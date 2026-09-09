@@ -281,7 +281,7 @@ export const sq = {
       "Importoni shërbimet që faqja ka tashmë, ose shtoni një të re.",
     importFromSite: "Importo përmbajtjen aktuale të faqes",
     importFromSiteHint:
-      "Merr shërbimet, ekipin, pyetjet e shpeshta dhe trajtimet nga teksti me të cilin faqja është publikuar tani, dhe i bën të përpunueshme.",
+      "Merr shërbimet, ekipin, pyetjet e shpeshta dhe trajtimet nga teksti me të cilin faqja është publikuar tani, dhe i bën të përpunueshme. Deri sa t’i importoni, faqja shfaq listën e shërbimeve me të cilën është publikuar; sapo të shtoni edhe një shërbim të vetëm këtu, lista e panelit zë vendin e saj.",
     importDone: "U importuan {count} zëra.",
     importNothing: "Nuk kishte asgjë të re për të importuar.",
     deleteConfirm: "Të fshihet ky shërbim?",

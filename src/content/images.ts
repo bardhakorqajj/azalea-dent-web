@@ -23,8 +23,26 @@ import work14 from "@/assets/images/work-14.jpg";
 
 import type { Localised } from "./services";
 
+/**
+ * Where a gallery photograph's pixels come from.
+ *
+ * Either an import — the clinic's own photography, bundled at build time with
+ * blur data and known dimensions — or a file the clinic uploaded through the
+ * dashboard, which has neither and is addressed by URL. The gallery renders
+ * `placeholder="blur"` only for the first kind, because there is no blur data
+ * to give for a file that did not exist when the site was built.
+ */
+export type PhotoSource =
+  | StaticImageData
+  | { url: string; width: number; height: number };
+
+/** Whether a source is a build-time import, and so has blur data. */
+export function isImportedPhoto(source: PhotoSource): source is StaticImageData {
+  return typeof (source as StaticImageData).src === "string";
+}
+
 export type Photo = {
-  src: StaticImageData;
+  src: PhotoSource;
   /** Alt text describes what is actually in the frame, in both languages. */
   alt: Localised;
   /** Short editorial caption used in the gallery. */

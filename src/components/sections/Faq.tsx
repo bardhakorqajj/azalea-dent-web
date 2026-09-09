@@ -8,8 +8,18 @@ import type { Dictionary } from "@/i18n/get-dictionary";
 /**
  * Native `<details>` accordion — keyboard accessible and fully functional
  * without JavaScript.
+ *
+ * The questions are resolved by the caller: those the clinic has added in the
+ * dashboard, and the site's own set until then. The caller needs the same list
+ * anyway, to describe it in the page's FAQ structured data.
  */
-export function Faq({ dict }: { dict: Dictionary }) {
+export function Faq({
+  dict,
+  items,
+}: {
+  dict: Dictionary;
+  items: { question: string; answer: string }[];
+}) {
   return (
     <Section surface="bone-warm">
       <Container>
@@ -25,7 +35,7 @@ export function Faq({ dict }: { dict: Dictionary }) {
 
           <div className="lg:col-span-8">
             <div className="border-t border-ink-900/12 dark:border-bone-100/12">
-              {dict.faq.items.map((item, index) => (
+              {items.map((item, index) => (
                 <Reveal key={item.question} delay={Math.min(index * 50, 200)}>
                   <details className="group border-b border-ink-900/12 dark:border-bone-100/12">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 [&::-webkit-details-marker]:hidden">

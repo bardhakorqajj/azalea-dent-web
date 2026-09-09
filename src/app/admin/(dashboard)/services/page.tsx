@@ -112,7 +112,7 @@ export default async function ServicesPage({
         }}
       />
 
-      {importable && page.total > 0 && (
+      {importable && (
         <Callout tone="info" className="mt-5">
           {dict.services.importFromSiteHint}
         </Callout>

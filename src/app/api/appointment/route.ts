@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { getService } from "@/content/services";
 import { isLocale, defaultLocale } from "@/i18n/config";
 import { sq } from "@/i18n/dictionaries/sq";
 import { resolveChannels, type Channel } from "@/lib/delivery";
+import { isDatabaseConfigured } from "@/lib/db/client";
+import { logActivity } from "@/lib/db/repos/activity";
+import { createAppointment } from "@/lib/db/repos/appointments";
+import { findPatientByContact } from "@/lib/db/repos/patients";
+import { getServiceBySlug } from "@/lib/db/repos/services";
+import { publicServices } from "@/lib/public/services";
 import {
   validateAppointment,
   hasErrors,
@@ -29,6 +34,14 @@ import {
  * With none configured the route answers 501 and the form tells the patient
  * plainly that nothing was sent, offering WhatsApp, Viber and Instagram
  * instead. It never reports success for a request that went nowhere.
+ *
+ * Every request is also written into the clinic's dashboard as a pending
+ * appointment, which is what makes the two halves of this application one
+ * system: the request the patient submits is the row the clinic confirms,
+ * reschedules and completes. That write is attempted first and never allowed
+ * to fail the response — if the database is unreachable, the email and the
+ * text still go out, because a patient's request must not be lost to an
+ * outage in a system they cannot see.
  */
 
 export const runtime = "nodejs";
@@ -168,8 +181,18 @@ export async function POST(request: Request) {
     consent: body.consent === true,
   };
 
+  /* The treatments on offer right now: the ones the site ships with until the
+     clinic keeps its own list in the dashboard, and that list afterwards. The
+     form is built from exactly this, so what a patient can choose is what
+     this accepts — and a treatment the clinic has removed is refused. */
+  const offered = await publicServices();
+
   // Re-validate on the server: the client check is a convenience, not a gate.
-  const errors = validateAppointment(appointment);
+  const errors = validateAppointment(
+    appointment,
+    new Date(),
+    offered.map((service) => service.slug),
+  );
   if (hasErrors(errors)) {
     return NextResponse.json({ error: "validation", fields: errors }, { status: 422 });
   }
@@ -177,7 +200,7 @@ export async function POST(request: Request) {
   /* The clinic reads these messages, so they are written in Albanian whichever
      language the patient used. Only the note at the end records that, so a
      reply can be sent in the right language. */
-  const service = getService(appointment.service);
+  const service = offered.find((entry) => entry.slug === appointment.service);
   const serviceLabel = service
     ? service.title.sq
     : appointment.service === "other"
@@ -203,6 +226,10 @@ export async function POST(request: Request) {
     `${appointment.name}, ${appointment.phone}`,
     `${serviceLabel}, ${appointment.date}${timeLabel ? ` (${timeLabel})` : ""}`,
   ].join("\n");
+
+  /* Recorded in the dashboard before anything is delivered, so the clinic has
+     the request even if every delivery channel fails. */
+  await recordInDashboard(appointment, serviceLabel, locale);
 
   const channels = resolveChannels(process.env);
 
@@ -234,4 +261,70 @@ export async function POST(request: Request) {
     ok: true,
     delivered: delivered.map((channel) => channel.kind),
   });
+}
+
+/**
+ * Writes the request into the dashboard as a pending appointment.
+ *
+ * Best effort by design: it is wrapped so that no database problem can turn a
+ * patient's booking request into an error page. The email and the text are the
+ * channels the clinic actually watches today, and they must still go out.
+ *
+ * The request is linked to an existing patient record when the phone number or
+ * email matches one — so a returning patient's history stays in one place
+ * rather than accumulating a record per booking. No new patient record is
+ * created here: whether a website enquiry becomes a patient is the clinic's
+ * decision, and there is a button for it on the appointment.
+ */
+async function recordInDashboard(
+  appointment: AppointmentRequest,
+  serviceLabel: string,
+  locale: string,
+): Promise<void> {
+  if (!isDatabaseConfigured()) return;
+
+  try {
+    const service = await getServiceBySlug(appointment.service);
+    const patient = await findPatientByContact({
+      phone: appointment.phone,
+      email: appointment.email,
+    });
+
+    const id = await createAppointment({
+      patientId: patient?.id ?? null,
+      patientName: appointment.name,
+      phone: appointment.phone || null,
+      email: appointment.email || null,
+      serviceId: service?.id ?? null,
+      /* Kept whether or not the service is a known row, so the clinic can read
+         what was asked for even if the service is later renamed or removed. */
+      serviceLabel,
+      teamMemberId: null,
+      scheduledDate: appointment.date,
+      /* The form asks for a part of the day, not a time — the clinic decides
+         the slot when it confirms. */
+      scheduledTime: null,
+      timeSlot: appointment.time === "" ? null : appointment.time,
+      durationMinutes: null,
+      status: "pending",
+      source: "website",
+      notes: appointment.message || null,
+      internalNotes: null,
+      locale,
+    });
+
+    await logActivity({
+      kind: "appointment.requested",
+      summary: `${appointment.name} — ${serviceLabel}, ${appointment.date}`,
+      entity: "appointment",
+      entityId: id,
+      meta: { source: "website", locale },
+    });
+  } catch (error) {
+    console.error(
+      "Recording the appointment request in the dashboard failed; " +
+        "it is still being delivered by the configured channels:",
+      error,
+    );
+  }
 }

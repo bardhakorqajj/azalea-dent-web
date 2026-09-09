@@ -19,8 +19,9 @@
  * cannot, which is the HTTP surface.
  */
 
-const BASE = process.env.QA_BASE_URL ?? "http://localhost:3000";
-const HOST = process.env.QA_ADMIN_HOST ?? "admin.localhost:3000";
+/** The dashboard's own address, and the public site's. */
+const BASE = process.env.QA_ADMIN_URL ?? "http://admin.localhost:3000";
+const SITE = process.env.QA_SITE_URL ?? "http://localhost:3000";
 const DB = process.env.QA_DATABASE_URL ?? process.env.DATABASE_URL ?? "";
 
 if (DB === "") {
@@ -51,7 +52,7 @@ function absorb(response) {
 
 async function get(path) {
   const response = await fetch(`${BASE}${path}`, {
-    headers: { Host: HOST, Cookie: cookieHeader() },
+    headers: { Cookie: cookieHeader() },
     redirect: "manual",
   });
   absorb(response);
@@ -111,6 +112,19 @@ function hiddenValue(html, marker, field) {
   return null;
 }
 
+/**
+ * The text of the page's first `<h1>`.
+ *
+ * Checks read this rather than the whole document: the site's header is a
+ * client component and takes the whole dictionary, so every page's payload
+ * mentions the shipped copy whether it is rendered or not. The heading is what
+ * a visitor actually sees.
+ */
+function firstHeading(html) {
+  const match = /<h1[^>]*>([\s\S]*?)<\/h1>/.exec(html);
+  return match ? decode(match[1].replace(/<[^>]*>/g, "")).trim() : null;
+}
+
 async function post(path, action, fields) {
   const body = new FormData();
   for (const [name, value] of Object.entries(action ?? {})) body.set(name, value);
@@ -121,13 +135,40 @@ async function post(path, action, fields) {
 
   const response = await fetch(`${BASE}${path}`, {
     method: "POST",
-    headers: { Host: HOST, Cookie: cookieHeader(), Origin: `http://${HOST}` },
+    headers: { Cookie: cookieHeader(), Origin: BASE },
     body,
     redirect: "manual",
   });
   absorb(response);
   const text = await response.text();
   return { status: response.status, location: response.headers.get("location"), body: text };
+}
+
+/**
+ * A page on the public website, fetched the way a visitor gets it: the other
+ * hostname, and no cookies at all. Passing the session along would prove
+ * nothing about what the public actually sees.
+ */
+async function site(path) {
+  const response = await fetch(`${SITE}${path}`, { redirect: "manual" });
+  const body = await response.text();
+  return { status: response.status, location: response.headers.get("location"), body };
+}
+
+/** A JSON POST to one of the website's own endpoints, as its forms send it. */
+async function siteJson(path, payload) {
+  const response = await fetch(`${SITE}${path}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  let json = null;
+  try {
+    json = await response.json();
+  } catch {
+    /* An error page rather than JSON; the status is what the check reads. */
+  }
+  return { status: response.status, json };
 }
 
 async function sql(text, params = []) {
@@ -185,6 +226,8 @@ async function clearFixtures() {
   await sql("delete from patient where full_name in ('Blerta Hoxha','Test Telefoni')");
   await sql("delete from review where author_name in ('A. K.','B. M.')");
   await sql("delete from content_block where key = 'home.hero.title'");
+  await sql("delete from message where name = 'Vizitor QA'");
+  await sql("delete from content_block where key = 'footer.tagline'");
   /* The uploaded fixture photo, and the gallery entry pointing at it. */
   await sql("delete from gallery_image where media_id in (select id from media where filename = 'para-pas.png')");
   await sql("delete from media where filename = 'para-pas.png'");
@@ -494,7 +537,7 @@ async function main() {
 
   const uploaded = await fetch(`${BASE}/gallery`, {
     method: "POST",
-    headers: { Host: HOST, Cookie: cookieHeader(), Origin: `http://${HOST}` },
+    headers: { Cookie: cookieHeader(), Origin: BASE },
     body: uploadBody,
     redirect: "manual",
   });
@@ -559,16 +602,15 @@ async function main() {
   const mediaId = workImages[0]?.media_id;
   if (mediaId) {
     const asAdmin = await fetch(`${BASE}/api/media/${mediaId}`, {
-      headers: { Host: HOST, Cookie: cookieHeader() },
+      headers: { Cookie: cookieHeader() },
     });
     check("the signed-in admin can fetch the file", asAdmin.status === 200);
 
     // Unpublish it, then try again with no cookies at all.
     await sql("update gallery_image set is_published = false where media_id = $1", [mediaId]);
 
-    const anonymous = await fetch(`${BASE}/api/media/${mediaId}`, {
-      headers: { Host: "azaleadent.org" },
-    });
+    /* From the public site, with no session: a stranger's view. */
+    const anonymous = await fetch(`${SITE}/api/media/${mediaId}`);
     check(
       "an unpublished file is not served to a stranger",
       anonymous.status === 404,
@@ -576,16 +618,14 @@ async function main() {
     );
 
     await sql("update gallery_image set is_published = true where media_id = $1", [mediaId]);
-    const published = await fetch(`${BASE}/api/media/${mediaId}`, {
-      headers: { Host: "azaleadent.org" },
-    });
+    const published = await fetch(`${SITE}/api/media/${mediaId}`);
     check("a published file is served publicly", published.status === 200);
     check(
       "and is cached immutably",
       (published.headers.get("cache-control") ?? "").includes("immutable"),
     );
 
-    const notAUuid = await fetch(`${BASE}/api/media/not-a-uuid`, { headers: { Host: HOST } });
+    const notAUuid = await fetch(`${BASE}/api/media/not-a-uuid`);
     check("a non-uuid id answers 404 rather than erroring", notAUuid.status === 404);
   }
 
@@ -618,6 +658,191 @@ async function main() {
   });
   const imported = await sql("select source, imported_at from review where author_name = 'B. M.'");
   check("a platform review is stamped as imported", imported[0]?.imported_at !== null);
+
+  // ---------------------------------------------------------------------
+  section("the public website reads what the dashboard writes");
+
+  /* The point of the whole exercise: the dashboard and the website are one
+     application over one database. So an edit saved in the panel has to show
+     up on the site, in the language it was written in and no other, and the
+     copy the site ships with has to come back when the edit is removed.
+
+     Every read here goes to the public hostname with no session cookie — a
+     stranger's view, not the author's. */
+
+  const shippedHeadline = "Kujdes dentar, me përkushtim ndaj buzëqeshjes suaj.";
+  const editedHeadline = "Titull i re nga paneli";
+
+  await post("/content?group=home", saveContentAction, {
+    csrf,
+    group: "home",
+    "block.home.hero.title.sq": editedHeadline,
+  });
+
+  const sqHome = await site("/");
+  check(
+    "the Albanian home page shows the headline saved in the dashboard",
+    firstHeading(sqHome.body) === editedHeadline,
+    `heading ${JSON.stringify(firstHeading(sqHome.body))}`,
+  );
+
+  const enHome = await site("/en");
+  check(
+    "the language that was not edited is untouched",
+    firstHeading(enHome.body) === "Dental care, devoted to your smile.",
+    `heading ${JSON.stringify(firstHeading(enHome.body))}`,
+  );
+
+  await post("/content?group=home", saveContentAction, {
+    csrf,
+    group: "home",
+    "block.home.hero.title.sq": "",
+  });
+
+  const restored = await site("/");
+  check(
+    "clearing the field brings the shipped headline back",
+    firstHeading(restored.body) === shippedHeadline,
+    `heading ${JSON.stringify(firstHeading(restored.body))}`,
+  );
+
+  /* The footer is rendered by the layout, not by any page — so an edit to it
+     only shows up if the layout reads the same overridden copy the pages do. */
+  const footerPage = await get("/content?group=footer");
+  const saveFooterAction = actionFields(footerPage.body, 'name="group"');
+
+  await post("/content?group=footer", saveFooterAction, {
+    csrf,
+    group: "footer",
+    "block.footer.tagline.sq": "Nënshkrim nga paneli",
+  });
+
+  const withFooter = await site("/contact");
+  check(
+    "an edit to the footer reaches every page, not just the home page",
+    withFooter.body.includes("Nënshkrim nga paneli"),
+    `status ${withFooter.status}`,
+  );
+
+  await post("/content?group=footer", saveFooterAction, {
+    csrf,
+    group: "footer",
+    "block.footer.tagline.sq": "",
+  });
+  const footerRestored = await site("/contact");
+  check(
+    "and clearing it restores the shipped one",
+    !footerRestored.body.includes("Nënshkrim nga paneli"),
+  );
+
+  /* The service created earlier in this run, seen from the outside. */
+  const listedPublicly = await site("/services");
+  check(
+    "a service added in the dashboard is listed on the website",
+    listedPublicly.body.includes("Zbardhim i dhëmbëve"),
+    `status ${listedPublicly.status}`,
+  );
+
+  const servicePage = await site("/services/zbardhim-dhembesh");
+  check(
+    "it has its own page, with the price the dashboard set",
+    servicePage.status === 200 && servicePage.body.includes("prej 150 €"),
+    `status ${servicePage.status}`,
+  );
+
+  const offlineToggle = actionFields((await get("/services")).body, 'title="Joaktiv"');
+  if (offlineToggle) {
+    await post("/services", offlineToggle, { csrf, id });
+    const hidden = await site("/services");
+    check(
+      "taking it offline removes it from the website",
+      !hidden.body.includes("Zbardhim i dhëmbëve"),
+      `status ${hidden.status}`,
+    );
+    const gone = await site("/services/zbardhim-dhembesh");
+    check("and its page answers 404", gone.status === 404, `status ${gone.status}`);
+
+    /* Back online, so the booking request below can be linked to it. */
+    await post("/services", offlineToggle, { csrf, id });
+  } else {
+    check("the list exposes a toggle action", false);
+  }
+
+  /* A booking request as the website's form sends it. Nothing is configured to
+     deliver it here, so the route says so with a 501 — and the request still
+     has to be waiting in the dashboard, which is the whole reason it is
+     written to the database before any delivery is attempted. */
+  const booking = await siteJson("/api/appointment", {
+    name: "Blerta Hoxha",
+    phone: "+383 44 987 654",
+    email: "",
+    service: "zbardhim-dhembesh",
+    date: "2027-02-11",
+    time: "afternoon",
+    message: "Kërkesë nga faqja.",
+    consent: true,
+    locale: "sq",
+  });
+  check(
+    "a booking request with no delivery channel configured is answered honestly",
+    booking.status === 501 && booking.json?.error === "not_configured",
+    `status ${booking.status}`,
+  );
+
+  const requested = await sql(
+    `select a.status, a.source, a.time_slot, a.patient_id, s.slug
+       from appointment a
+       left join service s on s.id = a.service_id
+      where a.scheduled_date = '2027-02-11' and a.patient_name = 'Blerta Hoxha'`,
+  );
+  check("it is waiting in the dashboard all the same", requested.length === 1);
+  if (requested.length === 1) {
+    const row = requested[0];
+    check("as a pending request from the website", row.status === "pending" && row.source === "website");
+    check("with the treatment it asked for", row.slug === "zbardhim-dhembesh");
+    check("and the part of the day, which is all the form asks for", row.time_slot === "afternoon");
+    check(
+      "and linked to the patient whose number it is, written a different way",
+      row.patient_id !== null,
+    );
+  }
+
+  /* A question from the contact form. Unlike a booking, this one is stored
+     rather than delivered, so it must be accepted outright. */
+  const unreachable = await siteJson("/api/contact", {
+    name: "Vizitor QA",
+    body: "Nuk po lë as email as telefon.",
+    consent: true,
+    locale: "sq",
+  });
+  check(
+    "a message with no way to reply to it is refused",
+    unreachable.status === 422,
+    `status ${unreachable.status}`,
+  );
+
+  const asked = await siteJson("/api/contact", {
+    name: "Vizitor QA",
+    email: "vizitor@example.com",
+    subject: "Pyetje për çmimet",
+    body: "A mund të caktoj një kontroll javën e ardhshme?",
+    consent: true,
+    locale: "sq",
+  });
+  check("a question from the website is accepted", asked.status === 200, `status ${asked.status}`);
+
+  const inbox = await sql(
+    "select source, locale, status, subject, ip_hash, email from message where name = 'Vizitor QA'",
+  );
+  check("and lands in the dashboard inbox", inbox.length === 1);
+  if (inbox.length === 1) {
+    check("unread, from the website, in the language it was written in", inbox[0].status === "new" && inbox[0].source === "website" && inbox[0].locale === "sq");
+    check("with the address to reply to", inbox[0].email === "vizitor@example.com");
+    check("and the sender's address stored only as a hash", inbox[0].ip_hash === null || !/^\d+\.\d+\.\d+\.\d+$/.test(inbox[0].ip_hash));
+  }
+
+  const inboxPage = await get("/messages");
+  check("the inbox page shows it", inboxPage.body.includes("Vizitor QA"), `status ${inboxPage.status}`);
 
   // ---------------------------------------------------------------------
   section("logout");

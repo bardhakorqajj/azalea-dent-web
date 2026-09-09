@@ -68,6 +68,43 @@ async function withFallback<T>(
   }
 }
 
+/** Labels already reported, so a persistent fall-through logs once. */
+const reported = new Set<string>();
+
+/**
+ * Wraps a read in the request cache, and keeps working without one.
+ *
+ * `unstable_cache` throws outright when there is no incremental cache in
+ * scope — which is the case anywhere outside a request, a unit test included.
+ * The read underneath is already safe on its own, so the cache is treated as
+ * an optimisation that may be absent rather than as a dependency: without one
+ * the read simply runs. That keeps a route or a script that reaches this code
+ * from a context Next did not set up serving content instead of a 500.
+ */
+function cached<T>(
+  label: string,
+  read: () => Promise<T>,
+  key: string,
+  tag: string,
+): () => Promise<T> {
+  const wrapped = unstable_cache(read, [key], { tags: [tag] });
+
+  return async () => {
+    try {
+      return await wrapped();
+    } catch (error) {
+      if (!reported.has(label)) {
+        reported.add(label);
+        console.error(
+          `Public read "${label}" ran without a cache:`,
+          error instanceof Error ? error.message : error,
+        );
+      }
+      return read();
+    }
+  };
+}
+
 // === Services =============================================================
 
 /**
@@ -77,15 +114,16 @@ async function withFallback<T>(
  * from `src/content/services.ts` until then — so the site looks the same the
  * moment the dashboard is deployed and before anything has been imported.
  */
-export const getPublicServices = unstable_cache(
+export const getPublicServices = cached(
+  "services",
   async (): Promise<{ rows: ServiceRow[]; source: "database" | "static" }> => {
     const rows = await withFallback("services", activeServices, []);
     return rows.length > 0
       ? { rows, source: "database" }
       : { rows: [], source: "static" };
   },
-  ["public-services"],
-  { tags: [PUBLIC_TAGS.services] },
+  "public-services",
+  PUBLIC_TAGS.services,
 );
 
 /** The static services, for the fallback path and for the import. */
@@ -95,10 +133,11 @@ export function staticServiceList(): Service[] {
 
 // === Team =================================================================
 
-export const getPublicTeam = unstable_cache(
+export const getPublicTeam = cached(
+  "team",
   async (): Promise<TeamMemberRow[]> => withFallback("team", activeTeam, []),
-  ["public-team"],
-  { tags: [PUBLIC_TAGS.team] },
+  "public-team",
+  PUBLIC_TAGS.team,
 );
 
 // === Reviews ==============================================================
@@ -110,19 +149,21 @@ export const getPublicTeam = unstable_cache(
  * testimonials — so an empty result here means the section stays hidden, which
  * is exactly what it does today.
  */
-export const getPublicReviews = unstable_cache(
+export const getPublicReviews = cached(
+  "reviews",
   async (): Promise<ReviewRow[]> => withFallback("reviews", publishedReviews, []),
-  ["public-reviews"],
-  { tags: [PUBLIC_TAGS.reviews] },
+  "public-reviews",
+  PUBLIC_TAGS.reviews,
 );
 
 // === Promotions ===========================================================
 
-export const getPublicPromotions = unstable_cache(
+export const getPublicPromotions = cached(
+  "promotions",
   async (): Promise<PromotionRow[]> =>
     withFallback("promotions", livePromotions, []),
-  ["public-promotions"],
-  { tags: [PUBLIC_TAGS.promotions] },
+  "public-promotions",
+  PUBLIC_TAGS.promotions,
 );
 
 // === Gallery ==============================================================
@@ -135,11 +176,12 @@ export const getPublicPromotions = unstable_cache(
  * two are additive rather than exclusive: the clinic's shipped photographs are
  * the gallery's foundation, and uploads extend it.
  */
-export const getPublicGallery = unstable_cache(
+export const getPublicGallery = cached(
+  "gallery",
   async (): Promise<GalleryImageWithMedia[]> =>
     withFallback("gallery", publishedGalleryImages, []),
-  ["public-gallery"],
-  { tags: [PUBLIC_TAGS.gallery] },
+  "public-gallery",
+  PUBLIC_TAGS.gallery,
 );
 
 // === Editable copy ========================================================
@@ -150,7 +192,8 @@ export const getPublicGallery = unstable_cache(
  * Returned as a plain record so a page can read `copy["home.hero.title"]`
  * without another database round trip per block.
  */
-export const getPublicCopy = unstable_cache(
+export const getPublicCopy = cached(
+  "content",
   async (): Promise<Record<string, LocalisedValue>> => {
     const overrides = await withFallback(
       "content",
@@ -164,8 +207,8 @@ export const getPublicCopy = unstable_cache(
     }
     return resolved;
   },
-  ["public-copy"],
-  { tags: [PUBLIC_TAGS.content] },
+  "public-copy",
+  PUBLIC_TAGS.content,
 );
 
 /** The shipped copy for one block, for a caller with no need to read the DB. */
@@ -175,10 +218,11 @@ export function copyFallback(key: string): ContentBlockDefinition | undefined {
 
 // === FAQ ==================================================================
 
-export const getPublicFaq = unstable_cache(
+export const getPublicFaq = cached(
+  "faq",
   async (): Promise<FaqItemRow[]> => withFallback("faq", activeFaqItems, []),
-  ["public-faq"],
-  { tags: [PUBLIC_TAGS.faq] },
+  "public-faq",
+  PUBLIC_TAGS.faq,
 );
 
 // === Settings =============================================================
@@ -191,11 +235,12 @@ export const getPublicFaq = unstable_cache(
  * them. With no database at all this is exactly `clinic.ts`, which is how the
  * site behaves today.
  */
-export const getPublicSettings = unstable_cache(
+export const getPublicSettings = cached(
+  "settings",
   async (): Promise<SettingsShape> =>
     withFallback("settings", readSettings, defaultSettings()),
-  ["public-settings"],
-  { tags: [PUBLIC_TAGS.settings] },
+  "public-settings",
+  PUBLIC_TAGS.settings,
 );
 
 /** The clinic facts, for code that has not been moved onto settings yet. */

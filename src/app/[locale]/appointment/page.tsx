@@ -17,6 +17,9 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicDictionary } from "@/lib/public/dictionary";
+import { publicFaq } from "@/lib/public/faq";
+import { publicServices } from "@/lib/public/services";
 import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
@@ -44,7 +47,19 @@ export default async function AppointmentPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const dict = getDictionary(locale);
+  const [dict, faq, services] = await Promise.all([
+    getPublicDictionary(locale),
+    publicFaq(locale),
+    publicServices(),
+  ]);
+
+  /* The dropdown offers whatever the site is offering — the eight treatments
+     it ships with, or the list the clinic keeps in the dashboard once it has
+     one. Only the slug and the label cross to the browser. */
+  const serviceOptions = services.map((service) => ({
+    slug: service.slug,
+    label: service.title[locale],
+  }));
 
   return (
     <>
@@ -63,7 +78,7 @@ export default async function AppointmentPage({
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <AppointmentForm locale={locale} dict={dict} />
+              <AppointmentForm locale={locale} dict={dict} options={serviceOptions} />
             </div>
 
             <aside className="lg:col-span-5">
@@ -105,7 +120,7 @@ export default async function AppointmentPage({
         </Container>
       </Section>
 
-      <Faq dict={dict} />
+      <Faq dict={dict} items={faq} />
 
       <JsonLd
         data={pageSchema({

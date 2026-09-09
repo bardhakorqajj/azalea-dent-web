@@ -40,21 +40,32 @@ export function toE164(value: string): string {
   return digits.startsWith("+") ? digits : `+${digits}`;
 }
 
+/**
+ * The email channel on its own, or null when no provider is configured.
+ *
+ * Extracted so the dashboard's notification emails use exactly the same
+ * provider, sender and default recipient as an appointment request, rather
+ * than a second copy of the same three environment variables that could drift.
+ */
+export function resolveEmailChannel(env: DeliveryEnv): EmailChannel | null {
+  const apiKey = env.RESEND_API_KEY?.trim();
+  const to = env.APPOINTMENT_TO_EMAIL?.trim() || clinic.email || "";
+  if (!apiKey || !to) return null;
+
+  return {
+    kind: "email",
+    apiKey,
+    to,
+    from:
+      env.APPOINTMENT_FROM_EMAIL?.trim() || "Azalea Dent <onboarding@resend.dev>",
+  };
+}
+
 export function resolveChannels(env: DeliveryEnv): Channel[] {
   const channels: Channel[] = [];
 
-  const apiKey = env.RESEND_API_KEY?.trim();
-  const to = env.APPOINTMENT_TO_EMAIL?.trim() || clinic.email || "";
-  if (apiKey && to) {
-    channels.push({
-      kind: "email",
-      apiKey,
-      to,
-      from:
-        env.APPOINTMENT_FROM_EMAIL?.trim() ||
-        "Azalea Dent <onboarding@resend.dev>",
-    });
-  }
+  const email = resolveEmailChannel(env);
+  if (email) channels.push(email);
 
   const accountSid = env.TWILIO_ACCOUNT_SID?.trim();
   const authToken = env.TWILIO_AUTH_TOKEN?.trim();

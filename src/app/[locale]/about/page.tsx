@@ -18,6 +18,9 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicDictionary } from "@/lib/public/dictionary";
+import { publicReviews } from "@/lib/public/reviews";
+import { publicTeam } from "@/lib/public/team";
 import { absoluteUrl } from "@/lib/site";
 import Link from "next/link";
 
@@ -46,7 +49,11 @@ export default async function AboutPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const dict = getDictionary(locale);
+  const [dict, team, reviews] = await Promise.all([
+    getPublicDictionary(locale),
+    publicTeam(),
+    publicReviews(),
+  ]);
 
   return (
     <>
@@ -146,8 +153,8 @@ export default async function AboutPage({
       </Section>
 
       <WhyUs locale={locale} dict={dict} />
-      <Team locale={locale} dict={dict} />
-      <Testimonials locale={locale} dict={dict} />
+      <Team locale={locale} dict={dict} members={team} />
+      <Testimonials locale={locale} dict={dict} reviews={reviews} />
       <VisitBand locale={locale} dict={dict} />
       <CtaBand locale={locale} dict={dict} />
 

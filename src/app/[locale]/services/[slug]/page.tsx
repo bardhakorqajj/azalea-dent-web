@@ -12,7 +12,6 @@ import { Section } from "@/components/ui/Section";
 import { PriceGroupTable } from "@/components/sections/PriceList";
 import { photos } from "@/content/images";
 import { priceGroups } from "@/content/prices";
-import { getService, serviceSlugs } from "@/content/services";
 import {
   defaultLocale,
   isLocale,
@@ -23,11 +22,26 @@ import {
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema, treatmentSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicDictionary } from "@/lib/public/dictionary";
+import {
+  prerenderedServiceSlugs,
+  publicService,
+  publicServices,
+} from "@/lib/public/services";
 import { absoluteUrl } from "@/lib/site";
 
+/**
+ * The pages to prerender at build time: the eight services the site ships
+ * with.
+ *
+ * A service the clinic adds in the dashboard is deliberately not listed here.
+ * A build must not depend on a reachable database, nor bake in whatever
+ * happened to be published that minute — and Next renders a param that this
+ * did not return on demand, which is exactly the behaviour wanted.
+ */
 export function generateStaticParams() {
   return locales.flatMap((locale) =>
-    serviceSlugs.map((slug) => ({ locale, slug })),
+    prerenderedServiceSlugs().map((slug) => ({ locale, slug })),
   );
 }
 
@@ -38,21 +52,24 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: raw, slug } = await params;
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
-  const service = getService(slug);
+  const service = await publicService(slug);
   if (!service) return {};
 
   const dict = getDictionary(locale);
 
   /* The heading on the page is just the treatment ("Protetikë"); the title
      tag adds the city, because the person reading it is still in a results
-     list and has not arrived yet. */
-  const title = `${service.title[locale]} ${dict.meta.serviceTitleSuffix}`;
+     list and has not arrived yet. The clinic can override both from the
+     dashboard's SEO fields. */
+  const title =
+    service.seoTitle?.[locale] ||
+    `${service.title[locale]} ${dict.meta.serviceTitleSuffix}`;
 
   return pageMetadata({
     locale,
     page: `/services/${slug}`,
     title,
-    description: service.summary[locale],
+    description: service.seoDescription?.[locale] || service.summary[locale],
   });
 }
 
@@ -64,14 +81,23 @@ export default async function ServicePage({
   const { locale, slug } = await params;
   if (!isLocale(locale)) notFound();
 
-  const service = getService(slug);
+  const [dict, service, services] = await Promise.all([
+    getPublicDictionary(locale),
+    publicService(slug),
+    publicServices(),
+  ]);
+
   if (!service) notFound();
 
-  const dict = getDictionary(locale);
   const photo = photos.operatoryDaylight;
   const priceGroup = priceGroups.find(
     (group) => group.id === service.priceGroupId,
   );
+  /* The price the clinic typed into the dashboard, shown only when this
+     treatment has no price table of its own. Where there is a table, the
+     table is the published price list and two figures could disagree. */
+  const priceLine = priceGroup ? "" : (service.priceText?.[locale] ?? "").trim();
+
   const url = absoluteUrl(`${path(locale, "/services")}/${slug}`);
   const treatment = treatmentSchema(service, locale);
 
@@ -160,15 +186,42 @@ export default async function ServicePage({
             <aside className="lg:col-span-5">
               <Reveal delay={60}>
                 <div className="relative aspect-[4/5] w-full overflow-hidden">
-                  <Image
-                    src={photo.src}
-                    alt={photo.alt[locale]}
-                    placeholder="blur"
-                    sizes="(min-width: 1024px) 40vw, 100vw"
-                    className="h-full w-full object-cover"
-                    style={{ objectPosition: photo.focus }}
-                  />
+                  {service.imageId ? (
+                    /* The clinic's own photograph for this treatment. No
+                       `placeholder="blur"`: a file uploaded after the build has
+                       no build-time blur data. */
+                    <Image
+                      src={`/api/media/${service.imageId}`}
+                      alt={service.title[locale]}
+                      fill
+                      sizes="(min-width: 1024px) 40vw, 100vw"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt[locale]}
+                      placeholder="blur"
+                      sizes="(min-width: 1024px) 40vw, 100vw"
+                      className="h-full w-full object-cover"
+                      style={{ objectPosition: photo.focus }}
+                    />
+                  )}
                 </div>
+
+                {priceLine && (
+                  <div className="mt-8 border-t border-ink-900/15 pt-7 dark:border-bone-100/15">
+                    <h2 className="eyebrow text-ink-500 dark:text-bone-300">
+                      {dict.services.priceTitle}
+                    </h2>
+                    <p className="mt-4 font-display text-[1.5rem] text-ink-900 dark:text-bone-50">
+                      {priceLine}
+                    </p>
+                    <p className="mt-3 text-[0.85rem] leading-relaxed text-ink-500 dark:text-bone-300">
+                      {dict.prices.note}
+                    </p>
+                  </div>
+                )}
 
                 <div className="mt-8 border-t border-ink-900/15 pt-7 dark:border-bone-100/15">
                   <h2 className="eyebrow text-ink-500 dark:text-bone-300">
@@ -216,6 +269,7 @@ export default async function ServicePage({
       <ServicesIndex
         locale={locale}
         dict={dict}
+        services={services}
         variant="page"
         exclude={slug}
         eyebrow={dict.services.eyebrow}
@@ -230,7 +284,9 @@ export default async function ServicePage({
           name: `${service.title[locale]} ${dict.meta.serviceTitleSuffix}`,
           description: service.summary[locale],
           about: treatment.procedureId,
-          primaryImage: absoluteUrl(photo.src.src),
+          primaryImage: absoluteUrl(
+            service.imageId ? `/api/media/${service.imageId}` : photo.src.src,
+          ),
           breadcrumbs: [
             {
               name: dict.services.pageTitle,

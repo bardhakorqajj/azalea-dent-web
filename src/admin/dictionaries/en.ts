@@ -276,7 +276,7 @@ export const en: AdminDictionary = {
     emptyHint: "Import the services the website already has, or add a new one.",
     importFromSite: "Import the website's current content",
     importFromSiteHint:
-      "Takes the services, team, FAQ and treatments from the text the site is published with today, and makes them editable.",
+      "Takes the services, team, FAQ and treatments from the text the site is published with today, and makes them editable. Until you import them the website shows the list of services it ships with; as soon as you add a single service here, the dashboard’s list takes its place.",
     importDone: "Imported {count} items.",
     importNothing: "There was nothing new to import.",
     deleteConfirm: "Delete this service?",

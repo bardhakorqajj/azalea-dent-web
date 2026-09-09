@@ -16,6 +16,7 @@ import {
   type Locale,
 } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { getPublicDictionary } from "@/lib/public/dictionary";
 import { dentistSchema } from "@/lib/schema";
 import {
   absoluteUrl,
@@ -150,7 +151,12 @@ export default async function LocaleLayout({
 }) {
   const { locale: raw } = await params;
   const locale: Locale = isLocale(raw) ? raw : defaultLocale;
-  const dict = getDictionary(locale);
+
+  /* The dashboard can edit the footer's tagline and note, and the footer is
+     rendered here rather than on any page — so this reads the same merged
+     dictionary the pages do. It falls back to the shipped copy, so an
+     unreachable database changes nothing. */
+  const dict = await getPublicDictionary(locale);
 
   return (
     <html

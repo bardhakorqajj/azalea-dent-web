@@ -7,11 +7,13 @@ import { Container } from "@/components/ui/Container";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Section } from "@/components/ui/Section";
-import { workPhotos } from "@/content/images";
+import { galleryOrder, photos, workPhotos } from "@/content/images";
 import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicDictionary } from "@/lib/public/dictionary";
+import { photosOfKind, publicGalleryPhotos } from "@/lib/public/gallery";
 import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
@@ -39,7 +41,20 @@ export default async function GalleryPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const dict = getDictionary(locale);
+  const [dict, uploaded] = await Promise.all([
+    getPublicDictionary(locale),
+    publicGalleryPhotos(),
+  ]);
+
+  /* The site's own photography, extended by whatever the clinic has published.
+     Additive on purpose: the rooms shot for the site are the gallery's
+     foundation, and an upload adds to it rather than replacing it. */
+  const clinicPhotos = [
+    ...galleryOrder.map((key) => photos[key]),
+    ...photosOfKind(uploaded, "clinic"),
+    ...photosOfKind(uploaded, "other"),
+  ];
+  const treatmentPhotos = [...workPhotos, ...photosOfKind(uploaded, "work")];
 
   return (
     <>
@@ -59,12 +74,17 @@ export default async function GalleryPage({
             lead={dict.gallery.pageLead}
             className="mb-12"
           />
-          <Gallery locale={locale} dict={dict} label={dict.gallery.title} />
+          <Gallery
+            locale={locale}
+            dict={dict}
+            items={clinicPhotos}
+            label={dict.gallery.title}
+          />
         </Container>
       </Section>
 
       {/* Treatment photographs, shown only once there are real ones. */}
-      {workPhotos.length > 0 && (
+      {treatmentPhotos.length > 0 && (
         <Section surface="bone-warm">
           <Container>
             <SectionHeading
@@ -75,7 +95,7 @@ export default async function GalleryPage({
             <Gallery
               locale={locale}
               dict={dict}
-              items={workPhotos}
+              items={treatmentPhotos}
               label={dict.work.title}
               /* Before/after pairs are stacked vertically and carry the
                  clinic's watermark, so the tile holds the whole frame

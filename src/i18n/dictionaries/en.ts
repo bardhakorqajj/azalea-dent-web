@@ -74,6 +74,7 @@ export const en: Dictionary = {
     pageTitle: "Dental treatments",
     pageLead:
       "The eight areas of treatment at Azalea Dent, explained step by step: what they cover, how they work and what to expect.",
+    priceTitle: "Price",
     highlightsTitle: "Good to know",
     stepsTitle: "How it works",
     otherTitle: "Other treatments",
@@ -370,6 +371,32 @@ export const en: Dictionary = {
     lead: "For a dentist appointment, a question or a second opinion, write to us and we will reply. The clinic is in Prishtina, on Holger Petersen street.",
     formTitle: "Appointment request",
     infoTitle: "Clinic details",
+  },
+
+  message: {
+    title: "A quick question",
+    lead: "If you are not ready to book, write your question and we will reply.",
+    name: "Name",
+    email: "Email",
+    phone: "Phone",
+    subject: "Subject",
+    body: "Message",
+    consent: "I agree that the clinic may use my details only to reply to me.",
+    submit: "Send the message",
+    submitting: "Sending…",
+    optional: "optional",
+    successTitle: "Message sent",
+    successBody: "Thank you. The clinic reads these and will reply as soon as it can.",
+    errorTitle: "The message was not sent",
+    errorBody: "Try again, or contact the clinic directly on the numbers below.",
+    errors: {
+      name: "Please give your name",
+      body: "Please write your message",
+      contact: "Please give an email address or a phone number, so we can reply",
+      email: "That email address is not valid",
+      phone: "That phone number is not valid",
+      consent: "We need your agreement in order to reply",
+    },
   },
 
   footer: {

@@ -72,6 +72,7 @@ export const sq = {
     pageTitle: "Trajtimet dentare",
     pageLead:
       "Tetë fushat e trajtimit në Azalea Dent, të shpjeguara hap pas hapi: çfarë përfshijnë, si zhvillohen dhe çfarë të prisni.",
+    priceTitle: "Çmimi",
     highlightsTitle: "Të mira për t'u ditur",
     stepsTitle: "Si zhvillohet",
     otherTitle: "Trajtime të tjera",
@@ -382,6 +383,32 @@ export const sq = {
     lead: "Për një takim te stomatologu, një pyetje ose një mendim të dytë, na shkruani dhe ju kthejmë përgjigje. Klinika ndodhet në Prishtinë, në rrugën Holger Petersen.",
     formTitle: "Kërkesë për takim",
     infoTitle: "Të dhënat e klinikës",
+  },
+
+  message: {
+    title: "Një pyetje e shpejtë",
+    lead: "Nëse nuk jeni gati për një takim, shkruani pyetjen tuaj dhe ju kthejmë përgjigje.",
+    name: "Emri",
+    email: "Email",
+    phone: "Telefoni",
+    subject: "Tema",
+    body: "Mesazhi",
+    consent: "Pranoj që klinika t\u2019i përdorë të dhënat e mia vetëm për t\u2019u kthyer përgjigje.",
+    submit: "Dërgo mesazhin",
+    submitting: "Po dërgohet…",
+    optional: "opsionale",
+    successTitle: "Mesazhi u dërgua",
+    successBody: "Faleminderit. Klinika e lexon dhe ju kthen përgjigje sa më shpejt.",
+    errorTitle: "Mesazhi nuk u dërgua",
+    errorBody: "Provoni përsëri, ose kontaktoni klinikën drejtpërdrejt me numrat më poshtë.",
+    errors: {
+      name: "Shkruani emrin tuaj",
+      body: "Shkruani mesazhin",
+      contact: "Shkruani email-in ose numrin e telefonit, që të mund t\u2019ju përgjigjemi",
+      email: "Email-i nuk është i vlefshëm",
+      phone: "Numri i telefonit nuk është i vlefshëm",
+      consent: "Duhet pranimi për t\u2019u përgjigjur",
+    },
   },
 
   footer: {
