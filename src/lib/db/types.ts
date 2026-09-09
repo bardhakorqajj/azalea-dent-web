@@ -195,7 +195,8 @@ export type PatientRow = {
   full_name: string;
   phone: string | null;
   email: string | null;
-  date_of_birth: Date | null;
+  /** `YYYY-MM-DD`, read as a string so no timezone can shift the day. */
+  date_of_birth: string | null;
   address: string | null;
   notes: string | null;
   is_archived: boolean;
