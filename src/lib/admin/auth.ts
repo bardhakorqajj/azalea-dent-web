@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 
 import { isDatabaseConfigured } from "@/lib/db/client";
 
+import { isAllowedOrigin } from "./origins";
+
 import { readSession, verifyCsrfToken, type AdminSession } from "./session";
 
 /**
@@ -77,27 +79,30 @@ export async function requireAdminMutation(formData: FormData): Promise<AdminSes
 }
 
 /**
- * Checks that the request came from the page it claims to.
+ * Checks that the request came from one of the hostnames this application is
+ * served on.
  *
  * Next already guards server actions against cross-origin POSTs, and
  * SameSite=Lax stops the cookie travelling on a cross-site form post; this is
- * the third, explicit layer, and the one that is visible in the code.
+ * the third, explicit layer, and the one visible in the code. It is also the
+ * only layer the API route handlers get, since a route handler receives none
+ * of a server action's framework protections.
+ *
+ * The comparison is against the configured hosts in `origins.ts`, not against
+ * the request's own `Host` header. That distinction is not academic: the
+ * dashboard is reached through a proxy rewrite on a second hostname, and a
+ * platform terminating TLS rewrites `Host` to an internal name — comparing
+ * `Origin` to `Host` there rejects every legitimate form submission.
  */
 export async function verifySameOrigin(): Promise<boolean> {
   const headerList = await headers();
   const origin = headerList.get("origin");
-  const host = headerList.get("host");
 
-  /* No Origin at all: a same-origin GET-like navigation or an old client.
-     Nothing is mutated on that path — the caller still checks CSRF. */
+  /* No Origin at all: a same-origin navigation, or a client too old to send
+     one. Nothing is mutated on that path — the caller still checks CSRF. */
   if (!origin) return true;
-  if (!host) return false;
 
-  try {
-    return new URL(origin).host === host;
-  } catch {
-    return false;
-  }
+  return isAllowedOrigin(origin);
 }
 
 /** The client IP as the platform reports it, for rate limiting. */

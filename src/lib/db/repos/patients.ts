@@ -106,27 +106,50 @@ export async function patientCounts(): Promise<{ total: number; newLast30Days: n
 }
 
 /**
+ * How many trailing digits of a phone number identify the person.
+ *
+ * The same patient writes their number several ways — "+383 44 987 654" on the
+ * website, "044 987 654" to the receptionist, "44987654" in a hurry. Those
+ * differ in their country code and in a leading zero, and agree from the
+ * subscriber number onward, so matching on the last eight digits recognises
+ * all three. Kosovo's national significant numbers are eight digits, which is
+ * what makes eight the right amount: fewer would start matching strangers.
+ */
+const PHONE_MATCH_DIGITS = 8;
+
+/** The part of a number that identifies the person, or "" if too short. */
+export function phoneKey(value: string | null | undefined): string {
+  const digits = (value ?? "").replace(/\D/g, "");
+  return digits.length >= PHONE_MATCH_DIGITS ? digits.slice(-PHONE_MATCH_DIGITS) : "";
+}
+
+/**
  * Finds an existing record for someone who has been in touch before, so a
  * website request from a returning patient is not filed as a new person.
- * Matched on phone digits and on email, both of which people write
- * inconsistently.
+ *
+ * Matched on the identifying part of the phone number and on the email, both
+ * of which people write inconsistently.
  */
 export async function findPatientByContact(contact: {
   phone?: string | null;
   email?: string | null;
 }): Promise<PatientRow | null> {
-  const digits = contact.phone?.replace(/\D/g, "") ?? "";
+  const key = phoneKey(contact.phone);
   const email = contact.email?.trim().toLowerCase() ?? "";
 
-  if (digits.length < 6 && email === "") return null;
+  if (key === "" && email === "") return null;
 
   return queryOne<PatientRow>(
     `select ${SELECT} from patient
-      where (length($1) >= 6 and regexp_replace(coalesce(phone, ''), '\\D', '', 'g') = $1)
+      where (
+              $1 <> ''
+              and length(regexp_replace(coalesce(phone, ''), '\\D', '', 'g')) >= $3
+              and right(regexp_replace(coalesce(phone, ''), '\\D', '', 'g'), $3) = $1
+            )
          or ($2 <> '' and lower(coalesce(email, '')) = $2)
       order by created_at asc
       limit 1`,
-    [digits, email],
+    [key, email, PHONE_MATCH_DIGITS],
   );
 }
 

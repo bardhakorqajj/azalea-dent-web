@@ -551,14 +551,42 @@ describeDb("patients", () => {
     expect(row?.notes).toBe("Alergji ndaj penicilinës");
   });
 
-  it("finds a returning patient by phone, however the number is written", async () => {
-    /* The same number, spaced and punctuated differently — which is how
-       people actually type them into a website form. */
-    const found = await repos.patients.findPatientByContact({ phone: "044 111 222" });
-    expect(found).toBeNull();
+  it("finds a returning patient however they wrote their number", async () => {
+    /* All of these are the number stored as "+383 44 111 222". A patient gives
+       the international form on the website and the local one on the phone,
+       and the clinic must not end up with two records. */
+    for (const written of [
+      "+383 44 111 222",
+      "+383-44-111-222",
+      "044 111 222",
+      "044111222",
+      "44111222",
+      "00383 44 111 222",
+      " +383 (44) 111-222 ",
+    ]) {
+      const found = await repos.patients.findPatientByContact({ phone: written });
+      expect(found?.full_name, written).toBe("Arta Krasniqi");
+    }
+  });
 
-    const exact = await repos.patients.findPatientByContact({ phone: "+383-44-111-222" });
-    expect(exact?.full_name).toBe("Arta Krasniqi");
+  it("does not match a different subscriber", async () => {
+    /* Same country code and operator prefix, different subscriber. */
+    const found = await repos.patients.findPatientByContact({
+      phone: "+383 44 111 999",
+    });
+    expect(found).toBeNull();
+  });
+
+  it("reduces a number to the digits that identify the person", async () => {
+    const { phoneKey } = repos.patients;
+    expect(phoneKey("+383 44 111 222")).toBe("44111222");
+    expect(phoneKey("044 111 222")).toBe("44111222");
+    expect(phoneKey("44111222")).toBe("44111222");
+    /* Too short to identify anyone, so it matches nothing rather than
+       everything ending in those digits. */
+    expect(phoneKey("111222")).toBe("");
+    expect(phoneKey("")).toBe("");
+    expect(phoneKey(null)).toBe("");
   });
 
   it("finds a returning patient by email, case-insensitively", async () => {
