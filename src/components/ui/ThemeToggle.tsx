@@ -3,7 +3,6 @@
 import { useSyncExternalStore } from "react";
 
 import { AzaleaMark } from "@/components/ui/AzaleaMark";
-import type { Dictionary } from "@/i18n/get-dictionary";
 import { cn } from "@/lib/utils";
 
 type Theme = "light" | "dark";
@@ -84,12 +83,21 @@ function subscribe(listener: () => void) {
  * driven by JS state, so they are correct from the very first paint — the
  * blocking script in `layout.tsx` sets `data-theme` before anything renders.
  * `useSyncExternalStore` is only needed for `aria-checked` and the label text.
+ *
+ * The labels are passed in rather than the whole dictionary, so the admin
+ * dashboard — which has its own dictionary of a different shape — reuses this
+ * switch instead of growing a second one that behaves subtly differently.
  */
+export type ThemeToggleLabels = {
+  toggleToDark: string;
+  toggleToLight: string;
+};
+
 export function ThemeToggle({
-  dict,
+  labels,
   className,
 }: {
-  dict: Dictionary;
+  labels: ThemeToggleLabels;
   className?: string;
 }) {
   const theme = useSyncExternalStore(subscribe, readTheme, readThemeOnServer);
@@ -109,7 +117,7 @@ export function ThemeToggle({
       )}
     >
       <span className="sr-only">
-        {isDark ? dict.nav.theme.toggleToLight : dict.nav.theme.toggleToDark}
+        {isDark ? labels.toggleToLight : labels.toggleToDark}
       </span>
 
       <AzaleaMark

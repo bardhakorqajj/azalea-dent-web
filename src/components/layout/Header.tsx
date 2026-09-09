@@ -202,7 +202,7 @@ export function Header({ locale, dict }: HeaderProps) {
           </div>
 
           <span className="hidden lg:inline-flex">
-            <ThemeToggle dict={dict} />
+            <ThemeToggle labels={dict.nav.theme} />
           </span>
 
           <Link
@@ -307,7 +307,7 @@ export function Header({ locale, dict }: HeaderProps) {
               className="h-4 w-px bg-ink-900/15 dark:bg-bone-100/20"
             />
 
-            <ThemeToggle dict={dict} />
+            <ThemeToggle labels={dict.nav.theme} />
           </div>
         </nav>
       </div>
