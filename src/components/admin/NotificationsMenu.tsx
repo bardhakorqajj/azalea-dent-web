@@ -26,12 +26,15 @@ export type NotificationItem = {
 };
 
 export function NotificationsMenu({
-  dict,
+  labels,
   items,
   unreadCount,
   csrfToken,
 }: {
-  dict: AdminDictionary;
+  /* Only this panel's own strings: a client component's props are serialised
+     into the page, and the full dictionary would be 24 kB of labels it never
+     renders. */
+  labels: AdminDictionary["notifications"];
   items: NotificationItem[];
   unreadCount: number;
   csrfToken: string;
@@ -63,7 +66,7 @@ export function NotificationsMenu({
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
-        aria-label={dict.notifications.title}
+        aria-label={labels.title}
         className={cn(buttonClass("quiet", "sm"), "relative")}
       >
         <IconBell />
@@ -80,12 +83,12 @@ export function NotificationsMenu({
       {open && (
         <div
           role="dialog"
-          aria-label={dict.notifications.title}
+          aria-label={labels.title}
           className="admin-card absolute right-0 z-40 mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden shadow-xl"
         >
           <div className="admin-divide flex items-center justify-between gap-2 border-b px-4 py-2.5">
             <p className="text-[0.875rem] font-medium text-ink-900 dark:text-bone-50">
-              {dict.notifications.title}
+              {labels.title}
             </p>
             {unreadCount > 0 && (
               /* A plain form post, so clearing them survives a page that has
@@ -96,7 +99,7 @@ export function NotificationsMenu({
                   type="submit"
                   className="text-[0.75rem] text-ink-500 underline hover:text-ink-900 dark:text-bone-300 dark:hover:text-bone-50"
                 >
-                  {dict.notifications.markAllRead}
+                  {labels.markAllRead}
                 </button>
               </form>
             )}
@@ -104,7 +107,7 @@ export function NotificationsMenu({
 
           {items.length === 0 ? (
             <p className="px-4 py-8 text-center text-[0.875rem] text-ink-400 dark:text-ink-300">
-              {dict.notifications.empty}
+              {labels.empty}
             </p>
           ) : (
             <ul className="admin-divide max-h-[22rem] divide-y overflow-y-auto">

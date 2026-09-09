@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 
 import { IconClose, IconMenu } from "./Icons";
 import { buttonClass } from "./Ui";
@@ -24,13 +23,7 @@ export function SidebarToggle({
   closeLabel: string;
 }) {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
   const panel = useRef<HTMLDivElement>(null);
-
-  /* Following a link should close the panel it was tapped in. */
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     if (!open) return;
@@ -78,6 +71,13 @@ export function SidebarToggle({
             role="dialog"
             aria-modal="true"
             aria-label={openLabel}
+            /* Tapping a navigation link closes the panel it was tapped in.
+               Handled here by delegation rather than in an effect watching the
+               pathname: that effect set state during a render pass and made
+               every navigation cost an extra one. */
+            onClick={(event) => {
+              if ((event.target as HTMLElement).closest("a")) setOpen(false);
+            }}
             className="absolute inset-y-0 left-0 flex w-[min(19rem,86vw)] flex-col overflow-y-auto border-r border-ink-900/10 bg-bone-50 dark:border-bone-100/10 dark:bg-ink-900"
           >
             <div className="flex justify-end p-3">

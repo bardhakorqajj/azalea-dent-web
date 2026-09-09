@@ -45,7 +45,7 @@ function hashToken(token: string): string {
  * over plain http on localhost and a Secure cookie would simply never be sent
  * back, making it impossible to sign in.
  */
-function useSecureCookies(): boolean {
+function secureCookies(): boolean {
   if (process.env.ADMIN_COOKIE_INSECURE === "1") return false;
   return process.env.NODE_ENV === "production";
 }
@@ -82,7 +82,7 @@ export async function createSession(context: {
   );
 
   const store = await cookies();
-  const secure = useSecureCookies();
+  const secure = secureCookies();
 
   store.set(SESSION_COOKIE, token, {
     httpOnly: true,

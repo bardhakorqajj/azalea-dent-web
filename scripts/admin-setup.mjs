@@ -69,19 +69,35 @@ function ask(question) {
   });
 }
 
+/**
+ * Piped stdin, read once and handed out a line at a time.
+ *
+ * Opening a second readline interface on stdin does not work: closing the
+ * first one closes the stream, so the second prompt would wait forever — which
+ * is exactly what happens when the password and its confirmation are piped in.
+ */
+let pipedLines = null;
+
+async function readPipedLine() {
+  if (pipedLines === null) {
+    const chunks = [];
+    for await (const chunk of stdin) chunks.push(chunk);
+    pipedLines = Buffer.concat(chunks).toString("utf8").split("\n");
+  }
+  return pipedLines.shift() ?? "";
+}
+
 /** Reads a line with the terminal's echo switched off. */
 function askSecret(question) {
   return new Promise((resolve, reject) => {
     stdout.write(question);
 
     if (!stdin.isTTY) {
-      /* Piped input (CI, a here-string): read the line as it comes. */
-      const rl = createInterface({ input: stdin });
-      rl.once("line", (line) => {
-        rl.close();
+      /* Piped input (CI, a here-string). */
+      readPipedLine().then((line) => {
         stdout.write("\n");
-        resolve(line);
-      });
+        resolve(line.replace(/\r$/, ""));
+      }, reject);
       return;
     }
 

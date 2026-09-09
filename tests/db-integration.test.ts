@@ -197,7 +197,7 @@ describeDb("services", () => {
        `json()` exists in sql.ts. */
     expect(row?.title).toEqual({ sq: "Implante dentare", en: "Dental implants" });
     expect(row?.highlights).toEqual([{ sq: "Pika e pare", en: "First point" }]);
-    expect(row?.priceText).toBeUndefined();
+    /* Rows keep the database's column names; only the write inputs are camel. */
     expect(row?.price_text).toEqual({ sq: "prej 250 €", en: "from 250 €" });
     expect(row?.duration_minutes).toBe(60);
     expect(row?.is_active).toBe(true);

@@ -171,32 +171,38 @@ export function DonutChart({
 
   const RADIUS = 42;
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-  let offset = 0;
+
+  /* Each slice's start is the sum of the arcs before it, worked out without a
+     running variable: mutating one while rendering gives a different answer on
+     a re-render, which for a donut means slices drawn over each other. With at
+     most a handful of statuses the repeated sum costs nothing. */
+  const arcs = data.map((point) => (point.value / total) * CIRCUMFERENCE);
+  const slices = data.map((point, index) => ({
+    point,
+    length: arcs[index] ?? 0,
+    offset: arcs.slice(0, index).reduce((sum, arc) => sum + arc, 0),
+    colour: point.tone ?? DONUT_COLOURS[index % DONUT_COLOURS.length],
+  }));
 
   return (
     <div className={cn("flex flex-col items-center gap-6 sm:flex-row sm:justify-center", className)}>
       <div className="relative shrink-0">
         <svg viewBox="0 0 100 100" className="h-[8.5rem] w-[8.5rem] -rotate-90">
-          {data.map((point, index) => {
-            if (point.value === 0) return null;
-            const length = (point.value / total) * CIRCUMFERENCE;
-            const dash = `${length} ${CIRCUMFERENCE - length}`;
-            const element = (
+          {slices.map((slice, index) =>
+            slice.point.value === 0 ? null : (
               <circle
-                key={`${point.label}-${index}`}
+                key={`${slice.point.label}-${index}`}
                 cx="50"
                 cy="50"
                 r={RADIUS}
                 fill="none"
                 strokeWidth="12"
-                stroke={point.tone ?? DONUT_COLOURS[index % DONUT_COLOURS.length]}
-                strokeDasharray={dash}
-                strokeDashoffset={-offset}
+                stroke={slice.colour}
+                strokeDasharray={`${slice.length} ${CIRCUMFERENCE - slice.length}`}
+                strokeDashoffset={-slice.offset}
               />
-            );
-            offset += length;
-            return element;
-          })}
+            ),
+          )}
         </svg>
 
         {(centreValue !== undefined || centreLabel) && (
@@ -216,18 +222,21 @@ export function DonutChart({
       </div>
 
       <ul className="min-w-0 space-y-2 text-[0.875rem]">
-        {data.map((point, index) => (
-          <li key={`legend-${point.label}-${index}`} className="flex items-center gap-2.5">
+        {slices.map((slice, index) => (
+          <li
+            key={`legend-${slice.point.label}-${index}`}
+            className="flex items-center gap-2.5"
+          >
             <span
               aria-hidden="true"
               className="h-2.5 w-2.5 shrink-0 rounded-full"
-              style={{ backgroundColor: point.tone ?? DONUT_COLOURS[index % DONUT_COLOURS.length] }}
+              style={{ backgroundColor: slice.colour }}
             />
             <span className="min-w-0 truncate text-ink-600 dark:text-bone-300">
-              {point.label}
+              {slice.point.label}
             </span>
             <span className="tnum ml-auto shrink-0 font-medium text-ink-900 dark:text-bone-50">
-              {point.value}
+              {slice.point.value}
             </span>
           </li>
         ))}

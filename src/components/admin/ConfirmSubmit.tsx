@@ -28,6 +28,7 @@ export function ConfirmSubmit({
   icon,
   name,
   value,
+  formAction,
 }: {
   label: string;
   title: string;
@@ -40,6 +41,16 @@ export function ConfirmSubmit({
   icon?: React.ReactNode;
   name?: string;
   value?: string;
+  /**
+   * Sends the enclosing form to a different action than its own.
+   *
+   * This is how a delete button lives inside an edit form without saving it:
+   * the form already carries the row id and the CSRF token, which is all the
+   * delete needs, and the fields it does not need are simply ignored. Without
+   * this the button would submit to the form's `action` and save the record it
+   * was asked to remove.
+   */
+  formAction?: (formData: FormData) => void | Promise<void>;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
 
@@ -49,6 +60,7 @@ export function ConfirmSubmit({
         type="submit"
         name={name}
         value={value}
+        formAction={formAction}
         className={buttonClass(tone, size, className)}
         onClick={(event) => {
           const element = dialog.current;
@@ -82,11 +94,13 @@ export function ConfirmSubmit({
             >
               {cancelLabel}
             </button>
-            {/* Submits the form this component sits inside. */}
+            {/* Submits the form this component sits inside — to `formAction`
+                when one is given, otherwise to the form's own action. */}
             <button
               type="submit"
               name={name}
               value={value}
+              formAction={formAction}
               className={buttonClass("danger", "md")}
             >
               {confirmLabel}
