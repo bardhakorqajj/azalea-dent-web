@@ -20,12 +20,27 @@ import { readSession, verifyCsrfToken, type AdminSession } from "./session";
 
 export const ADMIN_LOGIN_PATH = "/admin/login";
 
+/**
+ * Next signals redirects, not-found and "this cannot be rendered statically"
+ * by throwing, with a `digest` naming the signal. Those are control flow and
+ * have to reach the framework, so they are never treated as a failed read.
+ */
+function isFrameworkSignal(error: unknown): boolean {
+  const digest = (error as { digest?: unknown })?.digest;
+  return (
+    typeof digest === "string" &&
+    (digest.startsWith("NEXT_") || digest === "DYNAMIC_SERVER_USAGE")
+  );
+}
+
 /** Signed-in session, or null. Never throws for an unauthenticated visitor. */
 export async function getAdminSession(): Promise<AdminSession | null> {
   if (!isDatabaseConfigured()) return null;
   try {
     return await readSession();
   } catch (error) {
+    if (isFrameworkSignal(error)) throw error;
+
     /* An unreachable database must read as "not signed in", never as
        "signed in" — failing closed is the only safe direction here. */
     console.error("Reading the admin session failed:", error);

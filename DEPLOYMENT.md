@@ -226,9 +226,11 @@ once: the apex, `www`, and the `.vercel.app` one. Search engines treat that as
 three copies of the same site, and the `.vercel.app` name is not the one to put
 in front of patients.
 
-`middleware.ts` handles it. On the production deployment, a request arriving on
-any host other than the one in `SITE_URL` is sent there with a 308, path
-intact. `www.azalea-dent.org/appointment` and
+`src/proxy.ts` handles it (Next 16 renamed `middleware.ts` to `proxy.ts`; it
+is the same thing, running on the Node.js runtime). On the production
+deployment, a request arriving on any host other than the one in `SITE_URL` —
+or the dashboard's own hostname, see step 11 — is sent to `SITE_URL` with a
+308, path intact. `www.azalea-dent.org/appointment` and
 `azalea-dent.vercel.app/sq/prices` both land on the real domain in a single
 hop.
 
@@ -340,3 +342,148 @@ problem in git at your own pace.
 - Check the structured data with the **Rich Results Test**
   (https://search.google.com/test/rich-results). It reports the clinic as a
   `Dentist` with its treatments and FAQ.
+
+---
+
+# The admin dashboard
+
+Everything above puts the website live. The steps below add the clinic's
+dashboard — the same deployment, the same repository, one more hostname and a
+database. The website does not depend on any of it: with no database
+configured it serves exactly what it serves today, and it keeps doing so if
+the database later goes down.
+
+Wherever these steps say `azaleadent.org`, use whatever domain you actually
+connected in step 4 — the dashboard's hostname is that domain with `admin.`
+in front of it, and it follows `SITE_URL` the same way everything else does.
+
+## 11. Create the database
+
+Any managed PostgreSQL 16 works. On Vercel the shortest path is the built-in
+integration:
+
+1. Project → the **Storage** tab along the top → **Create Database** →
+   **Postgres**.
+2. Pick the region closest to Kosovo (Frankfurt, `fra1`).
+3. **Connect** it to the project, for Production, Preview and Development.
+
+That sets `POSTGRES_URL` in the project's environment for you, which the
+application reads. On any other provider (Neon, Supabase, a VPS) copy the
+connection string into an environment variable named **`DATABASE_URL`**
+instead — see step 2's screens for where the environment variable form is.
+
+Then create the tables, from your own machine, once:
+
+```bash
+# The same connection string, in .env.local
+DATABASE_URL=postgres://…  npm run db:migrate
+npm run db:status            # shows what has been applied
+```
+
+The migration is a single file, `src/lib/db/migrations/0001_init.sql`, and it
+runs inside a transaction: if anything in it fails, nothing is applied.
+Running it twice is safe — it records what it has done and skips it.
+
+**Redeploy after this** (step 9), because a new environment variable only
+reaches a build made after it was saved.
+
+> Give the *build* access to the database as well, which connecting the
+> integration does automatically. The website's pages are prerendered at
+> build time, so a build that cannot read the database bakes in the shipped
+> content — correct, but not the clinic's edits. They appear the moment
+> anything is saved in the dashboard, which re-renders the affected pages;
+> a build with the database configured simply has them right away.
+
+## 12. Point `admin.azaleadent.org` at the same project
+
+The dashboard is served on its own hostname by the same deployment. Nothing is
+duplicated and there is no second project.
+
+1. At your registrar's DNS editor, add one record:
+
+   | Type    | Name / Host | Value                  | TTL         |
+   | ------- | ----------- | ---------------------- | ----------- |
+   | `CNAME` | `admin`     | `cname.vercel-dns.com` | Auto / 3600 |
+
+   Behind Cloudflare, set it to **DNS only** (grey cloud), as in step 5.
+
+2. In Vercel: Project → **Settings** → **Domains** → **Add** →
+   `admin.azaleadent.org` → **Add**. Choose **No redirect** if it offers to
+   redirect it anywhere. It must serve the project, not forward to the apex.
+
+3. HTTPS is issued automatically once the DNS resolves, as in step 6.
+
+Nothing else needs setting: the application derives the dashboard's hostname
+by putting `admin.` in front of the host in `SITE_URL`. Set the environment
+variable **`ADMIN_HOST`** only if you want it somewhere else entirely, e.g.
+`panel.azaleadent.org`.
+
+What the split means in practice, and worth checking once it is live:
+
+- `azaleadent.org/admin` → **404**. There is no admin URL on the website.
+- `azaleadent.org/api/admin/…` → **404**, likewise.
+- `admin.azaleadent.org` → the sign-in page, with `X-Robots-Tag: noindex` on
+  everything it serves, so the dashboard cannot be indexed.
+- `admin.azaleadent.org/services` → the dashboard's services, not the
+  website's page of the same name.
+
+## 13. Create the clinic's admin account
+
+There is one account. It is not created by signing up — nobody can register
+on the dashboard, which is deliberate.
+
+From your own machine, with the same `DATABASE_URL` the site uses:
+
+```bash
+npm run admin:setup
+# Admin email: azaleadent@hotmail.com
+# Password (at least 12 characters):
+# Repeat the password:
+```
+
+The password is typed at the terminal with the echo off, so it never enters
+your shell history or the list of running processes. It is stored as a scrypt
+hash; it cannot be read back out, by anyone, including from the database.
+
+If the database is not reachable from your machine — some providers only allow
+connections from their own network — use the other route:
+
+```bash
+npm run admin:setup -- --hash
+```
+
+It prints `ADMIN_EMAIL` and `ADMIN_PASSWORD_HASH`. Paste both into the
+project's environment variables (step 2's screens again), redeploy, and the
+account is created from them the first time you sign in. The hash is safe to
+store there: it is not the password.
+
+To change the password later, run `npm run admin:setup` again. Every open
+session is signed out, which is the point — it is also what to run if the
+password is ever typed somewhere it should not have been.
+
+## 14. Bring the website's content into the dashboard
+
+The dashboard starts empty, and the website carries on showing the content it
+ships with. The first thing to do in it is **Services → Import the website's
+current content**, which copies the eight treatments, the team and the FAQ
+into the database so they can be edited.
+
+Until that is done, adding a single service replaces the shipped eight on the
+live site — the dashboard says so, on the page, until the import has run.
+
+## 15. Check it end to end
+
+Worth doing once on the live site, in this order:
+
+1. `azaleadent.org/admin` → 404.
+2. `admin.azaleadent.org` → sign-in page. A wrong password and an unknown
+   email give the same message, on purpose: nothing there tells someone
+   whether they guessed the email right.
+3. Sign in. Ten wrong attempts in fifteen minutes locks out that address, so
+   do not go hunting for the limit unless you want to wait it out.
+4. Change a headline in **Website content**, save, and reload the public home
+   page. The change is there; the other language is untouched. Clear the field
+   and the original comes back.
+5. Send the appointment form on the public site. The request arrives by email
+   as before, *and* appears in **Appointments** as pending.
+6. Sign out. Then try a dashboard page again — it returns you to sign-in.

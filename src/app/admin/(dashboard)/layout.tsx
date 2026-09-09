@@ -20,6 +20,14 @@ import { databaseStatus } from "@/lib/db/status";
  * layout ever rendering.
  */
 
+/**
+ * Nothing in the dashboard can be prerendered: every page of it is a view of
+ * one signed-in person's data, read from the request's own cookie. Saying so
+ * here keeps the build from attempting it — and from a build machine, which
+ * has no session and may have no database, ever producing a cached page of it.
+ */
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({
   children,
 }: {
