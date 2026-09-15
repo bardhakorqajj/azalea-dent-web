@@ -411,17 +411,28 @@ reaches a build made after it was saved.
 The dashboard is served on its own hostname by the same deployment. Nothing is
 duplicated and there is no second project.
 
-1. At your registrar's DNS editor, add one record:
+**If the domain was bought through Vercel**, this is one step: Project →
+**Settings** → **Domains** → **Add Domain** → `admin.azaleadent.org` →
+**Add**, choosing **No redirect** if it offers to redirect it anywhere — it
+must serve the project, not forward to the apex. Vercel runs the DNS for a
+domain it sold you, so it writes the record itself; within a minute or two
+the domain reads **Valid Configuration** and HTTPS is issued. You can see the
+record it added under Vercel → **Domains** (the account-level tab) →
+`azaleadent.org`.
+
+**With a domain registered elsewhere**, add the record yourself first:
+
+1. At your registrar's DNS editor:
 
    | Type    | Name / Host | Value                  | TTL         |
    | ------- | ----------- | ---------------------- | ----------- |
    | `CNAME` | `admin`     | `cname.vercel-dns.com` | Auto / 3600 |
 
-   Behind Cloudflare, set it to **DNS only** (grey cloud), as in step 5.
+   The name is `admin` alone, not `admin.azaleadent.org` — most registrars
+   append the domain themselves. Behind Cloudflare, set the record to
+   **DNS only** (grey cloud), as in step 5.
 
-2. In Vercel: Project → **Settings** → **Domains** → **Add** →
-   `admin.azaleadent.org` → **Add**. Choose **No redirect** if it offers to
-   redirect it anywhere. It must serve the project, not forward to the apex.
+2. Then add the domain in Vercel, as above.
 
 3. HTTPS is issued automatically once the DNS resolves, as in step 6.
 
