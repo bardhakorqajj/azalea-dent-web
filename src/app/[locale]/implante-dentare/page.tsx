@@ -19,6 +19,8 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { implantsSchema, pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicDictionary } from "@/lib/public/dictionary";
+import { publicFaq } from "@/lib/public/faq";
 import { absoluteUrl } from "@/lib/site";
 
 /**
@@ -63,7 +65,10 @@ export default async function ImplantsPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const dict = getDictionary(locale);
+  const [dict, faq] = await Promise.all([
+    getPublicDictionary(locale),
+    publicFaq(locale),
+  ]);
   const photo = photos.operatoryDaylight;
   const url = absoluteUrl(path(locale, ROUTE));
   const prices = implantPrices();
@@ -273,7 +278,7 @@ export default async function ImplantsPage({
       </Section>
 
       <VisitBand locale={locale} dict={dict} />
-      <Faq dict={dict} />
+      <Faq dict={dict} items={faq} />
       <CtaBand locale={locale} dict={dict} />
 
       <JsonLd

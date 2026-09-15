@@ -5,7 +5,6 @@ import { useId, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { FallbackChannels } from "@/components/layout/ContactChannels";
 import { Check } from "@/components/ui/Icons";
-import { services } from "@/content/services";
 import {
   TIME_SLOTS,
   emptyAppointment,
@@ -30,12 +29,18 @@ type Status =
 const fieldClasses =
   "min-h-12 w-full rounded-sm border border-ink-900/20 bg-bone-50 px-4 py-3 text-[0.95rem] text-ink-900 transition-colors placeholder:text-ink-500 hover:border-ink-900/35 focus:border-ink-900 focus:outline-none dark:border-bone-100/20 dark:bg-ink-900 dark:text-bone-50 dark:placeholder:text-bone-400 dark:hover:border-bone-100/35 dark:focus:border-bone-100";
 
+/** One treatment as the dropdown offers it, resolved for this language. */
+export type ServiceOption = { slug: string; label: string };
+
 export function AppointmentForm({
   locale,
   dict,
+  options,
 }: {
   locale: Locale;
   dict: Dictionary;
+  /** The treatments the site is offering now, shipped or added in the panel. */
+  options: ServiceOption[];
 }) {
   const uid = useId();
   const [values, setValues] = useState<AppointmentRequest>(emptyAppointment);
@@ -65,7 +70,13 @@ export function AppointmentForm({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const found = validateAppointment(values);
+    /* Checked against the options this form actually rendered, which is the
+       same list the API route validates against. */
+    const found = validateAppointment(
+      values,
+      new Date(),
+      options.map((option) => option.slug),
+    );
     if (hasErrors(found)) {
       const translated: Partial<Record<FieldName, string>> = {};
       for (const [field, key] of Object.entries(found)) {
@@ -239,9 +250,9 @@ export function AppointmentForm({
             )}
           >
             <option value="">{labels.servicePlaceholder}</option>
-            {services.map((service) => (
-              <option key={service.slug} value={service.slug}>
-                {service.title[locale]}
+            {options.map((option) => (
+              <option key={option.slug} value={option.slug}>
+                {option.label}
               </option>
             ))}
             <option value="other">{labels.serviceOther}</option>

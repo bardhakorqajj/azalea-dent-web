@@ -4,13 +4,13 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { clinic, type TeamMember } from "@/content/clinic";
 import { teamPhotos } from "@/content/team-photos";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import type { PublicTeamMember } from "@/lib/public/team";
 import { initials } from "@/lib/utils";
 
-function Portrait({ member, sizes }: { member: TeamMember; sizes: string }) {
+function Portrait({ member, sizes }: { member: PublicTeamMember; sizes: string }) {
   const photo = member.photo ? teamPhotos[member.photo] : undefined;
 
   return (
@@ -20,6 +20,17 @@ function Portrait({ member, sizes }: { member: TeamMember; sizes: string }) {
           src={photo}
           alt={member.name}
           placeholder="blur"
+          sizes={sizes}
+          className="h-full w-full object-cover"
+        />
+      ) : member.photoUrl ? (
+        /* An uploaded portrait. No `placeholder="blur"`: there is no build-time
+           blur data for a file the clinic added after the build. */
+        <Image
+          src={member.photoUrl}
+          alt={member.name}
+          width={480}
+          height={480}
           sizes={sizes}
           className="h-full w-full object-cover"
         />
@@ -35,7 +46,7 @@ function Portrait({ member, sizes }: { member: TeamMember; sizes: string }) {
   );
 }
 
-function Details({ member, locale }: { member: TeamMember; locale: Locale }) {
+function Details({ member, locale }: { member: PublicTeamMember; locale: Locale }) {
   return (
     <>
       <h3 className="text-[1.4rem] leading-snug text-ink-900 dark:text-bone-50">
@@ -58,8 +69,17 @@ function Details({ member, locale }: { member: TeamMember; locale: Locale }) {
  * Each card caps its width, so a single dentist reads as a deliberate card
  * rather than being stretched across a three-column grid.
  */
-export function Team({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  if (clinic.team.length === 0) return null;
+export function Team({
+  locale,
+  dict,
+  members,
+}: {
+  locale: Locale;
+  dict: Dictionary;
+  /** Resolved by the caller: the dashboard's team, or the shipped list. */
+  members: PublicTeamMember[];
+}) {
+  if (members.length === 0) return null;
 
   return (
     <Section surface="bone-warm">
@@ -75,7 +95,7 @@ export function Team({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         {/* Centred row, so one dentist sits in the middle rather than
             at the left edge of a grid. */}
         <ul className="mt-12 flex flex-wrap justify-center gap-x-12 gap-y-14 lg:mt-16">
-          {clinic.team.map((member, index) => (
+          {members.map((member, index) => (
             /* Capped width so a single dentist is not stretched across the grid. */
             <li key={member.name} className="w-full max-w-[17rem] text-center">
               <Reveal delay={Math.min(index * 70, 240)}>

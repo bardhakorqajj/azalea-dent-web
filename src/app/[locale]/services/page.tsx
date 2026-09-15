@@ -9,6 +9,8 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicDictionary } from "@/lib/public/dictionary";
+import { publicServices } from "@/lib/public/services";
 import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
@@ -36,7 +38,10 @@ export default async function ServicesPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const dict = getDictionary(locale);
+  const [dict, services] = await Promise.all([
+    getPublicDictionary(locale),
+    publicServices(),
+  ]);
 
   return (
     <>
@@ -54,6 +59,7 @@ export default async function ServicesPage({
       <ServicesIndex
         locale={locale}
         dict={dict}
+        services={services}
         variant="page"
         pricesHref={path(locale, "/prices")}
         eyebrow={dict.services.eyebrow}

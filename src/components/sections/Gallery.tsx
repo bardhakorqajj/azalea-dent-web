@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Close } from "@/components/ui/Icons";
-import { galleryOrder, photos, type Photo } from "@/content/images";
+import { galleryOrder, isImportedPhoto, photos, type Photo } from "@/content/images";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { cn, interpolate } from "@/lib/utils";
@@ -165,9 +165,18 @@ export function Gallery({
                     >
                       <span className="sr-only">{dict.gallery.open}</span>
                       <Image
-                        src={photo.src}
+                        src={
+                          isImportedPhoto(photo.src) ? photo.src : photo.src.url
+                        }
                         alt={photo.alt[locale]}
-                        placeholder="blur"
+                        /* Only a bundled import has blur data; an uploaded
+                           file did not exist when the site was built. */
+                        placeholder={
+                          isImportedPhoto(photo.src) ? "blur" : "empty"
+                        }
+                        {...(isImportedPhoto(photo.src)
+                          ? {}
+                          : { width: photo.src.width, height: photo.src.height })}
                         sizes="(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 80vw"
                         className={cn(
                           "h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]",
@@ -227,9 +236,19 @@ export function Gallery({
 
           <div className="pointer-events-none relative flex min-h-0 flex-1 items-center justify-center px-4 pb-4 sm:px-10">
             <Image
-              src={activePhoto.src}
+              src={
+                isImportedPhoto(activePhoto.src)
+                  ? activePhoto.src
+                  : activePhoto.src.url
+              }
               alt={activePhoto.alt[locale]}
-              placeholder="blur"
+              placeholder={isImportedPhoto(activePhoto.src) ? "blur" : "empty"}
+              {...(isImportedPhoto(activePhoto.src)
+                ? {}
+                : {
+                    width: activePhoto.src.width,
+                    height: activePhoto.src.height,
+                  })}
               sizes="100vw"
               className="max-h-full w-auto max-w-full object-contain"
             />

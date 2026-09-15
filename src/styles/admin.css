@@ -1,0 +1,277 @@
+/*
+ * The dashboard's stylesheet.
+ *
+ * It builds on the public site's tokens rather than starting a second design
+ * system: the same ink/bone/oak/gold palette taken from the clinic itself, the
+ * same two typefaces, the same focus ring. What is added here is the chrome a
+ * management dashboard needs and a marketing site does not — a sidebar, dense
+ * tables, form controls.
+ *
+ * The site's own tokens and base layer come from globals.css, imported below,
+ * so the dashboard cannot drift away from the brand by accident.
+ */
+
+@import "./globals.css";
+
+@theme {
+  /* Width of the fixed sidebar on a large screen. */
+  --admin-sidebar: 17rem;
+  /* Height of the sticky top bar. */
+  --admin-topbar: 4rem;
+}
+
+@layer base {
+  /* The dashboard is a tool, not a page to read: it fills the viewport and
+     scrolls its own regions rather than the document. */
+  [data-admin] body {
+    background-color: var(--color-bone-100);
+  }
+
+  :root[data-theme="dark"] [data-admin] body {
+    background-color: var(--color-ink-950);
+  }
+
+  /* The site's smooth scrolling is right for anchored marketing pages and
+     wrong for a table that jumps to a new page of rows. */
+  [data-admin] {
+    scroll-behavior: auto;
+  }
+}
+
+@layer components {
+  /* --- Surfaces --------------------------------------------------------- */
+
+  .admin-card {
+    background-color: var(--color-bone-50);
+    border: 1px solid color-mix(in oklab, var(--color-ink-900) 10%, transparent);
+    border-radius: 0.375rem;
+  }
+
+  :root[data-theme="dark"] .admin-card {
+    background-color: var(--color-ink-900);
+    border-color: color-mix(in oklab, var(--color-bone-100) 12%, transparent);
+  }
+
+  .admin-divide {
+    border-color: color-mix(in oklab, var(--color-ink-900) 10%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-divide {
+    border-color: color-mix(in oklab, var(--color-bone-100) 12%, transparent);
+  }
+
+  /* --- Form controls ---------------------------------------------------- */
+
+  /* One rule for every text-like control, so an input, a select and a
+     textarea line up to the pixel instead of each being styled by hand. */
+  .admin-control {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--color-ink-900);
+    background-color: var(--color-bone-50);
+    border: 1px solid color-mix(in oklab, var(--color-ink-900) 18%, transparent);
+    border-radius: 0.25rem;
+    transition:
+      border-color 0.15s ease,
+      background-color 0.15s ease;
+  }
+
+  .admin-control::placeholder {
+    color: var(--color-ink-400);
+  }
+
+  .admin-control:hover:not(:disabled):not([aria-invalid="true"]) {
+    border-color: color-mix(in oklab, var(--color-ink-900) 32%, transparent);
+  }
+
+  .admin-control:disabled {
+    background-color: var(--color-bone-100);
+    color: var(--color-ink-400);
+    cursor: not-allowed;
+  }
+
+  .admin-control[aria-invalid="true"] {
+    border-color: #b4442f;
+  }
+
+  :root[data-theme="dark"] .admin-control {
+    color: var(--color-bone-50);
+    background-color: var(--color-ink-950);
+    border-color: color-mix(in oklab, var(--color-bone-100) 20%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-control:disabled {
+    background-color: var(--color-ink-800);
+    color: var(--color-ink-400);
+  }
+
+  :root[data-theme="dark"] .admin-control[aria-invalid="true"] {
+    border-color: #e0806b;
+  }
+
+  /* A select needs its own arrow once the native appearance is dropped. */
+  .admin-select {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%235f696e' stroke-width='1.5'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center;
+    background-size: 1.125rem;
+  }
+
+  :root[data-theme="dark"] .admin-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23a9b0b4' stroke-width='1.5'%3E%3Cpath d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  }
+
+  .admin-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    color: var(--color-ink-700);
+  }
+
+  :root[data-theme="dark"] .admin-label {
+    color: var(--color-bone-200);
+  }
+
+  /* --- Navigation ------------------------------------------------------- */
+
+  .admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6875rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 450;
+    color: var(--color-ink-600);
+    border-radius: 0.25rem;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+
+  .admin-nav-link:hover {
+    color: var(--color-ink-900);
+    background-color: color-mix(in oklab, var(--color-ink-900) 5%, transparent);
+  }
+
+  .admin-nav-link[aria-current="page"] {
+    color: var(--color-ink-950);
+    font-weight: 550;
+    background-color: color-mix(in oklab, var(--color-gold-400) 22%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-nav-link {
+    color: var(--color-bone-300);
+  }
+
+  :root[data-theme="dark"] .admin-nav-link:hover {
+    color: var(--color-bone-50);
+    background-color: color-mix(in oklab, var(--color-bone-100) 8%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-nav-link[aria-current="page"] {
+    color: var(--color-gold-300);
+    background-color: color-mix(in oklab, var(--color-gold-400) 14%, transparent);
+  }
+
+  /* --- Tables ----------------------------------------------------------- */
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .admin-table th {
+    padding: 0.625rem 0.875rem;
+    text-align: left;
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-ink-500);
+    white-space: nowrap;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-ink-900) 12%, transparent);
+  }
+
+  .admin-table td {
+    padding: 0.8125rem 0.875rem;
+    vertical-align: middle;
+    color: var(--color-ink-800);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-ink-900) 7%, transparent);
+  }
+
+  .admin-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .admin-table tbody tr:hover td {
+    background-color: color-mix(in oklab, var(--color-ink-900) 3%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-table th {
+    color: var(--color-ink-300);
+    border-bottom-color: color-mix(in oklab, var(--color-bone-100) 14%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-table td {
+    color: var(--color-bone-100);
+    border-bottom-color: color-mix(in oklab, var(--color-bone-100) 8%, transparent);
+  }
+
+  :root[data-theme="dark"] .admin-table tbody tr:hover td {
+    background-color: color-mix(in oklab, var(--color-bone-100) 4%, transparent);
+  }
+
+  /* --- Dialogs ---------------------------------------------------------- */
+
+  /* Native <dialog>, so focus trapping, Escape and the top layer are the
+     browser's job rather than a hand-rolled focus manager. */
+  .admin-dialog {
+    margin: auto;
+    width: min(100% - 2rem, 34rem);
+    max-height: min(88vh, 52rem);
+    padding: 0;
+    color: var(--color-ink-900);
+    background-color: var(--color-bone-50);
+    border: 1px solid color-mix(in oklab, var(--color-ink-900) 12%, transparent);
+    border-radius: 0.5rem;
+    box-shadow: 0 24px 64px -24px rgb(12 14 15 / 0.35);
+  }
+
+  .admin-dialog::backdrop {
+    background-color: rgb(12 14 15 / 0.45);
+    backdrop-filter: blur(2px);
+  }
+
+  :root[data-theme="dark"] .admin-dialog {
+    color: var(--color-bone-50);
+    background-color: var(--color-ink-900);
+    border-color: color-mix(in oklab, var(--color-bone-100) 14%, transparent);
+  }
+
+  /* A drawer is the same dialog pinned to the right edge, full height. */
+  .admin-drawer {
+    margin: 0 0 0 auto;
+    width: min(100%, 34rem);
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+}
+
+@layer utilities {
+  /* Tabular figures, so a column of times and counts does not jitter. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}

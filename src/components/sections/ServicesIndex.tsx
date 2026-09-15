@@ -5,13 +5,20 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { services } from "@/content/services";
 import { path, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import type { PublicService } from "@/lib/public/services";
 
 type ServicesIndexProps = {
   locale: Locale;
   dict: Dictionary;
+  /**
+   * The services to list, resolved by the caller — the database's rows where
+   * the clinic has added any, and the shipped list until then. Passed in
+   * rather than read here because this is a synchronous component and the
+   * resolution needs to await.
+   */
+  services: PublicService[];
   /** `page` drops the section CTA and uses an h1-level heading elsewhere. */
   variant?: "home" | "page";
   /** Hide one slug — used on a treatment page to list the others. */
@@ -32,6 +39,7 @@ type ServicesIndexProps = {
 export function ServicesIndex({
   locale,
   dict,
+  services,
   variant = "home",
   exclude,
   title,

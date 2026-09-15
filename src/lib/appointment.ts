@@ -53,10 +53,17 @@ export function isFutureDate(value: string, today = new Date()): boolean {
  * Validates a request and returns the error key per invalid field.
  * The keys match `dictionary.appointment.errors`, so the caller supplies the
  * translated message.
+ *
+ * `offeredSlugs` is the list of treatments the site is offering right now. It
+ * defaults to the ones the site ships with, but both callers pass the live
+ * list — the form passes the options it actually rendered and the API route
+ * reads them from the database — because a treatment the clinic added in the
+ * dashboard has to be bookable, and one it removed must not be.
  */
 export function validateAppointment(
   request: AppointmentRequest,
   today = new Date(),
+  offeredSlugs: readonly string[] = serviceSlugs,
 ): Partial<Record<FieldName, "name" | "phone" | "email" | "service" | "date" | "datePast" | "consent">> {
   const errors: ReturnType<typeof validateAppointment> = {};
 
@@ -64,7 +71,9 @@ export function validateAppointment(
   if (!isValidPhone(request.phone)) errors.phone = "phone";
   if (request.email.trim() !== "" && !isValidEmail(request.email)) errors.email = "email";
 
-  const allowedServices = [...serviceSlugs, "other"];
+  /* "other" is always allowed: it is how a patient who does not know what
+     they need asks for an appointment. */
+  const allowedServices = [...offeredSlugs, "other"];
   if (!allowedServices.includes(request.service)) errors.service = "service";
 
   if (!request.date) {
