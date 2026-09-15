@@ -353,7 +353,7 @@ database. The website does not depend on any of it: with no database
 configured it serves exactly what it serves today, and it keeps doing so if
 the database later goes down.
 
-Wherever these steps say `azaleadent.org`, use whatever domain you actually
+Wherever these steps say `azalea-dent.org`, use whatever domain you actually
 connected in step 4 — the dashboard's hostname is that domain with `admin.`
 in front of it, and it follows `SITE_URL` the same way everything else does.
 
@@ -406,19 +406,19 @@ reaches a build made after it was saved.
 > anything is saved in the dashboard, which re-renders the affected pages;
 > a build with the database configured simply has them right away.
 
-## 12. Point `admin.azaleadent.org` at the same project
+## 12. Point `admin.azalea-dent.org` at the same project
 
 The dashboard is served on its own hostname by the same deployment. Nothing is
 duplicated and there is no second project.
 
 **If the domain was bought through Vercel**, this is one step: Project →
-**Settings** → **Domains** → **Add Domain** → `admin.azaleadent.org` →
+**Settings** → **Domains** → **Add Domain** → `admin.azalea-dent.org` →
 **Add**, choosing **No redirect** if it offers to redirect it anywhere — it
 must serve the project, not forward to the apex. Vercel runs the DNS for a
 domain it sold you, so it writes the record itself; within a minute or two
 the domain reads **Valid Configuration** and HTTPS is issued. You can see the
 record it added under Vercel → **Domains** (the account-level tab) →
-`azaleadent.org`.
+`azalea-dent.org`.
 
 **With a domain registered elsewhere**, add the record yourself first:
 
@@ -428,7 +428,7 @@ record it added under Vercel → **Domains** (the account-level tab) →
    | ------- | ----------- | ---------------------- | ----------- |
    | `CNAME` | `admin`     | `cname.vercel-dns.com` | Auto / 3600 |
 
-   The name is `admin` alone, not `admin.azaleadent.org` — most registrars
+   The name is `admin` alone, not `admin.azalea-dent.org` — most registrars
    append the domain themselves. Behind Cloudflare, set the record to
    **DNS only** (grey cloud), as in step 5.
 
@@ -439,15 +439,15 @@ record it added under Vercel → **Domains** (the account-level tab) →
 Nothing else needs setting: the application derives the dashboard's hostname
 by putting `admin.` in front of the host in `SITE_URL`. Set the environment
 variable **`ADMIN_HOST`** only if you want it somewhere else entirely, e.g.
-`panel.azaleadent.org`.
+`panel.azalea-dent.org`.
 
 What the split means in practice, and worth checking once it is live:
 
-- `azaleadent.org/admin` → **404**. There is no admin URL on the website.
-- `azaleadent.org/api/admin/…` → **404**, likewise.
-- `admin.azaleadent.org` → the sign-in page, with `X-Robots-Tag: noindex` on
+- `azalea-dent.org/admin` → **404**. There is no admin URL on the website.
+- `azalea-dent.org/api/admin/…` → **404**, likewise.
+- `admin.azalea-dent.org` → the sign-in page, with `X-Robots-Tag: noindex` on
   everything it serves, so the dashboard cannot be indexed.
-- `admin.azaleadent.org/services` → the dashboard's services, not the
+- `admin.azalea-dent.org/services` → the dashboard's services, not the
   website's page of the same name.
 
 ## 13. Create the clinic's admin account
@@ -498,8 +498,8 @@ live site — the dashboard says so, on the page, until the import has run.
 
 Worth doing once on the live site, in this order:
 
-1. `azaleadent.org/admin` → 404.
-2. `admin.azaleadent.org` → sign-in page. A wrong password and an unknown
+1. `azalea-dent.org/admin` → 404.
+2. `admin.azalea-dent.org` → sign-in page. A wrong password and an unknown
    email give the same message, on purpose: nothing there tells someone
    whether they guessed the email right.
 3. Sign in. Ten wrong attempts in fifteen minutes locks out that address, so

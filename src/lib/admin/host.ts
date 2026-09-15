@@ -6,8 +6,8 @@ import { siteUrl } from "@/lib/site";
  * The public website and the dashboard are one application sharing one
  * database, separated by hostname rather than by a URL prefix:
  *
- *   azaleadent.org         → the public website
- *   admin.azaleadent.org   → the dashboard
+ *   azalea-dent.org         → the public website
+ *   admin.azalea-dent.org   → the dashboard
  *
  * There is deliberately no /admin address on the public site. A URL prefix
  * would put the dashboard on the same origin as the public pages, so a
@@ -26,7 +26,7 @@ export function adminHost(): string | null {
   if (explicit) return normaliseHost(explicit);
 
   /* Derived so a correctly configured SITE_URL is enough in production:
-     azaleadent.org → admin.azaleadent.org. */
+     azalea-dent.org → admin.azalea-dent.org. */
   try {
     const host = new URL(siteUrl()).host;
     if (!host || host.startsWith("localhost") || host.startsWith("127.0.0.1")) {

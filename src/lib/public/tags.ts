@@ -7,7 +7,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
  * read far more often than they change. Each cached read is tagged with one of
  * these, and every admin action that changes the underlying table invalidates
  * the matching tag. That pairing is what makes an edit in the dashboard appear
- * on azaleadent.org straight away rather than whenever a timer expires.
+ * on azalea-dent.org straight away rather than whenever a timer expires.
  *
  * They live in their own module so both sides import the same constants and a
  * typo cannot quietly break the connection between them.

@@ -10,12 +10,12 @@ import { canonicalHost } from "@/lib/site";
  *
  * 1. Sends the dashboard's hostname to the dashboard.
  *
- *    admin.azaleadent.org/appointments  →  /admin/appointments
+ *    admin.azalea-dent.org/appointments  →  /admin/appointments
  *
  *    The rewrite is invisible: the address bar keeps the short path, and the
  *    dashboard has no /admin prefix in any of its links. On the public
  *    hostname the same /admin paths are answered as if they did not exist, so
- *    azaleadent.org/admin is a 404 rather than a login page — the dashboard is
+ *    azalea-dent.org/admin is a 404 rather than a login page — the dashboard is
  *    not discoverable from the public site at all.
  *
  * 2. Keeps one address per public page: the default language is published

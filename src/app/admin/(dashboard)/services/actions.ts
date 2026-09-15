@@ -35,7 +35,7 @@ import { PUBLIC_TAGS, refreshPublic } from "@/lib/public/tags";
  * Service mutations.
  *
  * Each one ends by invalidating the public site's cached read of this table.
- * That call is what makes an edit here appear on azaleadent.org straight away
+ * That call is what makes an edit here appear on azalea-dent.org straight away
  * rather than whenever a cache happens to expire.
  */
 

@@ -180,7 +180,7 @@ than a dead end.
 
 ## Admin dashboard
 
-The clinic's own dashboard, at **`admin.azaleadent.org`** in production and
+The clinic's own dashboard, at **`admin.azalea-dent.org`** in production and
 `admin.localhost:3000` in development. It is the same application, the same
 deployment and the same database as the website — not a second project, and
 not a `/admin` URL on the public site. There is no `/admin` path: on the
