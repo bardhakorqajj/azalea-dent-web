@@ -359,18 +359,30 @@ in front of it, and it follows `SITE_URL` the same way everything else does.
 
 ## 11. Create the database
 
-Any managed PostgreSQL 16 works. On Vercel the shortest path is the built-in
-integration:
+Any managed PostgreSQL 16 works. On Vercel the shortest path is the
+marketplace integration:
 
-1. Project → the **Storage** tab along the top → **Create Database** →
-   **Postgres**.
-2. Pick the region closest to Kosovo (Frankfurt, `fra1`).
+1. Project → the **Storage** tab along the top → **Create Database** (or
+   **Browse Storage**) → under **Marketplace Database Providers**, choose
+   **Neon — Serverless Postgres**.
+
+   There is no option simply called "Postgres". Vercel Postgres was moved to
+   the marketplace and became Neon, so Neon is the Postgres option. Supabase
+   works too; Neon is the closer fit, being plain Postgres with nothing else
+   layered over it.
+2. Pick the region closest to Kosovo (Frankfurt, `eu-central-1`). The free
+   plan is enough for a clinic's appointments and photographs.
 3. **Connect** it to the project, for Production, Preview and Development.
 
-That sets `POSTGRES_URL` in the project's environment for you, which the
-application reads. On any other provider (Neon, Supabase, a VPS) copy the
-connection string into an environment variable named **`DATABASE_URL`**
-instead — see step 2's screens for where the environment variable form is.
+That writes the connection variables into the project's environment for you,
+`DATABASE_URL` among them, which is the one the application reads. Neon sets
+two that look alike: use the plain **`DATABASE_URL`** (its host contains
+`-pooler`), not `DATABASE_URL_UNPOOLED` — pooled is the right one for a
+serverless host, and it is what `npm run db:migrate` should use as well.
+
+On any other provider (Supabase, a VPS) copy the connection string into an
+environment variable named **`DATABASE_URL`** yourself — see step 2's screens
+for where the environment variable form is.
 
 Then create the tables, from your own machine, once:
 
