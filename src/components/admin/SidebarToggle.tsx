@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { IconClose, IconMenu } from "./Icons";
 import { buttonClass } from "./Ui";
@@ -12,6 +13,16 @@ import { buttonClass } from "./Ui";
  * so the only thing that needs JavaScript is opening and closing the panel.
  * With JavaScript off the desktop sidebar is still there — this button is
  * simply hidden at that width.
+ *
+ * The open panel is rendered through a portal on `document.body`, and that is
+ * not a stylistic preference — it is the only thing that makes it full height.
+ * This button sits in the top bar, which carries `backdrop-blur`, and any
+ * element with a `backdrop-filter` becomes the containing block for its
+ * `position: fixed` descendants, exactly as `transform` does. Left in place,
+ * `fixed inset-0` resolves against the top bar rather than the viewport, so
+ * the panel comes out 64px tall and every navigation link below that is
+ * clipped: the menu opens onto almost nothing. The portal moves it out of the
+ * header, where `fixed` means what it reads as.
  */
 export function SidebarToggle({
   children,
@@ -58,42 +69,44 @@ export function SidebarToggle({
         <IconMenu />
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <button
-            type="button"
-            aria-label={closeLabel}
-            onClick={() => setOpen(false)}
-            className="absolute inset-0 bg-ink-950/50 backdrop-blur-[2px]"
-          />
-          <div
-            ref={panel}
-            role="dialog"
-            aria-modal="true"
-            aria-label={openLabel}
-            /* Tapping a navigation link closes the panel it was tapped in.
-               Handled here by delegation rather than in an effect watching the
-               pathname: that effect set state during a render pass and made
-               every navigation cost an extra one. */
-            onClick={(event) => {
-              if ((event.target as HTMLElement).closest("a")) setOpen(false);
-            }}
-            className="absolute inset-y-0 left-0 flex w-[min(19rem,86vw)] flex-col overflow-y-auto border-r border-ink-900/10 bg-bone-50 dark:border-bone-100/10 dark:bg-ink-900"
-          >
-            <div className="flex justify-end p-3">
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                aria-label={closeLabel}
-                className={buttonClass("quiet", "sm")}
-              >
-                <IconClose />
-              </button>
+      {open &&
+        createPortal(
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <button
+              type="button"
+              aria-label={closeLabel}
+              onClick={() => setOpen(false)}
+              className="absolute inset-0 bg-ink-950/50 backdrop-blur-[2px]"
+            />
+            <div
+              ref={panel}
+              role="dialog"
+              aria-modal="true"
+              aria-label={openLabel}
+              /* Tapping a navigation link closes the panel it was tapped in.
+                 Handled here by delegation rather than in an effect watching
+                 the pathname: that effect set state during a render pass and
+                 made every navigation cost an extra one. */
+              onClick={(event) => {
+                if ((event.target as HTMLElement).closest("a")) setOpen(false);
+              }}
+              className="absolute inset-y-0 left-0 flex w-[min(19rem,86vw)] flex-col overflow-y-auto border-r border-ink-900/10 bg-bone-50 dark:border-bone-100/10 dark:bg-ink-900"
+            >
+              <div className="flex justify-end p-3">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label={closeLabel}
+                  className={buttonClass("quiet", "sm")}
+                >
+                  <IconClose />
+                </button>
+              </div>
+              {children}
             </div>
-            {children}
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
