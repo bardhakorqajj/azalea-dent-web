@@ -17,6 +17,7 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicSettings } from "@/lib/public/content";
 import { getPublicDictionary } from "@/lib/public/dictionary";
 import { publicFaq } from "@/lib/public/faq";
 import { publicServices } from "@/lib/public/services";
@@ -47,10 +48,11 @@ export default async function AppointmentPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const [dict, faq, services] = await Promise.all([
+  const [dict, faq, services, settings] = await Promise.all([
     getPublicDictionary(locale),
     publicFaq(locale),
     publicServices(),
+    getPublicSettings(),
   ]);
 
   /* The dropdown offers whatever the site is offering — the eight treatments
@@ -78,7 +80,12 @@ export default async function AppointmentPage({
         <Container>
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <AppointmentForm locale={locale} dict={dict} options={serviceOptions} />
+              <AppointmentForm
+                locale={locale}
+                dict={dict}
+                options={serviceOptions}
+                hours={settings.hours}
+              />
             </div>
 
             <aside className="lg:col-span-5">

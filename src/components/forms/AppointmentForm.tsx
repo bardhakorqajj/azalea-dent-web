@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/Button";
 import { FallbackChannels } from "@/components/layout/ContactChannels";
 import { Check } from "@/components/ui/Icons";
 import {
-  TIME_SLOTS,
   emptyAppointment,
   formatRequest,
   hasErrors,
@@ -14,9 +13,11 @@ import {
   type AppointmentRequest,
   type FieldName,
 } from "@/lib/appointment";
+import type { OpeningHours } from "@/content/clinic";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { cn } from "@/lib/utils";
+import { bookingWindow } from "@/lib/hours";
+import { cn, interpolate } from "@/lib/utils";
 
 type Status =
   | "idle"
@@ -36,11 +37,14 @@ export function AppointmentForm({
   locale,
   dict,
   options,
+  hours,
 }: {
   locale: Locale;
   dict: Dictionary;
   /** The treatments the site is offering now, shipped or added in the panel. */
   options: ServiceOption[];
+  /** The clinic's opening hours, which bound the time a patient can ask for. */
+  hours: readonly OpeningHours[];
 }) {
   const uid = useId();
   const [values, setValues] = useState<AppointmentRequest>(emptyAppointment);
@@ -52,6 +56,14 @@ export function AppointmentForm({
 
   const fieldId = (name: string) => `${uid}-${name}`;
   const errorId = (name: string) => `${uid}-${name}-error`;
+  const hintId = (name: string) => `${uid}-${name}-hint`;
+
+  /* Follows the date: once a day is chosen the picker offers that day's hours,
+     and until then the widest hours the clinic keeps. */
+  const openHours = bookingWindow(hours, values.date);
+  const timeHint = openHours
+    ? interpolate(labels.timeHint, { from: openHours.opens, to: openHours.closes })
+    : undefined;
 
   const update = <K extends keyof AppointmentRequest>(
     key: K,
@@ -76,6 +88,7 @@ export function AppointmentForm({
       values,
       new Date(),
       options.map((option) => option.slug),
+      hours,
     );
     if (hasErrors(found)) {
       const translated: Partial<Record<FieldName, string>> = {};
@@ -283,43 +296,39 @@ export function AppointmentForm({
           />
         </Field>
 
-        <fieldset className="sm:col-span-1">
-          <legend className="eyebrow text-ink-500 dark:text-bone-300">
-            {labels.time}
-          </legend>
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            {TIME_SLOTS.map((slot) => {
-              const slotLabel =
-                slot === "morning"
-                  ? labels.timeMorning
-                  : slot === "afternoon"
-                    ? labels.timeAfternoon
-                    : labels.timeEvening;
-              const checked = values.time === slot;
-              return (
-                <label
-                  key={slot}
-                  className={cn(
-                    "flex min-h-12 cursor-pointer items-center justify-center rounded-sm border px-2 text-center text-[0.8rem] transition-colors",
-                    checked
-                      ? "border-ink-900 bg-ink-900 text-bone-50 dark:border-gold-400 dark:bg-gold-400 dark:text-ink-950"
-                      : "border-ink-900/20 bg-bone-50 text-ink-600 hover:border-ink-900/40 dark:border-bone-100/20 dark:bg-ink-900 dark:text-bone-300 dark:hover:border-bone-100/40",
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name="time"
-                    value={slot}
-                    checked={checked}
-                    onChange={() => update("time", slot)}
-                    className="sr-only"
-                  />
-                  {slotLabel}
-                </label>
-              );
-            })}
-          </div>
-        </fieldset>
+        <Field
+          id={fieldId("time")}
+          label={labels.time}
+          error={errors.time}
+          errorId={errorId("time")}
+          hint={timeHint}
+          hintId={hintId("time")}
+        >
+          {/* Quarter hours: finer than the clinic books in, coarse enough that
+              the picker is a few taps rather than a minute spinner. */}
+          <input
+            id={fieldId("time")}
+            name="time"
+            type="time"
+            step={900}
+            {...(openHours ? { min: openHours.opens, max: openHours.closes } : {})}
+            value={values.time}
+            onChange={(event) => update("time", event.target.value)}
+            aria-invalid={Boolean(errors.time)}
+            aria-describedby={
+              [
+                errors.time ? errorId("time") : null,
+                timeHint ? hintId("time") : null,
+              ]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+            className={cn(
+              fieldClasses,
+              errors.time && "border-red-700 dark:border-red-500",
+            )}
+          />
+        </Field>
 
         <div className="sm:col-span-2">
           <label
@@ -409,6 +418,8 @@ function Field({
   label,
   error,
   errorId,
+  hint,
+  hintId,
   required,
   requiredLabel,
   children,
@@ -417,6 +428,8 @@ function Field({
   label: string;
   error?: string;
   errorId: string;
+  hint?: string;
+  hintId?: string;
   required?: boolean;
   requiredLabel?: string;
   children: React.ReactNode;
@@ -438,6 +451,11 @@ function Field({
         )}
       </label>
       <div className="mt-3">{children}</div>
+      {hint && (
+        <p id={hintId} className="mt-2 text-[0.82rem] text-ink-500 dark:text-bone-300">
+          {hint}
+        </p>
+      )}
       {error && (
         <p
           id={errorId}

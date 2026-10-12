@@ -1,7 +1,6 @@
+import { clinic, type OpeningHours } from "@/content/clinic";
 import { serviceSlugs } from "@/content/services";
-
-export const TIME_SLOTS = ["morning", "afternoon", "evening"] as const;
-export type TimeSlot = (typeof TIME_SLOTS)[number];
+import { bookingWindow } from "@/lib/hours";
 
 export type AppointmentRequest = {
   name: string;
@@ -11,12 +10,33 @@ export type AppointmentRequest = {
   service: string;
   /** ISO date, `YYYY-MM-DD`. */
   date: string;
-  time: TimeSlot | "";
+  /** 24h `"HH:MM"`, or `""` when the patient has no preferred time. */
+  time: string;
   message: string;
   consent: boolean;
 };
 
-export type FieldName = "name" | "phone" | "email" | "service" | "date" | "consent";
+export type FieldName =
+  | "name"
+  | "phone"
+  | "email"
+  | "service"
+  | "date"
+  | "time"
+  | "consent";
+
+/** The keys of `dictionary.appointment.errors` a field can fail with. */
+export type ErrorKey =
+  | "name"
+  | "phone"
+  | "email"
+  | "service"
+  | "date"
+  | "datePast"
+  | "time"
+  | "consent";
+
+export type ValidationErrors = Partial<Record<FieldName, ErrorKey>>;
 
 export const emptyAppointment: AppointmentRequest = {
   name: "",
@@ -49,6 +69,11 @@ export function isFutureDate(value: string, today = new Date()): boolean {
   return parsed.getTime() >= midnight.getTime();
 }
 
+/** A time of day as the picker submits it: 24h `"HH:MM"`. */
+export function isValidTime(value: string): boolean {
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+}
+
 /**
  * Validates a request and returns the error key per invalid field.
  * The keys match `dictionary.appointment.errors`, so the caller supplies the
@@ -59,13 +84,18 @@ export function isFutureDate(value: string, today = new Date()): boolean {
  * list — the form passes the options it actually rendered and the API route
  * reads them from the database — because a treatment the clinic added in the
  * dashboard has to be bookable, and one it removed must not be.
+ *
+ * `hours` is the clinic's opening hours, for the same reason: the time the
+ * patient picks is checked against the hours the clinic publishes today, not
+ * against the ones that were true when this was written.
  */
 export function validateAppointment(
   request: AppointmentRequest,
   today = new Date(),
   offeredSlugs: readonly string[] = serviceSlugs,
-): Partial<Record<FieldName, "name" | "phone" | "email" | "service" | "date" | "datePast" | "consent">> {
-  const errors: ReturnType<typeof validateAppointment> = {};
+  hours: readonly OpeningHours[] = clinic.hours,
+): ValidationErrors {
+  const errors: ValidationErrors = {};
 
   if (request.name.trim().length < 2) errors.name = "name";
   if (!isValidPhone(request.phone)) errors.phone = "phone";
@@ -82,12 +112,24 @@ export function validateAppointment(
     errors.date = "datePast";
   }
 
+  /* The time stays a preference rather than a requirement: a patient who does
+     not mind when leaves it empty. A time that is filled in has to be a real
+     one inside the clinic's hours, so a request for 03:00 is caught here
+     instead of reaching the clinic as something it cannot honour. */
+  if (request.time !== "") {
+    const allowed = bookingWindow(hours, request.date);
+    const outsideHours =
+      allowed !== null &&
+      (request.time < allowed.opens || request.time > allowed.closes);
+    if (!isValidTime(request.time) || outsideHours) errors.time = "time";
+  }
+
   if (!request.consent) errors.consent = "consent";
 
   return errors;
 }
 
-export function hasErrors(errors: ReturnType<typeof validateAppointment>): boolean {
+export function hasErrors(errors: ValidationErrors): boolean {
   return Object.keys(errors).length > 0;
 }
 

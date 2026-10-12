@@ -7,11 +7,21 @@ import {
   isFutureDate,
   isValidEmail,
   isValidPhone,
+  isValidTime,
   validateAppointment,
   type AppointmentRequest,
 } from "@/lib/appointment";
+import { bookingWindow } from "@/lib/hours";
+import type { OpeningHours } from "@/content/clinic";
 
 const TODAY = new Date("2026-06-15T10:00:00Z");
+
+/* The clinic's published hours: weekday afternoons, closed at the weekend.
+   2026-06-20 is a Saturday and 2026-06-22 a Monday. */
+const HOURS: OpeningHours[] = [
+  { days: ["mon", "tue", "wed", "thu", "fri"], opens: "14:00", closes: "20:00" },
+  { days: ["sat", "sun"], opens: null, closes: null },
+];
 
 function valid(overrides: Partial<AppointmentRequest> = {}): AppointmentRequest {
   return {
@@ -49,6 +59,56 @@ describe("isValidEmail", () => {
     expect(isValidEmail("arta@example")).toBe(false);
     expect(isValidEmail("arta example.com")).toBe(false);
     expect(isValidEmail("@example.com")).toBe(false);
+  });
+});
+
+describe("isValidTime", () => {
+  it("accepts a 24h time of day", () => {
+    expect(isValidTime("00:00")).toBe(true);
+    expect(isValidTime("14:30")).toBe(true);
+    expect(isValidTime("23:59")).toBe(true);
+  });
+
+  it("rejects anything that is not one", () => {
+    expect(isValidTime("24:00")).toBe(false);
+    expect(isValidTime("14:60")).toBe(false);
+    expect(isValidTime("9:30")).toBe(false);
+    expect(isValidTime("14:30:00")).toBe(false);
+    expect(isValidTime("afternoon")).toBe(false);
+    expect(isValidTime("")).toBe(false);
+  });
+});
+
+describe("bookingWindow", () => {
+  it("uses the hours of the day that was chosen", () => {
+    expect(bookingWindow(HOURS, "2026-06-22")).toEqual({
+      opens: "14:00",
+      closes: "20:00",
+    });
+  });
+
+  it("falls back to the widest hours for a closed day or no date", () => {
+    /* A Saturday request is not refused outright — the clinic decides — so the
+       widest published window still bounds the picker. */
+    expect(bookingWindow(HOURS, "2026-06-20")).toEqual({
+      opens: "14:00",
+      closes: "20:00",
+    });
+    expect(bookingWindow(HOURS, "")).toEqual({ opens: "14:00", closes: "20:00" });
+    expect(
+      bookingWindow(
+        [
+          { days: ["mon"], opens: "09:00", closes: "13:00" },
+          { days: ["tue"], opens: "15:00", closes: "19:30" },
+        ],
+        undefined,
+      ),
+    ).toEqual({ opens: "09:00", closes: "19:30" });
+  });
+
+  it("knows no bound when the clinic publishes no hours", () => {
+    expect(bookingWindow([], "2026-06-22")).toBeNull();
+    expect(bookingWindow([{ days: ["mon"], opens: null, closes: null }])).toBeNull();
   });
 });
 
@@ -96,6 +156,39 @@ describe("validateAppointment", () => {
     expect(validateAppointment(valid({ service: "made-up" }), TODAY).service).toBe("service");
   });
 
+  it("leaves the time optional but checks the one that is given", () => {
+    const slugs = ["kirurgji-orale"];
+    expect(
+      validateAppointment(valid({ time: "" }), TODAY, slugs, HOURS).time,
+    ).toBeUndefined();
+    expect(
+      validateAppointment(valid({ time: "15:30" }), TODAY, slugs, HOURS).time,
+    ).toBeUndefined();
+    expect(
+      validateAppointment(valid({ time: "not a time" }), TODAY, slugs, HOURS).time,
+    ).toBe("time");
+  });
+
+  it("refuses a time the clinic is not open for", () => {
+    const slugs = ["kirurgji-orale"];
+    const monday = { date: "2026-06-22" };
+    expect(
+      validateAppointment(valid({ ...monday, time: "03:00" }), TODAY, slugs, HOURS).time,
+    ).toBe("time");
+    expect(
+      validateAppointment(valid({ ...monday, time: "21:00" }), TODAY, slugs, HOURS).time,
+    ).toBe("time");
+    expect(
+      validateAppointment(valid({ ...monday, time: "14:00" }), TODAY, slugs, HOURS).time,
+    ).toBeUndefined();
+  });
+
+  it("accepts any valid time when no hours are published", () => {
+    expect(
+      validateAppointment(valid({ time: "03:00" }), TODAY, ["kirurgji-orale"], []).time,
+    ).toBeUndefined();
+  });
+
   it("requires consent", () => {
     expect(validateAppointment(valid({ consent: false }), TODAY).consent).toBe("consent");
   });
@@ -121,11 +214,11 @@ describe("formatRequest", () => {
 
   it("includes optional fields once filled", () => {
     const summary = formatRequest(
-      valid({ email: "arta@example.com", time: "morning", message: "Dhimbje dhëmbi" }),
+      valid({ email: "arta@example.com", time: "15:30", message: "Dhimbje dhëmbi" }),
       labels,
     );
     expect(summary).toContain("Email: arta@example.com");
-    expect(summary).toContain("Time: morning");
+    expect(summary).toContain("Time: 15:30");
     expect(summary).toContain("Message: Dhimbje dhëmbi");
   });
 });

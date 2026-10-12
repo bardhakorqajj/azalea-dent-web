@@ -230,9 +230,7 @@ export const en: Dictionary = {
       serviceOther: "Not sure / other",
       date: "Preferred date",
       time: "Preferred time",
-      timeMorning: "Morning",
-      timeAfternoon: "Afternoon",
-      timeEvening: "Evening",
+      timeHint: "Clinic hours: {from} – {to}",
       message: "Message (optional)",
       messagePlaceholder: "Briefly describe the reason for your visit.",
       consent:
@@ -249,6 +247,7 @@ export const en: Dictionary = {
       service: "Please choose a treatment.",
       date: "Please choose a date.",
       datePast: "Please choose a date in the future.",
+      time: "Please choose a valid time within the clinic's opening hours.",
       consent: "Please accept the terms to continue.",
       generic: "Something went wrong. Please try again or contact us directly.",
     },

@@ -12,6 +12,7 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
+import { getPublicSettings } from "@/lib/public/content";
 import { getPublicDictionary } from "@/lib/public/dictionary";
 import { publicServices } from "@/lib/public/services";
 import { absoluteUrl } from "@/lib/site";
@@ -41,9 +42,10 @@ export default async function ContactPage({
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  const [dict, services] = await Promise.all([
+  const [dict, services, settings] = await Promise.all([
     getPublicDictionary(locale),
     publicServices(),
+    getPublicSettings(),
   ]);
 
   /* Same list the booking page offers; see the note there. */
@@ -80,6 +82,7 @@ export default async function ContactPage({
                   locale={locale}
                   dict={dict}
                   options={serviceOptions}
+                  hours={settings.hours}
                 />
               </div>
 

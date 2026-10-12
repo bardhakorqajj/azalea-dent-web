@@ -8,6 +8,7 @@ import { logActivity } from "@/lib/db/repos/activity";
 import { createAppointment } from "@/lib/db/repos/appointments";
 import { findPatientByContact } from "@/lib/db/repos/patients";
 import { getServiceBySlug } from "@/lib/db/repos/services";
+import { getPublicSettings } from "@/lib/public/content";
 import { publicServices } from "@/lib/public/services";
 import {
   validateAppointment,
@@ -45,14 +46,6 @@ import {
  */
 
 export const runtime = "nodejs";
-
-/** The time slots as the clinic reads them, not as the form stores them. */
-const TIME_LABELS: Record<AppointmentRequest["time"] & string, string> = {
-  "": "",
-  morning: sq.appointment.form.timeMorning,
-  afternoon: sq.appointment.form.timeAfternoon,
-  evening: sq.appointment.form.timeEvening,
-};
 
 /** Best-effort throttle. Serverless instances are short-lived, so this trims
  *  obvious floods rather than acting as a hard guarantee. */
@@ -173,10 +166,9 @@ export async function POST(request: Request) {
     email: clean(body.email, 160),
     service: clean(body.service, 60),
     date: clean(body.date, 10),
-    time:
-      (["morning", "afternoon", "evening"] as const).find(
-        (slot) => slot === body.time,
-      ) ?? "",
+    /* 24h "HH:MM" from the form's time picker, or empty when the patient has
+       no preference. Validated below; never trusted as a label. */
+    time: clean(body.time, 5),
     message: clean(body.message, 2000),
     consent: body.consent === true,
   };
@@ -185,13 +177,17 @@ export async function POST(request: Request) {
      clinic keeps its own list in the dashboard, and that list afterwards. The
      form is built from exactly this, so what a patient can choose is what
      this accepts — and a treatment the clinic has removed is refused. */
-  const offered = await publicServices();
+  const [offered, settings] = await Promise.all([
+    publicServices(),
+    getPublicSettings(),
+  ]);
 
   // Re-validate on the server: the client check is a convenience, not a gate.
   const errors = validateAppointment(
     appointment,
     new Date(),
     offered.map((service) => service.slug),
+    settings.hours,
   );
   if (hasErrors(errors)) {
     return NextResponse.json({ error: "validation", fields: errors }, { status: 422 });
@@ -206,7 +202,6 @@ export async function POST(request: Request) {
     : appointment.service === "other"
       ? sq.appointment.form.serviceOther
       : appointment.service;
-  const timeLabel = appointment.time ? TIME_LABELS[appointment.time] : "";
 
   const summary = [
     `Emri:     ${appointment.name}`,
@@ -214,7 +209,7 @@ export async function POST(request: Request) {
     appointment.email ? `Email:    ${appointment.email}` : null,
     `Trajtimi: ${serviceLabel}`,
     `Data:     ${appointment.date}`,
-    timeLabel ? `Ora:      ${timeLabel}` : null,
+    appointment.time ? `Ora:      ${appointment.time}` : null,
     appointment.message ? `\nMesazhi:\n${appointment.message}` : null,
     `\nDërguar nga faqja (${locale.toUpperCase()}) më ${new Date().toISOString()}.`,
   ]
@@ -224,7 +219,7 @@ export async function POST(request: Request) {
   const sms = [
     `Azalea Dent - kerkese e re`,
     `${appointment.name}, ${appointment.phone}`,
-    `${serviceLabel}, ${appointment.date}${timeLabel ? ` (${timeLabel})` : ""}`,
+    `${serviceLabel}, ${appointment.date}${appointment.time ? ` ${appointment.time}` : ""}`,
   ].join("\n");
 
   /* Recorded in the dashboard before anything is delivered, so the clinic has
@@ -301,10 +296,11 @@ async function recordInDashboard(
       serviceLabel,
       teamMemberId: null,
       scheduledDate: appointment.date,
-      /* The form asks for a part of the day, not a time — the clinic decides
-         the slot when it confirms. */
-      scheduledTime: null,
-      timeSlot: appointment.time === "" ? null : appointment.time,
+      /* The time the patient asked for, which the clinic confirms or moves.
+         Part-of-day slots are a dashboard field now: the website asks for an
+         exact time, so nothing here sets one. */
+      scheduledTime: appointment.time || null,
+      timeSlot: null,
       durationMinutes: null,
       status: "pending",
       source: "website",

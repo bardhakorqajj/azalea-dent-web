@@ -26,7 +26,7 @@ function makeRequest(overrides: Record<string, unknown> = {}) {
       phone: "+383 44 123 456",
       service: "kirurgji-orale",
       date: tomorrow,
-      time: "morning",
+      time: "15:30",
       consent: true,
       locale: "sq",
       ...overrides,
@@ -169,15 +169,18 @@ describe("what the clinic reads", () => {
     return JSON.parse(String(call[1]?.body));
   }
 
-  it("names the time slot in Albanian, not as the form's internal value", async () => {
-    const body = await sentEmail({ time: "morning" });
-    expect(body.text).toContain("Ora:      Paradite");
-    expect(body.text).not.toContain("morning");
+  it("passes on the exact time the patient picked", async () => {
+    const body = await sentEmail({ time: "16:45" });
+    expect(body.text).toContain("Ora:      16:45");
+  });
+
+  it("leaves the time line out when no time was picked", async () => {
+    const body = await sentEmail({ time: "" });
+    expect(body.text).not.toContain("Ora:");
   });
 
   it("stays Albanian even when the patient used the English site", async () => {
-    const body = await sentEmail({ locale: "en", time: "evening" });
-    expect(body.text).toContain("Ora:      Në mbrëmje");
+    const body = await sentEmail({ locale: "en" });
     expect(body.text).toContain("Trajtimi: Kirurgji orale");
     // The language the patient used is still recorded, so the reply matches it.
     expect(body.text).toContain("(EN)");

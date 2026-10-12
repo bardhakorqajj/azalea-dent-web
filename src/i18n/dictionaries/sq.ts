@@ -228,9 +228,7 @@ export const sq = {
       serviceOther: "Nuk jam i sigurt / tjetër",
       date: "Data e preferuar",
       time: "Ora e preferuar",
-      timeMorning: "Paradite",
-      timeAfternoon: "Pasdite",
-      timeEvening: "Në mbrëmje",
+      timeHint: "Orari i klinikës: {from} – {to}",
       message: "Mesazh (opsionale)",
       messagePlaceholder: "Përshkruani shkurt arsyen e vizitës.",
       consent:
@@ -247,6 +245,7 @@ export const sq = {
       service: "Zgjidhni një trajtim.",
       date: "Zgjidhni një datë.",
       datePast: "Zgjidhni një datë në të ardhmen.",
+      time: "Zgjidhni një orë të vlefshme brenda orarit të klinikës.",
       consent: "Ju lutemi pranoni kushtet për të vazhduar.",
       generic: "Diçka shkoi keq. Provoni sërish ose na kontaktoni direkt.",
     },
