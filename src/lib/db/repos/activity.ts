@@ -20,6 +20,8 @@ export type ActivityKind =
   | "review.published"
   | "promotion.activated"
   | "social.approved"
+  | "social.published"
+  | "social.failed"
   | "content.updated";
 
 export async function logActivity(entry: {

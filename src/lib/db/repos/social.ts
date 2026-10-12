@@ -263,3 +263,97 @@ export function parseHashtags(raw: string): string[] {
     .slice(0, 30)
     .map((tag) => `#${tag}`);
 }
+
+/**
+ * The next post the scheduler should publish, or null.
+ *
+ * Deliberately narrow. Only `approved` posts are eligible — a draft or one
+ * waiting for approval is never sent, which is the whole point of having an
+ * approval step. Only Instagram, because it is the only platform with a
+ * publishing API the clinic can use. And only posts that carry a photo, since
+ * Instagram has no caption-only feed post: a post without one would fail every
+ * time, so it is not picked up and the scheduler says so instead.
+ *
+ * `scheduled_for` is a ceiling, not a requirement: a post with no time set is
+ * eligible immediately, and one dated next month waits. Oldest first, so the
+ * queue drains in the order it was written.
+ */
+export async function nextPublishablePost(): Promise<SocialPostRow | null> {
+  return queryOne<SocialPostRow>(
+    `select ${SELECT}
+       from social_post
+      where status = 'approved'
+        and platform = 'instagram'
+        and media_id is not null
+        and (scheduled_for is null or scheduled_for <= now())
+      order by scheduled_for asc nulls last, created_at asc
+      limit 1`,
+  );
+}
+
+/**
+ * Whether anything is waiting that the scheduler cannot send.
+ *
+ * Used to explain an empty run: "nothing to post" and "three posts waiting,
+ * none with a photo" are different situations and the clinic should be told
+ * which one it is.
+ */
+export async function blockedApprovedCount(): Promise<number> {
+  const row = await queryOne<{ count: string }>(
+    `select count(*)::text as count
+       from social_post
+      where status = 'approved'
+        and (media_id is null or platform <> 'instagram')
+        and (scheduled_for is null or scheduled_for <= now())`,
+  );
+  return Number(row?.count ?? 0);
+}
+
+/** Records a post that went out, with the link to it. */
+export async function markPublished(id: string, externalUrl: string | null): Promise<void> {
+  await execute(
+    `update social_post set
+       status = 'published',
+       published_at = now(),
+       external_url = $2,
+       failure_reason = null,
+       updated_at = now()
+     where id = $1`,
+    [id, externalUrl],
+  );
+}
+
+/**
+ * Records a post that did not go out, and why.
+ *
+ * The reason is Instagram's own wording where there is one. It is shown in the
+ * dashboard: a post that silently fails to publish is worse than one that
+ * never tried, because nobody finds out until someone wonders why the feed has
+ * gone quiet.
+ */
+export async function markFailed(id: string, reason: string): Promise<void> {
+  await execute(
+    `update social_post set
+       status = 'failed',
+       failure_reason = $2,
+       updated_at = now()
+     where id = $1`,
+    [id, reason.slice(0, 500)],
+  );
+}
+
+/**
+ * Marks a post as going out now, before Instagram is called.
+ *
+ * This is what makes the photo fetchable: `api/media/[id]` serves a social
+ * post's image publicly only while the post is `scheduled` or `published`, and
+ * Instagram fetches the image itself rather than having it uploaded. If the
+ * publish then fails the post moves to `failed`, and the photo is private
+ * again.
+ */
+export async function markSending(id: string): Promise<void> {
+  await execute(
+    `update social_post set status = 'scheduled', updated_at = now() where id = $1`,
+    [id],
+  );
+}

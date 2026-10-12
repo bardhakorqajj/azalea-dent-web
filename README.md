@@ -78,6 +78,7 @@ src/
     api/contact/route.ts      Contact messages → the dashboard inbox
     api/media/[id]/route.ts   Serves uploaded files, publish-aware
     api/admin/                Upload endpoint and notification reads
+    api/cron/social/route.ts  Twice-weekly Instagram publish, scheduler-only
     robots.ts  sitemap.ts  manifest.ts  icon.svg  apple-icon.png
   admin/                    Dashboard dictionaries, navigation, formatting
   components/
@@ -231,9 +232,14 @@ true, so:
 
 - **Analytics** count the rows in the database and say so. No traffic
   numbers, no invented trends, no charts of data nobody collected.
-- **Social media** composes and schedules posts for a person to publish.
-  Nothing is auto-published, no platform password is stored, and the status
-  of a post says exactly which of those it is.
+- **Social media** composes and approves posts. With no Meta credentials
+  configured it publishes nothing at all and says so on the page; with them,
+  it sends one *approved* Instagram post on Tuesday and one on Friday, and
+  nothing else — never a draft, never Facebook or TikTok, never a post it
+  wrote itself. A post is marked published only when Instagram said it was,
+  and a failure is recorded with Instagram's own wording. No platform
+  password is stored: publishing uses a revocable Meta access token held in
+  the hosting environment.
 - **Reviews** are entered by hand and stamped with where they came from. The
   site shows nothing that a person did not type in.
 - **Patient records** hold what a receptionist needs to run appointments —
@@ -257,6 +263,11 @@ npm run dev
 QA_DATABASE_URL=postgres://localhost/azalea_dev \
 QA_PASSWORD='the admin password' npm run qa:dashboard
 ```
+
+Add `QA_CRON_SECRET` — the same value the running server has — to also make
+one real call to the social scheduler and check that it publishes nothing
+while Meta is not configured. Without it the scheduler's checks still run; the
+authorised run is the only one skipped.
 
 The database integration tests are skipped unless `TEST_DATABASE_URL` is set:
 
@@ -286,6 +297,10 @@ None of them are required to run the site.
 | `ADMIN_HOST` | optional | The dashboard's hostname; defaults to `admin.<site host>` |
 | `ADMIN_EMAIL` | optional | Bootstraps the admin account with `ADMIN_PASSWORD_HASH` |
 | `ADMIN_PASSWORD_HASH` | optional | A scrypt hash from `npm run admin:setup -- --hash` |
+| `CRON_SECRET` | for auto-posting | Bearer secret the scheduled request must carry; unset means `/api/cron/social` refuses everything |
+| `META_IG_USER_ID` | for auto-posting | The Instagram **Business** account's numeric id |
+| `META_ACCESS_TOKEN` | for auto-posting | Long-lived Page token with `instagram_content_publish` |
+| `META_GRAPH_VERSION` | optional | Graph API version, default `v21.0` |
 
 `.env*` files are git-ignored. Never commit real keys. No password, key or
 hostname is hardcoded anywhere in `src/`.

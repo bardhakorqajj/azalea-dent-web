@@ -21,6 +21,7 @@ import { listSocialPosts, socialCounts } from "@/lib/db/repos/social";
 import { pageNumber } from "@/lib/db/sql";
 import { databaseReady } from "@/lib/db/status";
 import { oneOf, SOCIAL_PLATFORMS, SOCIAL_STATUSES } from "@/lib/db/types";
+import { autoPublishEnabled } from "@/lib/social/instagram";
 
 export const metadata: Metadata = { title: "Rrjetet sociale" };
 
@@ -64,6 +65,11 @@ export default async function SocialPage({
 
   const hasFilters = Boolean(params.q || params.status || params.platform);
 
+  /* Whether anything actually goes out on its own. The notice below says which
+     of the two states the clinic is in, because the difference decides whether
+     "Approved" is an instruction to a machine or a reminder to a person. */
+  const autoPublish = autoPublishEnabled();
+
   return (
     <>
       <PageHeader
@@ -91,8 +97,12 @@ export default async function SocialPage({
       />
 
       {/* The one thing anyone using this section needs to know. */}
-      <Callout tone="warning" title={dict.social.publishingNotice} className="mt-5">
-        {dict.social.publishingNoticeBody}
+      <Callout
+        tone={autoPublish ? "success" : "warning"}
+        title={autoPublish ? dict.social.publishingAuto : dict.social.publishingNotice}
+        className="mt-5"
+      >
+        {autoPublish ? dict.social.publishingAutoBody : dict.social.publishingNoticeBody}
       </Callout>
 
       <Card className="mt-6">
@@ -213,6 +223,14 @@ export default async function SocialPage({
                       <Badge tone={socialStatusTone(row.status)}>
                         {socialStatusLabel(row.status, dict)}
                       </Badge>
+                      {/* A post that failed to publish says so here rather
+                          than only inside the record: the reason is the whole
+                          point of showing the status. */}
+                      {row.failure_reason && (
+                        <span className="mt-1 block max-w-[16rem] text-[0.75rem] text-ink-500 dark:text-bone-300">
+                          {excerpt(row.failure_reason, 90)}
+                        </span>
+                      )}
                     </td>
                     <td>
                       <div className="flex justify-end">

@@ -1,6 +1,6 @@
 import { getAdminSession } from "@/lib/admin/auth";
-import { isDatabaseConfigured, queryOne } from "@/lib/db/client";
-import { readMedia } from "@/lib/db/repos/media";
+import { isDatabaseConfigured } from "@/lib/db/client";
+import { mediaVisibility, readMedia } from "@/lib/db/repos/media";
 import { asUuid } from "@/lib/db/sql";
 
 /**
@@ -23,29 +23,13 @@ export const runtime = "nodejs";
 
 /** A year: the URL carries a uuid, so the bytes behind it never change. */
 const PUBLIC_CACHE = "public, max-age=31536000, immutable";
-const PRIVATE_CACHE = "private, no-store";
-
 /**
- * Whether this file is on the public website.
- *
- * The publish flag on each referring row is checked, not merely the existence
- * of a reference — so unpublishing a gallery image stops serving its file too.
+ * Five minutes, for a file that is public only for as long as a social post is
+ * on its way out. The bytes are still immutable; what can change is whether
+ * anyone may read them, and a shared cache must not outlive that permission.
  */
-async function isPubliclyVisible(id: string): Promise<boolean> {
-  const row = await queryOne<{ visible: boolean }>(
-    `select (
-         exists (select 1 from service       where image_id = $1 and is_active = true)
-      or exists (select 1 from treatment     where image_id = $1 and is_active = true)
-      or exists (select 1 from promotion     where image_id = $1 and is_active = true)
-      or exists (select 1 from team_member   where photo_id = $1 and is_active = true)
-      or exists (select 1 from gallery_image where media_id = $1 and is_published = true)
-      or exists (select 1 from setting
-                  where key = 'logoMediaId' and value = to_jsonb($1::text))
-     ) as visible`,
-    [id],
-  );
-  return row?.visible ?? false;
-}
+const BRIEF_PUBLIC_CACHE = "public, max-age=300";
+const PRIVATE_CACHE = "private, no-store";
 
 export async function GET(
   request: Request,
@@ -58,9 +42,9 @@ export async function GET(
   /* Not a uuid: answer 404 rather than letting the database reject the cast. */
   if (!id) return new Response(null, { status: 404 });
 
-  const publiclyVisible = await isPubliclyVisible(id);
+  const visibility = await mediaVisibility(id);
 
-  if (!publiclyVisible) {
+  if (!visibility.isPublic) {
     const session = await getAdminSession();
     /* 404, not 403: a private file should not confirm that it exists. */
     if (!session) return new Response(null, { status: 404 });
@@ -70,7 +54,11 @@ export async function GET(
   if (!media) return new Response(null, { status: 404 });
 
   const etag = `"${media.checksum.slice(0, 32)}"`;
-  const cacheControl = publiclyVisible ? PUBLIC_CACHE : PRIVATE_CACHE;
+  const cacheControl = visibility.isImmutable
+    ? PUBLIC_CACHE
+    : visibility.isPublic
+      ? BRIEF_PUBLIC_CACHE
+      : PRIVATE_CACHE;
 
   /* A repeat visitor gets 304 and no bytes. Worth handling here because these
      rows are read out of the database rather than off a CDN's disk. */

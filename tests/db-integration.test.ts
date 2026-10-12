@@ -1350,6 +1350,180 @@ describeDb("social posts", () => {
   });
 });
 
+describeDb("the Instagram publishing queue", () => {
+  beforeAll(reset);
+
+  const base = {
+    platform: "instagram" as const,
+    headline: null,
+    caption: "Postim",
+    hashtags: ["#dentist"],
+    mediaSuggestion: null,
+    language: "sq",
+    scheduledFor: null,
+    externalUrl: null,
+    notes: null,
+  };
+
+  /** A stored image, since a post without one is never publishable. */
+  async function photo(filename: string): Promise<string> {
+    const result = await repos.media.storeMedia({
+      filename,
+      bytes: PNG_1X1,
+      maxBytes: 1024 * 1024,
+    });
+    if (!result.ok) throw new Error(`could not store ${filename}`);
+    return result.id;
+  }
+
+  it("offers nothing until a post is approved, has a photo and is due", async () => {
+    const mediaId = await photo("queue.png");
+
+    /* Everything that must not be picked up, one reason each. */
+    await repos.social.createSocialPost({ ...base, mediaId, status: "draft" });
+    await repos.social.createSocialPost({
+      ...base,
+      mediaId,
+      status: "ready_for_approval",
+    });
+    await repos.social.createSocialPost({ ...base, mediaId: null, status: "approved" });
+    await repos.social.createSocialPost({
+      ...base,
+      platform: "facebook",
+      mediaId,
+      status: "approved",
+    });
+    await repos.social.createSocialPost({
+      ...base,
+      mediaId,
+      status: "approved",
+      scheduledFor: new Date(Date.now() + 86_400_000),
+    });
+
+    expect(await repos.social.nextPublishablePost()).toBeNull();
+
+    /* Two that qualify: the one dated earlier goes first. */
+    const later = await repos.social.createSocialPost({
+      ...base,
+      caption: "I dyti",
+      mediaId,
+      status: "approved",
+      scheduledFor: new Date(Date.now() - 3_600_000),
+    });
+    const earlier = await repos.social.createSocialPost({
+      ...base,
+      caption: "I pari",
+      mediaId,
+      status: "approved",
+      scheduledFor: new Date(Date.now() - 7_200_000),
+    });
+
+    expect((await repos.social.nextPublishablePost())?.id).toBe(earlier);
+    expect(earlier).not.toBe(later);
+  });
+
+  it("counts the approved posts it cannot send, so an empty run can be explained", async () => {
+    await reset();
+    const mediaId = await photo("blocked.png");
+
+    await repos.social.createSocialPost({ ...base, mediaId: null, status: "approved" });
+    await repos.social.createSocialPost({
+      ...base,
+      platform: "tiktok",
+      mediaId,
+      status: "approved",
+    });
+    /* Sendable, so not blocked; and a draft, which is not waiting on anything. */
+    await repos.social.createSocialPost({ ...base, mediaId, status: "approved" });
+    await repos.social.createSocialPost({ ...base, mediaId: null, status: "draft" });
+
+    expect(await repos.social.blockedApprovedCount()).toBe(2);
+  });
+
+  it("marks a post as sending before it is published, and records the link after", async () => {
+    await reset();
+    const mediaId = await photo("sending.png");
+    const id = await repos.social.createSocialPost({ ...base, mediaId, status: "approved" });
+
+    await repos.social.markSending(id);
+    expect((await repos.social.getSocialPost(id))?.status).toBe("scheduled");
+
+    await repos.social.markPublished(id, "https://www.instagram.com/p/abc/");
+    const published = await repos.social.getSocialPost(id);
+    expect(published?.status).toBe("published");
+    expect(published?.external_url).toBe("https://www.instagram.com/p/abc/");
+    expect(published?.published_at).not.toBeNull();
+    expect(published?.failure_reason).toBeNull();
+
+    /* Published, so it is not offered a second time. */
+    expect(await repos.social.nextPublishablePost()).toBeNull();
+  });
+
+  it("records why a post failed, and keeps the reason within the column", async () => {
+    await reset();
+    const mediaId = await photo("failed.png");
+    const id = await repos.social.createSocialPost({ ...base, mediaId, status: "approved" });
+
+    await repos.social.markFailed(id, "x".repeat(900));
+    const row = await repos.social.getSocialPost(id);
+
+    expect(row?.status).toBe("failed");
+    expect(row?.failure_reason).toHaveLength(500);
+    expect(row?.published_at).toBeNull();
+    /* A failure takes it out of the queue rather than retrying every run. */
+    expect(await repos.social.nextPublishablePost()).toBeNull();
+  });
+
+  it("serves a post's photo publicly only while the post is going out", async () => {
+    await reset();
+    const mediaId = await photo("instagram.png");
+    const id = await repos.social.createSocialPost({ ...base, mediaId, status: "draft" });
+
+    /* A draft's photo is nobody's business but the admin's. */
+    expect(await repos.media.mediaVisibility(mediaId)).toEqual({
+      isPublic: false,
+      isImmutable: false,
+    });
+
+    await repos.social.setSocialStatus(id, "approved");
+    expect((await repos.media.mediaVisibility(mediaId)).isPublic).toBe(false);
+
+    /* Instagram fetches the image itself, so it has to be readable now — but
+       not cacheable for a year, because the next line can take it back. */
+    await repos.social.markSending(id);
+    expect(await repos.media.mediaVisibility(mediaId)).toEqual({
+      isPublic: true,
+      isImmutable: false,
+    });
+
+    await repos.social.markPublished(id, null);
+    expect((await repos.media.mediaVisibility(mediaId)).isPublic).toBe(true);
+
+    /* And private again if the publish turned out to have failed. */
+    await repos.social.markFailed(id, "Instagram refused it");
+    expect((await repos.media.mediaVisibility(mediaId)).isPublic).toBe(false);
+  });
+
+  it("keeps the year-long cache for a photo the published website shows", async () => {
+    await reset();
+    const mediaId = await photo("gallery.png");
+    await repos.gallery.createGalleryImage(mediaId, {
+      categoryId: null,
+      alt: { sq: "Zona e pritjes" },
+      caption: {},
+      kind: "clinic",
+      consentOnFile: false,
+      isPublished: true,
+      isFeatured: false,
+    });
+
+    expect(await repos.media.mediaVisibility(mediaId)).toEqual({
+      isPublic: true,
+      isImmutable: true,
+    });
+  });
+});
+
 describeDb("website content and settings", () => {
   beforeAll(reset);
 

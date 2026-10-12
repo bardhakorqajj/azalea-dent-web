@@ -17,15 +17,18 @@ import type { SocialPostRow } from "@/lib/db/types";
 /**
  * The create/edit form for one social post.
  *
- * The notice about publishing not being connected is part of the form rather
- * than a footnote: someone filling this in should know before they set a
- * status that "Scheduled" is a reminder and not an instruction to a machine.
+ * The notice about publishing is part of the form rather than a footnote:
+ * someone filling this in should know, before they set a status, whether
+ * "Approved" hands the post to a machine on Tuesday or is a reminder to
+ * themselves. `autoPublish` is the answer and it comes from the server, not
+ * from a guess here.
  */
 export function SocialPostForm({
   action,
   labels,
   csrfToken,
   post,
+  autoPublish,
   cancelHref,
   deleteSlot,
 }: {
@@ -37,6 +40,8 @@ export function SocialPostForm({
   };
   csrfToken: string;
   post?: SocialPostRow;
+  /** Whether the Tuesday/Friday scheduler is configured and will send posts. */
+  autoPublish: boolean;
   cancelHref: string;
   deleteSlot?: React.ReactNode;
 }) {
@@ -61,9 +66,34 @@ export function SocialPostForm({
 
       <FormErrorBanner message={state.status === "error" ? state.message : undefined} />
 
-      <Callout tone="warning" title={t.publishingNotice}>
-        {t.publishingNoticeBody}
+      <Callout
+        tone={autoPublish ? "success" : "warning"}
+        title={autoPublish ? t.publishingAuto : t.publishingNotice}
+      >
+        {autoPublish ? t.publishingAutoBody : t.publishingNoticeBody}
       </Callout>
+
+      {/* Why the last attempt did not go out. Instagram's own wording, kept
+          verbatim: a paraphrase would hide the one detail that fixes it. */}
+      {post?.failure_reason && (
+        <Callout tone="danger" title={t.failureReason}>
+          {post.failure_reason}
+        </Callout>
+      )}
+
+      {/* What will happen to *this* post, which is not the same question as
+          whether the feature is switched on. */}
+      {autoPublish && post?.status === "approved" && (
+        post.platform === "instagram" && post.media_id ? (
+          <Callout tone="info" title={t.autoQueued}>
+            {t.autoQueuedBody}
+          </Callout>
+        ) : (
+          <Callout tone="warning" title={t.autoNeedsImage}>
+            {t.autoNeedsImageBody}
+          </Callout>
+        )
+      )}
 
       <Card>
         <CardHeader title={t.caption} hint={t.twoPerWeekHint} />

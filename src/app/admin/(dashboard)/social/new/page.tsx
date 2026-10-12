@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getAdminContext } from "@/admin/locale";
 import { Breadcrumbs, PageHeader } from "@/components/admin/Ui";
 import { readCsrfToken } from "@/lib/admin/session";
+import { autoPublishEnabled } from "@/lib/social/instagram";
 
 import { createSocialPostAction } from "../actions";
 import { SocialPostForm } from "../SocialPostForm";
@@ -12,6 +13,7 @@ export const metadata: Metadata = { title: "Postim i re" };
 export default async function NewSocialPostPage() {
   const { dict } = await getAdminContext();
   const csrfToken = await readCsrfToken();
+  const autoPublish = autoPublishEnabled();
 
   return (
     <>
@@ -28,6 +30,7 @@ export default async function NewSocialPostPage() {
         <SocialPostForm
           action={createSocialPostAction}
           csrfToken={csrfToken ?? ""}
+          autoPublish={autoPublish}
           cancelHref="/social"
           labels={{ social: dict.social, common: dict.common, gallery: dict.gallery }}
         />

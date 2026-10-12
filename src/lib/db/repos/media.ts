@@ -78,6 +78,60 @@ export async function storeMedia(input: {
   return { ok: true, id: row?.id ?? "", reused: false };
 }
 
+export type MediaVisibility = {
+  /** Whether anyone may fetch the file, with no session. */
+  isPublic: boolean;
+  /**
+   * Whether it may be cached for a year.
+   *
+   * True only when something *published* points at the file. A photo that is
+   * public merely because it is on its way to Instagram is not: the publish
+   * can fail, the post goes back to being private, and a year-old copy in a
+   * CDN would keep serving it regardless of what the dashboard says.
+   */
+  isImmutable: boolean;
+};
+
+/**
+ * Whether this file is on the public website, and for how long.
+ *
+ * The publish flag on each referring row is checked, not merely the existence
+ * of a reference — so unpublishing a gallery image stops serving its file too.
+ * A file nothing published points at is served to the signed-in admin and to
+ * nobody else, which is what keeps an un-consented treatment photograph out of
+ * reach of anyone who guesses its id.
+ *
+ * It lives here rather than in the route that serves the bytes because the
+ * rule is the security boundary, and a boundary written in SQL needs a test
+ * against a real database: a clause that silently matches nothing typechecks
+ * perfectly.
+ */
+export async function mediaVisibility(id: string): Promise<MediaVisibility> {
+  const row = await queryOne<{ published: boolean; sending: boolean }>(
+    `select
+       (
+            exists (select 1 from service       where image_id = $1 and is_active = true)
+         or exists (select 1 from treatment     where image_id = $1 and is_active = true)
+         or exists (select 1 from promotion     where image_id = $1 and is_active = true)
+         or exists (select 1 from team_member   where photo_id = $1 and is_active = true)
+         or exists (select 1 from gallery_image where media_id = $1 and is_published = true)
+         or exists (select 1 from setting
+                     where key = 'logoMediaId' and value = to_jsonb($1::text))
+       ) as published,
+       /* A photo on a social post, only while that post is going out or has
+          gone out. Instagram fetches the image from this URL itself rather
+          than having it uploaded, so it has to be readable at that moment —
+          but a photo attached to a draft stays private. */
+       exists (select 1 from social_post where media_id = $1
+                and status in ('scheduled', 'published')) as sending`,
+    [id],
+  );
+
+  const published = row?.published ?? false;
+  const sending = row?.sending ?? false;
+  return { isPublic: published || sending, isImmutable: published };
+}
+
 /** The bytes, for the route that serves them. */
 export async function readMedia(
   id: string,

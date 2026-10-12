@@ -630,6 +630,147 @@ async function main() {
   }
 
   // ---------------------------------------------------------------------
+  section("automatic publishing: the gate, and the photo it needs");
+
+  /* The scheduler's endpoint is the one route that can post to the clinic's
+     Instagram, so the first thing to prove is that nothing but the scheduler
+     can reach it — from either hostname, with or without a session. */
+  const cronAnon = await fetch(`${SITE}/api/cron/social`);
+  check(
+    "the scheduler endpoint refuses a caller with no secret",
+    cronAnon.status === 401,
+    `status ${cronAnon.status}`,
+  );
+  const cronAsAdmin = await fetch(`${BASE}/api/cron/social`, {
+    headers: { Cookie: cookieHeader() },
+  });
+  check(
+    "and refuses the signed-in admin too — a session is not the scheduler",
+    cronAsAdmin.status === 401,
+    `status ${cronAsAdmin.status}`,
+  );
+  const cronWrong = await fetch(`${SITE}/api/cron/social`, {
+    headers: { Authorization: "Bearer not-the-secret" },
+  });
+  check(
+    "and refuses a wrong secret",
+    cronWrong.status === 401,
+    `status ${cronWrong.status}`,
+  );
+
+  /* A post's photo has to be readable by Meta's servers while the post is
+     going out, and by nobody at all before that. */
+  const socialPng = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFAAH/q842iQAAAABJRU5ErkJggg==",
+    "base64",
+  );
+  const socialMedia = await sql(
+    `insert into media (filename, mime_type, byte_size, width, height, checksum, data)
+     values ('qa-social.png', 'image/png', $1, 1, 1, $2, $3)
+     returning id`,
+    [socialPng.byteLength, `qa-social-${Date.now()}`, socialPng],
+  );
+  const socialMediaId = socialMedia[0]?.id;
+
+  const newPost = await get("/social/new");
+  const socialAction = actionFields(newPost.body, 'name="caption"');
+  await post("/social/new", socialAction, {
+    csrf,
+    platform: "instagram",
+    language: "sq",
+    headline: "QA postim",
+    caption: "Postim i krijuar nga kontrolli automatik.",
+    hashtags: "#qa #kontroll",
+    mediaId: socialMediaId,
+    status: "draft",
+    scheduledFor: "",
+    externalUrl: "",
+    notes: "",
+  });
+
+  /* Found by the photo rather than the headline, so a leftover post from an
+     earlier run of this script cannot be mistaken for this one. */
+  const createdPost = await sql(
+    "select id, status, media_id from social_post where media_id = $1",
+    [socialMediaId],
+  );
+  check("the post was created as a draft", createdPost[0]?.status === "draft");
+
+  const draftPhoto = await fetch(`${SITE}/api/media/${socialMediaId}`);
+  check(
+    "a draft post's photo is not served to a stranger",
+    draftPhoto.status === 404,
+    `status ${draftPhoto.status}`,
+  );
+
+  if (createdPost[0]) {
+    /* Approval alone does not expose the photo: nothing has been sent yet. */
+    await sql("update social_post set status = 'approved' where id = $1", [createdPost[0].id]);
+    const approvedPhoto = await fetch(`${SITE}/api/media/${socialMediaId}`);
+    check(
+      "nor an approved post's, until it is actually going out",
+      approvedPhoto.status === 404,
+      `status ${approvedPhoto.status}`,
+    );
+
+    await sql("update social_post set status = 'scheduled' where id = $1", [createdPost[0].id]);
+    const sendingPhoto = await fetch(`${SITE}/api/media/${socialMediaId}`);
+    check(
+      "a post on its way out has a photo Instagram can fetch",
+      sendingPhoto.status === 200,
+      `status ${sendingPhoto.status}`,
+    );
+    check(
+      "and it is not cached for a year, because that permission can be withdrawn",
+      !(sendingPhoto.headers.get("cache-control") ?? "").includes("immutable"),
+      sendingPhoto.headers.get("cache-control") ?? "no header",
+    );
+
+    /* Which is exactly what happens when the publish fails. */
+    await sql(
+      `update social_post set status = 'failed',
+         failure_reason = 'Instagram e refuzoi (kontroll)' where id = $1`,
+      [createdPost[0].id],
+    );
+    const failedPhoto = await fetch(`${SITE}/api/media/${socialMediaId}`);
+    check(
+      "and it is private again once the publish has failed",
+      failedPhoto.status === 404,
+      `status ${failedPhoto.status}`,
+    );
+
+    const failedPage = await get("/social");
+    check(
+      "the dashboard shows why it failed rather than just that it did",
+      failedPage.body.includes("Instagram e refuzoi (kontroll)"),
+    );
+  }
+
+  /* One run with the real secret, if the harness was given it: it must not
+     publish anything here, because no Meta credentials are configured. */
+  const CRON_SECRET = process.env.QA_CRON_SECRET ?? "";
+  if (CRON_SECRET) {
+    const run = await fetch(`${SITE}/api/cron/social`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}` },
+    });
+    let runJson = null;
+    try {
+      runJson = await run.json();
+    } catch {
+      /* The status is what the check reads. */
+    }
+    check(
+      "a real scheduler run publishes nothing while Meta is not configured",
+      run.status === 200 && runJson?.published === false,
+      `status ${run.status}, body ${JSON.stringify(runJson)}`,
+    );
+    const published = await sql(
+      "select count(*)::int as n from social_post where status = 'published'",
+    );
+    check("and no post is recorded as published", published[0].n === 0);
+  }
+
+  // ---------------------------------------------------------------------
   section("reviews: source provenance");
 
   const newReview = await get("/reviews/new");
@@ -778,7 +919,9 @@ async function main() {
     email: "",
     service: "zbardhim-dhembesh",
     date: "2027-02-11",
-    time: "afternoon",
+    /* An exact time inside the clinic's opening hours, which is what the
+       form asks for since it stopped offering parts of the day. */
+    time: "15:30",
     message: "Kërkesë nga faqja.",
     consent: true,
     locale: "sq",
@@ -790,7 +933,7 @@ async function main() {
   );
 
   const requested = await sql(
-    `select a.status, a.source, a.time_slot, a.patient_id, s.slug
+    `select a.status, a.source, a.scheduled_time, a.time_slot, a.patient_id, s.slug
        from appointment a
        left join service s on s.id = a.service_id
       where a.scheduled_date = '2027-02-11' and a.patient_name = 'Blerta Hoxha'`,
@@ -800,7 +943,13 @@ async function main() {
     const row = requested[0];
     check("as a pending request from the website", row.status === "pending" && row.source === "website");
     check("with the treatment it asked for", row.slug === "zbardhim-dhembesh");
-    check("and the part of the day, which is all the form asks for", row.time_slot === "afternoon");
+    check(
+      "at the time the patient asked for, and with no part-of-day slot",
+      /* Postgres hands back `15:30:00`; the application pins the parser to
+         `HH:MM`, this script's own client does not. */
+      String(row.scheduled_time).startsWith("15:30") && row.time_slot === null,
+      `scheduled_time ${row.scheduled_time}, time_slot ${row.time_slot}`,
+    );
     check(
       "and linked to the patient whose number it is, written a different way",
       row.patient_id !== null,

@@ -19,6 +19,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { getSocialPost } from "@/lib/db/repos/social";
 import { asUuid } from "@/lib/db/sql";
 import type { SocialStatus } from "@/lib/db/types";
+import { autoPublishEnabled } from "@/lib/social/instagram";
 
 import {
   deleteSocialPostAction,
@@ -43,6 +44,7 @@ export default async function EditSocialPostPage({
   if (!post) notFound();
 
   const csrf = csrfToken ?? "";
+  const autoPublish = autoPublishEnabled();
   const label = post.headline ?? excerpt(post.caption, 50);
 
   /* Which step comes next, given where the post is now. Only the moves that
@@ -94,6 +96,7 @@ export default async function EditSocialPostPage({
             action={updateSocialPostAction}
             csrfToken={csrf}
             post={post}
+            autoPublish={autoPublish}
             cancelHref="/social"
             labels={{ social: dict.social, common: dict.common, gallery: dict.gallery }}
             deleteSlot={

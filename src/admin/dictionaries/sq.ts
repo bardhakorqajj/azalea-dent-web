@@ -370,6 +370,15 @@ export const sq = {
     publishingNotice: "Publikimi automatik nuk është i lidhur",
     publishingNoticeBody:
       "Ky panel përgatit dhe mirato postime, por nuk i dërgon në Instagram ose Facebook: kjo kërkon një lidhje të autorizuar me API-n e Meta-s, që nuk ekziston ende. Deri atëherë, „Planifikuar“ dhe „Miratuar“ janë kujtesa për ju, dhe „Publikuar“ shënohet me dorë pasi postimi është bërë. Fjalëkalimet e rrjeteve sociale nuk ruhen kurrë në këtë sistem.",
+    publishingAuto: "Publikimi automatik është i lidhur",
+    publishingAutoBody:
+      "Postimet e miratuara për Instagram që kanë një fotografi publikohen vetë: një të martën dhe një të premten, një postim për herë. Miratimi mbetet hap i njerëzve — asgjë nuk publikohet pa të. Postimet pa fotografi, dhe atyre për Facebook ose TikTok, shënohen si publikuar me dorë. Fjalëkalimet e rrjeteve sociale nuk ruhen kurrë në këtë sistem.",
+    autoQueued: "Në radhë për publikim automatik",
+    autoQueuedBody:
+      "Ky postim është miratuar dhe ka fotografi, prandaj do të dërgohet vetë në publikimin e radhës (e martë ose e premte). Hiqni miratimin nëse nuk doni që të dalë.",
+    autoNeedsImage: "Nuk publikohet automatikisht",
+    autoNeedsImageBody:
+      "Instagram nuk pranon postim pa fotografi, dhe vetëm Instagram publikohet automatikisht. Shtoni një fotografi, ose publikojeni me dorë dhe shënojeni si publikuar.",
     empty: "Nuk ka postime.",
     emptyHint: "Shtoni një ide postimi dhe kalojeni nëpër miratim kur të jetë gati.",
     deleteConfirm: "Të fshihet ky postim?",

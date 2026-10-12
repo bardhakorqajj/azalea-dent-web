@@ -365,6 +365,15 @@ export const en: AdminDictionary = {
     publishingNotice: "Automatic publishing is not connected",
     publishingNoticeBody:
       "This dashboard prepares and approves posts, but it does not send them to Instagram or Facebook: that needs an authorised connection to Meta's API, which does not exist yet. Until then, “Scheduled” and “Approved” are reminders for you, and “Published” is marked by hand once the post is out. Social media passwords are never stored in this system.",
+    publishingAuto: "Automatic publishing is connected",
+    publishingAutoBody:
+      "Approved Instagram posts that carry a photo go out on their own: one on Tuesday and one on Friday, one post per run. Approval stays a human step — nothing is published without it. Posts without a photo, and posts for Facebook or TikTok, are still marked published by hand. Social media passwords are never stored in this system.",
+    autoQueued: "Queued for automatic publishing",
+    autoQueuedBody:
+      "This post is approved and has a photo, so it will be sent on the next run — Tuesday or Friday. Withdraw approval if you do not want it to go out.",
+    autoNeedsImage: "This one will not publish automatically",
+    autoNeedsImageBody:
+      "Instagram has no post without a photo, and Instagram is the only platform published automatically. Add a photo, or publish it by hand and mark it published.",
     empty: "No posts yet.",
     emptyHint: "Add a post idea and move it through approval when it is ready.",
     deleteConfirm: "Delete this post?",

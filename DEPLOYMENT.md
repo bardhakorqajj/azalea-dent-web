@@ -510,3 +510,82 @@ Worth doing once on the live site, in this order:
 5. Send the appointment form on the public site. The request arrives by email
    as before, *and* appears in **Appointments** as pending.
 6. Sign out. Then try a dashboard page again — it returns you to sign-in.
+
+## 16. Automatic posting to Instagram (optional)
+
+Skip this entirely if you would rather post by hand. Everything in the
+dashboard works without it, and the Social section says, on the page, which of
+the two states it is in. Nothing is ever recorded as published that was not.
+
+With it set up, the site calls itself twice a week and sends **one approved
+post** per run: Tuesday and Friday. The schedule is in `vercel.json`
+(`0 8 * * 2,5`) and Vercel's scheduler runs in UTC only — 08:00 UTC is 09:00
+in Kosovo in winter and 10:00 in summer. Change the two digits there to move
+it; the file is part of the repository, so it needs a deploy, not a setting.
+
+### What Instagram requires before any of this can work
+
+These are Meta's conditions, not ours:
+
+1. The Instagram account must be a **Business** account — not personal, and
+   Creator accounts are not reliably supported for publishing. In the
+   Instagram app: Settings → Account type and tools → Switch to professional
+   account → **Business**.
+2. It must be **connected to a Facebook Page**. A Page can be created for the
+   clinic in a few minutes and never posted to; the connection is what the
+   publishing API is attached to.
+3. A post must carry a **photograph**. Instagram has no caption-only feed
+   post, so a post without one is left in the queue and reported rather than
+   attempted.
+
+### Getting the two values
+
+1. Go to <https://developers.facebook.com/apps> and create an app of type
+   **Business**.
+2. Add the **Instagram** product, and link the Facebook Page from step 2
+   above.
+3. In **Tools → Graph API Explorer**, pick the app and the Page, and request
+   the permissions `instagram_basic`, `instagram_content_publish` and
+   `pages_read_engagement`. Generate the token, then exchange it for a
+   long-lived Page token (**Tools → Access Token Debugger → Extend Access
+   Token**). A short-lived token expires in about an hour and the dashboard
+   will show Meta's own "session has expired" wording when it does.
+4. The numeric Instagram Business account id is shown by the Graph API
+   Explorer when you query `me/accounts?fields=instagram_business_account`.
+   It is a long number, not the @handle.
+
+### Setting it in Vercel
+
+Project → Settings → Environment Variables, for **Production**:
+
+| Name | Value |
+| --- | --- |
+| `CRON_SECRET` | a long random string — `openssl rand -hex 32` |
+| `META_IG_USER_ID` | the numeric id from step 4 |
+| `META_ACCESS_TOKEN` | the long-lived Page token from step 3 |
+| `META_GRAPH_VERSION` | optional, e.g. `v21.0` |
+
+Then redeploy. The access token is a credential: anyone holding it can post as
+the clinic. It belongs in this screen and nowhere else — not in a file in the
+repository, not in a chat message, not in an email. If it is ever pasted
+somewhere it should not be, revoke it in the Meta app dashboard and generate a
+new one; nothing in this project needs changing to do that.
+
+`CRON_SECRET` is what tells the route that a request really came from the
+scheduler. With it unset, `/api/cron/social` refuses every request, which is
+why automatic publishing stays off until all of it is in place.
+
+### What then happens, and what never does
+
+- Only posts you have marked **Approved** are sent. Approval stays a human
+  step; the scheduler never writes or approves a post.
+- One post per run, oldest first. A date set on a post holds it back until
+  then; no date means it is eligible straight away.
+- Meta fetches the photograph from the site itself, so a photo on a post that
+  is going out is served publicly for as long as that is true — and is private
+  again if the publish fails.
+- A failure is recorded against the post with Instagram's own wording, shown
+  in the Social section, and emailed if Resend is configured. It is not
+  retried automatically: re-approve it once the cause is fixed.
+- Nothing is published to Facebook or TikTok. Those posts stay what they were
+  — a plan for a person to carry out.
