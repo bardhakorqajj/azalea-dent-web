@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { DateField, TimeField } from "@/components/forms/DateTimeFields";
 import { FallbackChannels } from "@/components/layout/ContactChannels";
 import { Check } from "@/components/ui/Icons";
 import {
@@ -17,7 +18,7 @@ import type { OpeningHours } from "@/content/clinic";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 import { bookingWindow } from "@/lib/hours";
-import { cn, interpolate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type Status =
   | "idle"
@@ -56,14 +57,12 @@ export function AppointmentForm({
 
   const fieldId = (name: string) => `${uid}-${name}`;
   const errorId = (name: string) => `${uid}-${name}-error`;
-  const hintId = (name: string) => `${uid}-${name}-hint`;
+  /* Matches the id `Field` gives its own <label>. */
+  const labelId = (name: string) => `${fieldId(name)}-label`;
 
   /* Follows the date: once a day is chosen the picker offers that day's hours,
      and until then the widest hours the clinic keeps. */
   const openHours = bookingWindow(hours, values.date);
-  const timeHint = openHours
-    ? interpolate(labels.timeHint, { from: openHours.opens, to: openHours.closes })
-    : undefined;
 
   const update = <K extends keyof AppointmentRequest>(
     key: K,
@@ -280,19 +279,17 @@ export function AppointmentForm({
           required
           requiredLabel={labels.required}
         >
-          <input
+          <DateField
             id={fieldId("date")}
+            labelId={labelId("date")}
             name="date"
-            type="date"
             min={today}
             value={values.date}
-            onChange={(event) => update("date", event.target.value)}
-            aria-invalid={Boolean(errors.date)}
-            aria-describedby={errors.date ? errorId("date") : undefined}
-            className={cn(
-              fieldClasses,
-              errors.date && "border-red-700 dark:border-red-500",
-            )}
+            onChange={(value) => update("date", value)}
+            labels={dict.calendar}
+            invalid={Boolean(errors.date)}
+            describedBy={errors.date ? errorId("date") : undefined}
+            className={fieldClasses}
           />
         </Field>
 
@@ -301,32 +298,21 @@ export function AppointmentForm({
           label={labels.time}
           error={errors.time}
           errorId={errorId("time")}
-          hint={timeHint}
-          hintId={hintId("time")}
         >
           {/* Quarter hours: finer than the clinic books in, coarse enough that
-              the picker is a few taps rather than a minute spinner. */}
-          <input
+              the list is a short scroll rather than a wall of minutes. */}
+          <TimeField
             id={fieldId("time")}
+            labelId={labelId("time")}
             name="time"
-            type="time"
-            step={900}
-            {...(openHours ? { min: openHours.opens, max: openHours.closes } : {})}
+            window={openHours}
+            stepMinutes={15}
             value={values.time}
-            onChange={(event) => update("time", event.target.value)}
-            aria-invalid={Boolean(errors.time)}
-            aria-describedby={
-              [
-                errors.time ? errorId("time") : null,
-                timeHint ? hintId("time") : null,
-              ]
-                .filter(Boolean)
-                .join(" ") || undefined
-            }
-            className={cn(
-              fieldClasses,
-              errors.time && "border-red-700 dark:border-red-500",
-            )}
+            onChange={(value) => update("time", value)}
+            labels={dict.calendar}
+            invalid={Boolean(errors.time)}
+            describedBy={errors.time ? errorId("time") : undefined}
+            className={fieldClasses}
           />
         </Field>
 
@@ -418,8 +404,6 @@ function Field({
   label,
   error,
   errorId,
-  hint,
-  hintId,
   required,
   requiredLabel,
   children,
@@ -428,8 +412,6 @@ function Field({
   label: string;
   error?: string;
   errorId: string;
-  hint?: string;
-  hintId?: string;
   required?: boolean;
   requiredLabel?: string;
   children: React.ReactNode;
@@ -437,6 +419,7 @@ function Field({
   return (
     <div>
       <label
+        id={`${id}-label`}
         htmlFor={id}
         className="eyebrow block text-ink-500 dark:text-bone-300"
       >
@@ -451,11 +434,6 @@ function Field({
         )}
       </label>
       <div className="mt-3">{children}</div>
-      {hint && (
-        <p id={hintId} className="mt-2 text-[0.82rem] text-ink-500 dark:text-bone-300">
-          {hint}
-        </p>
-      )}
       {error && (
         <p
           id={errorId}

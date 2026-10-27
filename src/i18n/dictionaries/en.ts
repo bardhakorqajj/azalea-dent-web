@@ -213,6 +213,30 @@ export const en: Dictionary = {
     ],
   },
 
+  calendar: {
+    months: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
+    weekdaysShort: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    openDate: "Open the calendar",
+    openTime: "Open the list of times",
+    previousMonth: "Previous month",
+    nextMonth: "Next month",
+    datePlaceholder: "Choose a date",
+    timePlaceholder: "Choose a time",
+  },
+
   appointment: {
     eyebrow: "Appointments",
     title: "Appointment request",
@@ -230,7 +254,6 @@ export const en: Dictionary = {
       serviceOther: "Not sure / other",
       date: "Preferred date",
       time: "Preferred time",
-      timeHint: "Clinic hours: {from} – {to}",
       message: "Message (optional)",
       messagePlaceholder: "Briefly describe the reason for your visit.",
       consent:

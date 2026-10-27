@@ -120,6 +120,32 @@ export function Close({ className }: IconProps) {
   );
 }
 
+export function Calendar({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="1.5" />
+      <path d="M3.5 9.5h17" />
+      <path d="M8 3.5V6.5M16 3.5V6.5" />
+    </svg>
+  );
+}
+
+export function ChevronLeft({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="m14.5 6-6 6 6 6" />
+    </svg>
+  );
+}
+
+export function ChevronRight({ className }: IconProps) {
+  return (
+    <svg {...base} className={className}>
+      <path d="m9.5 6 6 6-6 6" />
+    </svg>
+  );
+}
+
 export function ChevronDown({ className }: IconProps) {
   return (
     <svg {...base} className={className}>

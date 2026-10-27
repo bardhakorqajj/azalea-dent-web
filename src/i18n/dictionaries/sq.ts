@@ -211,6 +211,39 @@ export const sq = {
     ],
   },
 
+  /**
+   * Month and weekday names for the booking form's own date picker.
+   *
+   * The picker is built rather than left to the browser so that it follows the
+   * site's light and dark themes instead of the browser's default panel. That
+   * means the names come from here: `Intl` would fall back to English wherever
+   * the Albanian locale data is missing.
+   */
+  calendar: {
+    months: [
+      "Janar",
+      "Shkurt",
+      "Mars",
+      "Prill",
+      "Maj",
+      "Qershor",
+      "Korrik",
+      "Gusht",
+      "Shtator",
+      "Tetor",
+      "Nëntor",
+      "Dhjetor",
+    ],
+    /** Monday first, as the week is read here. */
+    weekdaysShort: ["Hën", "Mar", "Mër", "Enj", "Pre", "Sht", "Die"],
+    openDate: "Hapni kalendarin",
+    openTime: "Hapni listën e orëve",
+    previousMonth: "Muaji i kaluar",
+    nextMonth: "Muaji i ardhshëm",
+    datePlaceholder: "Zgjidhni datën",
+    timePlaceholder: "Zgjidhni orën",
+  },
+
   appointment: {
     eyebrow: "Takimi",
     title: "Kërkesë për takim",
@@ -228,7 +261,6 @@ export const sq = {
       serviceOther: "Nuk jam i sigurt / tjetër",
       date: "Data e preferuar",
       time: "Ora e preferuar",
-      timeHint: "Orari i klinikës: {from} – {to}",
       message: "Mesazh (opsionale)",
       messagePlaceholder: "Përshkruani shkurt arsyen e vizitës.",
       consent:
