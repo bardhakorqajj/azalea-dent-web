@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  BOOKING_HOURS,
   emptyAppointment,
   formatRequest,
   hasErrors,
@@ -11,17 +12,8 @@ import {
   validateAppointment,
   type AppointmentRequest,
 } from "@/lib/appointment";
-import { bookingWindow } from "@/lib/hours";
-import type { OpeningHours } from "@/content/clinic";
 
 const TODAY = new Date("2026-06-15T10:00:00Z");
-
-/* The clinic's published hours: weekday afternoons, closed at the weekend.
-   2026-06-20 is a Saturday and 2026-06-22 a Monday. */
-const HOURS: OpeningHours[] = [
-  { days: ["mon", "tue", "wed", "thu", "fri"], opens: "14:00", closes: "20:00" },
-  { days: ["sat", "sun"], opens: null, closes: null },
-];
 
 function valid(overrides: Partial<AppointmentRequest> = {}): AppointmentRequest {
   return {
@@ -79,36 +71,13 @@ describe("isValidTime", () => {
   });
 });
 
-describe("bookingWindow", () => {
-  it("uses the hours of the day that was chosen", () => {
-    expect(bookingWindow(HOURS, "2026-06-22")).toEqual({
-      opens: "14:00",
-      closes: "20:00",
-    });
-  });
-
-  it("falls back to the widest hours for a closed day or no date", () => {
-    /* A Saturday request is not refused outright — the clinic decides — so the
-       widest published window still bounds the picker. */
-    expect(bookingWindow(HOURS, "2026-06-20")).toEqual({
-      opens: "14:00",
-      closes: "20:00",
-    });
-    expect(bookingWindow(HOURS, "")).toEqual({ opens: "14:00", closes: "20:00" });
-    expect(
-      bookingWindow(
-        [
-          { days: ["mon"], opens: "09:00", closes: "13:00" },
-          { days: ["tue"], opens: "15:00", closes: "19:30" },
-        ],
-        undefined,
-      ),
-    ).toEqual({ opens: "09:00", closes: "19:30" });
-  });
-
-  it("knows no bound when the clinic publishes no hours", () => {
-    expect(bookingWindow([], "2026-06-22")).toBeNull();
-    expect(bookingWindow([{ days: ["mon"], opens: null, closes: null }])).toBeNull();
+describe("BOOKING_HOURS", () => {
+  it("opens earlier than the clinic's shift, on purpose", () => {
+    /* The site publishes a 14:00 start; the form takes requests from 09:00 so
+       a patient who can only come in the morning can ask. Guarded here so the
+       two are not quietly made the same again. */
+    expect(BOOKING_HOURS).toEqual({ opens: "09:00", closes: "20:00" });
+    expect(BOOKING_HOURS.opens < "14:00").toBe(true);
   });
 });
 
@@ -157,36 +126,21 @@ describe("validateAppointment", () => {
   });
 
   it("leaves the time optional but checks the one that is given", () => {
-    const slugs = ["kirurgji-orale"];
-    expect(
-      validateAppointment(valid({ time: "" }), TODAY, slugs, HOURS).time,
-    ).toBeUndefined();
-    expect(
-      validateAppointment(valid({ time: "15:30" }), TODAY, slugs, HOURS).time,
-    ).toBeUndefined();
-    expect(
-      validateAppointment(valid({ time: "not a time" }), TODAY, slugs, HOURS).time,
-    ).toBe("time");
+    expect(validateAppointment(valid({ time: "" }), TODAY).time).toBeUndefined();
+    expect(validateAppointment(valid({ time: "15:30" }), TODAY).time).toBeUndefined();
+    expect(validateAppointment(valid({ time: "not a time" }), TODAY).time).toBe("time");
   });
 
-  it("refuses a time the clinic is not open for", () => {
-    const slugs = ["kirurgji-orale"];
-    const monday = { date: "2026-06-22" };
-    expect(
-      validateAppointment(valid({ ...monday, time: "03:00" }), TODAY, slugs, HOURS).time,
-    ).toBe("time");
-    expect(
-      validateAppointment(valid({ ...monday, time: "21:00" }), TODAY, slugs, HOURS).time,
-    ).toBe("time");
-    expect(
-      validateAppointment(valid({ ...monday, time: "14:00" }), TODAY, slugs, HOURS).time,
-    ).toBeUndefined();
+  it("takes a morning request, which the published hours would not", () => {
+    expect(validateAppointment(valid({ time: "09:00" }), TODAY).time).toBeUndefined();
+    expect(validateAppointment(valid({ time: "11:15" }), TODAY).time).toBeUndefined();
   });
 
-  it("accepts any valid time when no hours are published", () => {
-    expect(
-      validateAppointment(valid({ time: "03:00" }), TODAY, ["kirurgji-orale"], []).time,
-    ).toBeUndefined();
+  it("refuses a time outside the bookable hours at either end", () => {
+    expect(validateAppointment(valid({ time: "08:45" }), TODAY).time).toBe("time");
+    expect(validateAppointment(valid({ time: "03:00" }), TODAY).time).toBe("time");
+    expect(validateAppointment(valid({ time: "20:15" }), TODAY).time).toBe("time");
+    expect(validateAppointment(valid({ time: "20:00" }), TODAY).time).toBeUndefined();
   });
 
   it("requires consent", () => {

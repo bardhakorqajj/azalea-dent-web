@@ -7,6 +7,7 @@ import { DateField, TimeField } from "@/components/forms/DateTimeFields";
 import { FallbackChannels } from "@/components/layout/ContactChannels";
 import { Check } from "@/components/ui/Icons";
 import {
+  BOOKING_HOURS,
   emptyAppointment,
   formatRequest,
   hasErrors,
@@ -14,10 +15,8 @@ import {
   type AppointmentRequest,
   type FieldName,
 } from "@/lib/appointment";
-import type { OpeningHours } from "@/content/clinic";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
-import { bookingWindow } from "@/lib/hours";
 import { cn } from "@/lib/utils";
 
 type Status =
@@ -38,14 +37,11 @@ export function AppointmentForm({
   locale,
   dict,
   options,
-  hours,
 }: {
   locale: Locale;
   dict: Dictionary;
   /** The treatments the site is offering now, shipped or added in the panel. */
   options: ServiceOption[];
-  /** The clinic's opening hours, which bound the time a patient can ask for. */
-  hours: readonly OpeningHours[];
 }) {
   const uid = useId();
   const [values, setValues] = useState<AppointmentRequest>(emptyAppointment);
@@ -59,10 +55,6 @@ export function AppointmentForm({
   const errorId = (name: string) => `${uid}-${name}-error`;
   /* Matches the id `Field` gives its own <label>. */
   const labelId = (name: string) => `${fieldId(name)}-label`;
-
-  /* Follows the date: once a day is chosen the picker offers that day's hours,
-     and until then the widest hours the clinic keeps. */
-  const openHours = bookingWindow(hours, values.date);
 
   const update = <K extends keyof AppointmentRequest>(
     key: K,
@@ -87,7 +79,6 @@ export function AppointmentForm({
       values,
       new Date(),
       options.map((option) => option.slug),
-      hours,
     );
     if (hasErrors(found)) {
       const translated: Partial<Record<FieldName, string>> = {};
@@ -305,7 +296,7 @@ export function AppointmentForm({
             id={fieldId("time")}
             labelId={labelId("time")}
             name="time"
-            window={openHours}
+            window={BOOKING_HOURS}
             stepMinutes={15}
             value={values.time}
             onChange={(value) => update("time", value)}

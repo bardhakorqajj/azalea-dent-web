@@ -1,6 +1,18 @@
-import { clinic, type OpeningHours } from "@/content/clinic";
 import { serviceSlugs } from "@/content/services";
-import { bookingWindow } from "@/lib/hours";
+
+/**
+ * The hours a patient may ask for on the booking form.
+ *
+ * Deliberately wider than the clinic's published shift, which runs from 14:00:
+ * a request is a request, not a booking, and someone who can only come in the
+ * morning should be able to say so and let the clinic answer. It is not a
+ * claim about when the clinic is open — `clinic.hours` is what the site
+ * publishes, and the two are meant to differ.
+ *
+ * Both ends are checked here and offered by the picker, so changing this one
+ * line changes both.
+ */
+export const BOOKING_HOURS = { opens: "09:00", closes: "20:00" };
 
 export type AppointmentRequest = {
   name: string;
@@ -84,16 +96,11 @@ export function isValidTime(value: string): boolean {
  * list — the form passes the options it actually rendered and the API route
  * reads them from the database — because a treatment the clinic added in the
  * dashboard has to be bookable, and one it removed must not be.
- *
- * `hours` is the clinic's opening hours, for the same reason: the time the
- * patient picks is checked against the hours the clinic publishes today, not
- * against the ones that were true when this was written.
  */
 export function validateAppointment(
   request: AppointmentRequest,
   today = new Date(),
   offeredSlugs: readonly string[] = serviceSlugs,
-  hours: readonly OpeningHours[] = clinic.hours,
 ): ValidationErrors {
   const errors: ValidationErrors = {};
 
@@ -114,13 +121,11 @@ export function validateAppointment(
 
   /* The time stays a preference rather than a requirement: a patient who does
      not mind when leaves it empty. A time that is filled in has to be a real
-     one inside the clinic's hours, so a request for 03:00 is caught here
+     one inside the bookable hours, so a request for 03:00 is caught here
      instead of reaching the clinic as something it cannot honour. */
   if (request.time !== "") {
-    const allowed = bookingWindow(hours, request.date);
     const outsideHours =
-      allowed !== null &&
-      (request.time < allowed.opens || request.time > allowed.closes);
+      request.time < BOOKING_HOURS.opens || request.time > BOOKING_HOURS.closes;
     if (!isValidTime(request.time) || outsideHours) errors.time = "time";
   }
 

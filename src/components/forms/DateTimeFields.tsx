@@ -436,8 +436,8 @@ export function TimeField({
   describedBy,
   className,
 }: SharedProps & {
-  /** The hours to offer, or null to offer the whole day. */
-  window: { opens: string; closes: string } | null;
+  /** The hours to offer, as 24h `"HH:MM"` bounds. */
+  window: { opens: string; closes: string };
   stepMinutes?: number;
 }) {
   const [open, setOpen] = useState(false);
@@ -504,7 +504,7 @@ export function TimeField({
 
 /** Every `HH:MM` from `opens` to `closes` inclusive, `stepMinutes` apart. */
 function timeOptions(
-  window: { opens: string; closes: string } | null,
+  window: { opens: string; closes: string },
   stepMinutes: number,
 ): string[] {
   const minutesOf = (time: string) => {
@@ -512,8 +512,8 @@ function timeOptions(
     return Number(hours) * 60 + Number(minutes);
   };
 
-  const from = window ? minutesOf(window.opens) : 0;
-  const to = window ? minutesOf(window.closes) : 24 * 60 - stepMinutes;
+  const from = minutesOf(window.opens);
+  const to = minutesOf(window.closes);
   if (!Number.isFinite(from) || !Number.isFinite(to) || to < from) return [];
 
   const out: string[] = [];

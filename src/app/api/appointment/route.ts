@@ -8,7 +8,6 @@ import { logActivity } from "@/lib/db/repos/activity";
 import { createAppointment } from "@/lib/db/repos/appointments";
 import { findPatientByContact } from "@/lib/db/repos/patients";
 import { getServiceBySlug } from "@/lib/db/repos/services";
-import { getPublicSettings } from "@/lib/public/content";
 import { publicServices } from "@/lib/public/services";
 import {
   validateAppointment,
@@ -177,17 +176,13 @@ export async function POST(request: Request) {
      clinic keeps its own list in the dashboard, and that list afterwards. The
      form is built from exactly this, so what a patient can choose is what
      this accepts — and a treatment the clinic has removed is refused. */
-  const [offered, settings] = await Promise.all([
-    publicServices(),
-    getPublicSettings(),
-  ]);
+  const offered = await publicServices();
 
   // Re-validate on the server: the client check is a convenience, not a gate.
   const errors = validateAppointment(
     appointment,
     new Date(),
     offered.map((service) => service.slug),
-    settings.hours,
   );
   if (hasErrors(errors)) {
     return NextResponse.json({ error: "validation", fields: errors }, { status: 422 });
