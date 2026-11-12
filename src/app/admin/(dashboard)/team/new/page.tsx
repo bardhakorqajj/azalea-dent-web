@@ -8,7 +8,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { createTeamMemberAction } from "../actions";
 import { TeamMemberForm } from "../TeamMemberForm";
 
-export const metadata: Metadata = { title: "Anëtar i re" };
+export const metadata: Metadata = { title: "Anëtar i ri" };
 
 export default async function NewTeamMemberPage() {
   const { dict } = await getAdminContext();

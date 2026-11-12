@@ -97,7 +97,7 @@ export async function POST(request: Request) {
      to send must not lose the message. */
   await notifyAdmin({
     kind: "message",
-    subject: `Mesazh i re nga faqja: ${message.name}`,
+    subject: `Mesazh i ri nga faqja: ${message.name}`,
     lines: [
       `Emri:     ${message.name}`,
       message.email ? `Email:    ${message.email}` : null,

@@ -10,7 +10,7 @@ import { text } from "@/lib/db/types";
 import { createAppointmentAction } from "../actions";
 import { AppointmentForm } from "../AppointmentForm";
 
-export const metadata: Metadata = { title: "Takim i re" };
+export const metadata: Metadata = { title: "Takim i ri" };
 
 export default async function NewAppointmentPage() {
   const { dict, locale } = await getAdminContext();

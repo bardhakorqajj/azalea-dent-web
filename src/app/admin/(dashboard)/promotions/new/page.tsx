@@ -8,7 +8,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { createPromotionAction } from "../actions";
 import { PromotionForm } from "../PromotionForm";
 
-export const metadata: Metadata = { title: "Promocion i re" };
+export const metadata: Metadata = { title: "Promocion i ri" };
 
 export default async function NewPromotionPage() {
   const { dict } = await getAdminContext();

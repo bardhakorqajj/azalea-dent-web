@@ -7,7 +7,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { createPatientAction } from "../actions";
 import { PatientForm } from "../PatientForm";
 
-export const metadata: Metadata = { title: "Pacient i re" };
+export const metadata: Metadata = { title: "Pacient i ri" };
 
 export default async function NewPatientPage() {
   const { dict } = await getAdminContext();

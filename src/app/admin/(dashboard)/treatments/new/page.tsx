@@ -10,7 +10,7 @@ import { text } from "@/lib/db/types";
 import { createTreatmentAction } from "../actions";
 import { TreatmentForm } from "../TreatmentForm";
 
-export const metadata: Metadata = { title: "Trajtim i re" };
+export const metadata: Metadata = { title: "Trajtim i ri" };
 
 export default async function NewTreatmentPage() {
   const { dict, locale } = await getAdminContext();

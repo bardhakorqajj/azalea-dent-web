@@ -8,7 +8,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { createReviewAction } from "../actions";
 import { ReviewForm } from "../ReviewForm";
 
-export const metadata: Metadata = { title: "Vlerësim i re" };
+export const metadata: Metadata = { title: "Vlerësim i ri" };
 
 export default async function NewReviewPage() {
   const { dict } = await getAdminContext();

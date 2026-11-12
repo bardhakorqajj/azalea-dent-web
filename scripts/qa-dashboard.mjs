@@ -501,11 +501,11 @@ async function main() {
   await post("/content?group=home", saveContentAction, {
     csrf,
     group: "home",
-    "block.home.hero.title.sq": "Titull i re nga paneli",
+    "block.home.hero.title.sq": "Titull i ri nga paneli",
   });
 
   const override = await sql("select value from content_block where key = 'home.hero.title'");
-  check("the override was stored", override.length === 1 && override[0].value.sq === "Titull i re nga paneli");
+  check("the override was stored", override.length === 1 && override[0].value.sq === "Titull i ri nga paneli");
   check("the untouched language was not stored as empty", override[0].value.en === undefined);
 
   await post("/content?group=home", saveContentAction, {
@@ -671,7 +671,7 @@ async function main() {
      stranger's view, not the author's. */
 
   const shippedHeadline = "Kujdes dentar, me përkushtim ndaj buzëqeshjes suaj.";
-  const editedHeadline = "Titull i re nga paneli";
+  const editedHeadline = "Titull i ri nga paneli";
 
   await post("/content?group=home", saveContentAction, {
     csrf,

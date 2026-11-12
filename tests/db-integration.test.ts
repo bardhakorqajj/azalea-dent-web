@@ -1368,12 +1368,12 @@ describeDb("website content and settings", () => {
     const { contentBlocks } = await import("@/lib/cms/registry");
     const block = contentBlocks.find((entry) => entry.key === "home.hero.title");
 
-    await repos.content.setContentBlock("home.hero.title", { sq: "Titull i re" });
+    await repos.content.setContentBlock("home.hero.title", { sq: "Titull i ri" });
 
     const overrides = await repos.content.contentOverrides();
     const resolved = repos.content.resolveContent("home.hero.title", overrides);
 
-    expect(resolved.sq).toBe("Titull i re");
+    expect(resolved.sq).toBe("Titull i ri");
     /* The English is untouched, not blanked. */
     expect(resolved.en).toBe(block?.fallback.en);
   });

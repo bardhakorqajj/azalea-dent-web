@@ -8,7 +8,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { createServiceAction } from "../actions";
 import { ServiceForm } from "../ServiceForm";
 
-export const metadata: Metadata = { title: "Shërbim i re" };
+export const metadata: Metadata = { title: "Shërbim i ri" };
 
 export default async function NewServicePage() {
   const { dict } = await getAdminContext();

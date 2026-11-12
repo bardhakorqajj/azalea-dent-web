@@ -7,7 +7,7 @@ import { readCsrfToken } from "@/lib/admin/session";
 import { createSocialPostAction } from "../actions";
 import { SocialPostForm } from "../SocialPostForm";
 
-export const metadata: Metadata = { title: "Postim i re" };
+export const metadata: Metadata = { title: "Postim i ri" };
 
 export default async function NewSocialPostPage() {
   const { dict } = await getAdminContext();
