@@ -605,7 +605,7 @@ export const sq = {
     confirmPassword: "Përsërit fjalëkalimin e ri",
     passwordChanged: "Fjalëkalimi u ndryshua. Sesionet e tjera u shkyçën.",
     passwordWrong: "Fjalëkalimi aktual nuk është i saktë.",
-    passwordMismatch: "Fjalëkalimet e reja nuk përputhen.",
+    passwordMismatch: "Fjalëkalimi i ri nuk përputhet.",
     passwordTooShort: "Fjalëkalimi duhet të ketë së paku {min} karaktere.",
     passwordTooLong: "Fjalëkalimi është shumë i gjatë.",
     passwordTooCommon: "Zgjidhni një fjalëkalim më të vështirë për t'u gjetur.",
