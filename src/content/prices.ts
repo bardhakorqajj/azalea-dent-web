@@ -163,7 +163,7 @@ export const priceGroups: PriceGroup[] = [
     title: { sq: "Protetikë", en: "Prosthetics" },
     items: [
       { name: { sq: "Kurora metal-porcelan", en: "Metal-ceramic crown" }, price: 70 },
-      { name: { sq: "Kurora zircon", en: "Zirconia crown" }, price: 120 },
+      { name: { sq: "Kurora zircon", en: "Zirconia crown" }, price: 150 },
       { name: { sq: "Kurora full zircon", en: "Full zirconia crown" }, price: 170 },
       { name: { sq: "Kurora e-max", en: "E-max crown" }, price: 200 },
       {

@@ -251,7 +251,7 @@ describe("price list", () => {
     expect(priceOf("Sinus lift")).toBe(500);
     expect(priceOf("Pastrimi i dhëmbëve")).toBe(30);
     expect(priceOf("Zbardhimi i dhëmbëve")).toBe(120);
-    expect(priceOf("Kurora zircon")).toBe(120);
+    expect(priceOf("Kurora zircon")).toBe(150);
     expect(priceOf("Faseta estetike (veneer)")).toBe(200);
   });
 
