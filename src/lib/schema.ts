@@ -316,10 +316,10 @@ export function pageSchema({
 }
 
 /**
- * "Ballina" / "Home" for the first breadcrumb. Kept here rather than passed in
+ * "Ballina" / "Home" / "Startseite" for the first breadcrumb. Kept here rather than passed in
  * from every caller, since it is the same word on every page of a locale.
  */
-const HOME_CRUMB: Record<Locale, string> = { sq: "Ballina", en: "Home" };
+const HOME_CRUMB: Record<Locale, string> = { sq: "Ballina", en: "Home", de: "Startseite" };
 function homeCrumb(locale: Locale): string {
   return HOME_CRUMB[locale];
 }
@@ -358,7 +358,9 @@ export function treatmentSchema(service: Service, locale: Locale) {
         "@type": "MedicalProcedure",
         "@id": procedureId,
         name: service.title[locale],
-        alternateName: service.title[locale === "sq" ? "en" : "sq"],
+        alternateName: locales
+          .filter((other) => other !== locale)
+          .map((other) => service.title[other]),
         description: service.summary[locale],
         url,
         inLanguage: language(locale),
@@ -465,45 +467,40 @@ export function implantsSchema(locale: Locale, url: string) {
  * dictionaries, which describe what is rendered.
  */
 function implantCopy(locale: Locale) {
-  const stages = [
-    {
-      detail:
-        locale === "sq"
-          ? "Ekzaminimi dhe imazhet diagnostikuese përcaktojnë nëse implanti është i mundur."
-          : "An examination and diagnostic imaging determine whether an implant is possible.",
-    },
-    {
-      detail:
-        locale === "sq"
-          ? "Implanti prej titani vendoset në kockën e nofullës me anestezi lokale, në ambient steril."
-          : "The titanium implant is placed in the jawbone under local anaesthetic, in a sterile setting.",
-    },
-    {
-      detail:
-        locale === "sq"
-          ? "Pas një periudhe shërimi gjatë së cilës kocka lidhet me implantin, mbi të fiksohet kurora."
-          : "After a healing period during which the bone bonds to the implant, the crown is fitted on top.",
-    },
-  ];
+  return IMPLANT_COPY[locale];
+}
 
-  if (locale === "sq") {
-    return {
-      name: "Implante dentare",
-      alternateName: ["Implanti dentar", "Implantologji", "Dental implant"],
-      description:
-        "Zëvendësimi i rrënjës së një dhëmbi që mungon me një rrënjë artificiale prej titani, mbi të cilën fiksohet kurora. Trajtimi zhvillohet në faza.",
-      bodyLocation: "Nofulla",
-      preparation:
-        "Konsultë me ekzaminim të gojës dhe imazhe diagnostikuese për të vlerësuar kockën në vendin e implantit.",
-      followup:
-        "Kontrolle gjatë periudhës së shërimit, pastrim profesional dhe kujdes i rregullt në shtëpi.",
-      stages,
-    };
+const IMPLANT_COPY: Record<
+  Locale,
+  {
+    name: string;
+    alternateName: string[];
+    description: string;
+    bodyLocation: string;
+    preparation: string;
+    followup: string;
+    stages: { detail: string }[];
   }
-
-  return {
+> = {
+  sq: {
+    name: "Implante dentare",
+    alternateName: ["Implanti dentar", "Implantologji", "Dental implant", "Zahnimplantat"],
+    description:
+      "Zëvendësimi i rrënjës së një dhëmbi që mungon me një rrënjë artificiale prej titani, mbi të cilën fiksohet kurora. Trajtimi zhvillohet në faza.",
+    bodyLocation: "Nofulla",
+    preparation:
+      "Konsultë me ekzaminim të gojës dhe imazhe diagnostikuese për të vlerësuar kockën në vendin e implantit.",
+    followup:
+      "Kontrolle gjatë periudhës së shërimit, pastrim profesional dhe kujdes i rregullt në shtëpi.",
+    stages: [
+      { detail: "Ekzaminimi dhe imazhet diagnostikuese përcaktojnë nëse implanti është i mundur." },
+      { detail: "Implanti prej titani vendoset në kockën e nofullës me anestezi lokale, në ambient steril." },
+      { detail: "Pas një periudhe shërimi gjatë së cilës kocka lidhet me implantin, mbi të fiksohet kurora." },
+    ],
+  },
+  en: {
     name: "Dental implants",
-    alternateName: ["Dental implant", "Implantology", "Implante dentare"],
+    alternateName: ["Dental implant", "Implantology", "Implante dentare", "Zahnimplantat"],
     description:
       "Replacing the root of a missing tooth with an artificial titanium root, onto which the crown is fixed. Treatment happens in stages.",
     bodyLocation: "Jaw",
@@ -511,6 +508,26 @@ function implantCopy(locale: Locale) {
       "A consultation with an examination of the mouth and diagnostic imaging to assess the bone at the implant site.",
     followup:
       "Check-ups through the healing period, professional cleaning and regular care at home.",
-    stages,
-  };
-}
+    stages: [
+      { detail: "An examination and diagnostic imaging determine whether an implant is possible." },
+      { detail: "The titanium implant is placed in the jawbone under local anaesthetic, in a sterile setting." },
+      { detail: "After a healing period during which the bone bonds to the implant, the crown is fitted on top." },
+    ],
+  },
+  de: {
+    name: "Zahnimplantate",
+    alternateName: ["Zahnimplantat", "Implantologie", "Dental implant", "Implante dentare"],
+    description:
+      "Ersatz der Wurzel eines fehlenden Zahns durch eine künstliche Wurzel aus Titan, auf der die Krone befestigt wird. Die Behandlung erfolgt in Etappen.",
+    bodyLocation: "Kiefer",
+    preparation:
+      "Eine Beratung mit Untersuchung des Mundes und diagnostischer Bildgebung, um den Knochen an der Implantatstelle zu beurteilen.",
+    followup:
+      "Kontrollen während der Einheilzeit, professionelle Zahnreinigung und regelmäßige Pflege zu Hause.",
+    stages: [
+      { detail: "Untersuchung und diagnostische Bildgebung klären, ob ein Implantat möglich ist." },
+      { detail: "Das Titanimplantat wird unter örtlicher Betäubung in steriler Umgebung in den Kieferknochen gesetzt." },
+      { detail: "Nach einer Einheilzeit, in der sich der Knochen mit dem Implantat verbindet, wird die Krone aufgesetzt." },
+    ],
+  },
+};

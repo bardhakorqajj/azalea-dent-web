@@ -15,6 +15,7 @@ import { galleryOrder, photos, workPhotos } from "@/content/images";
 import { formatPrice, priceGroups, priceItemCount } from "@/content/prices";
 import { getService, services, serviceSlugs } from "@/content/services";
 import { locales } from "@/i18n/config";
+import { de } from "@/i18n/dictionaries/de";
 import { en } from "@/i18n/dictionaries/en";
 import { sq } from "@/i18n/dictionaries/sq";
 
@@ -116,6 +117,7 @@ describe("dictionaries", () => {
 
   it("has identical structure across locales", () => {
     expect(shape(en)).toEqual(shape(sq));
+    expect(shape(de)).toEqual(shape(sq));
   });
 
   it("never leaves a string empty", () => {
@@ -131,6 +133,7 @@ describe("dictionaries", () => {
     };
     walk(sq, "sq");
     walk(en, "en");
+    walk(de, "de");
   });
 });
 
@@ -307,12 +310,68 @@ describe("fallback channels", () => {
     expect(byKey.facebook).toBe(clinic.name);
   });
 
-  it("labels each channel in both languages", () => {
-    for (const dict of [sq, en]) {
+  it("labels each channel in every language", () => {
+    for (const dict of [sq, en, de]) {
       for (const channel of fallbackChannels(dict)) {
         expect(channel.label.length).toBeGreaterThan(0);
         expect(channel.value.length).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe("German copy", () => {
+  /* A German field that merely repeats the English one is an untranslated
+     copy-paste, not a translation. Proper names, numbers and the few words
+     that are spelt the same in both languages are listed here and allowed. */
+  const SAME_IN_BOTH = new Set([
+    "WhatsApp",
+    "Viber",
+    "Instagram",
+    "Facebook",
+    "Name",
+    "optional",
+    "8",
+    "14:00 – 20:00",
+    "+383 48 306 376",
+    "April",
+    "August",
+    "September",
+    "November",
+    "in Prishtina",
+    "Osseointegration",
+  ]);
+
+  it("translates every treatment, price and photo rather than copying the English", () => {
+    const pairs: { en: string; de: string }[] = [
+      ...services.flatMap((s) => [
+        s.title,
+        s.summary,
+        ...s.body,
+        ...s.highlights,
+        ...s.steps.flatMap((step) => [step.title, step.detail]),
+      ]),
+      ...priceGroups.flatMap((g) => [g.title, ...g.items.map((i) => i.name)]),
+      ...Object.values(photos).flatMap((p) => [p.alt, p.caption]),
+      ...workPhotos.flatMap((p) => [p.alt, p.caption]),
+    ];
+    for (const pair of pairs) {
+      expect(pair.de.trim(), `missing German for "${pair.en}"`).not.toBe("");
+      if (!SAME_IN_BOTH.has(pair.en))
+        expect(pair.de, `"${pair.en}" is not translated`).not.toBe(pair.en);
+    }
+  });
+
+  it("translates the dictionary rather than copying the English", () => {
+    const walk = (enNode: unknown, deNode: unknown, path: string) => {
+      if (typeof enNode === "string") {
+        if (!SAME_IN_BOTH.has(enNode))
+          expect(deNode, `${path} is not translated`).not.toBe(enNode);
+      } else if (enNode && typeof enNode === "object") {
+        for (const [key, value] of Object.entries(enNode))
+          walk(value, (deNode as Record<string, unknown>)[key], `${path}.${key}`);
+      }
+    };
+    walk(en, de, "de");
   });
 });

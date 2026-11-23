@@ -4,6 +4,7 @@ import type { Locale } from "@/i18n/config";
 import { locales } from "@/i18n/config";
 
 import { getPublicServices } from "./content";
+import { serviceWithShippedTranslations } from "./translations";
 
 /**
  * The services as the public website should show them.
@@ -26,7 +27,7 @@ export type PublicService = Service & {
   seoDescription?: Localised | null;
 };
 
-/** A `Localised` with both languages filled, falling back between them. */
+/** A `Localised` with every language filled, falling back between them. */
 function bothLanguages(value: Record<string, string | undefined> | null | undefined): Localised {
   const filled = {} as Record<Locale, string>;
   for (const locale of locales) filled[locale] = text(value ?? {}, locale);
@@ -47,11 +48,12 @@ function bothLanguages(value: Record<string, string | undefined> | null | undefi
  */
 function fromRow(row: ServiceRow): PublicService {
   const shipped = getStaticService(row.slug);
+  const translated = serviceWithShippedTranslations(row);
 
   /* Paragraphs are zipped across languages by position, the same way the
      dashboard's list fields are. */
   const byLocale = Object.fromEntries(
-    locales.map((locale) => [locale, paragraphs(row.body[locale])]),
+    locales.map((locale) => [locale, paragraphs(translated.body[locale])]),
   ) as Record<Locale, string[]>;
 
   const longest = Math.max(...locales.map((locale) => byLocale[locale].length), 0);
@@ -66,10 +68,10 @@ function fromRow(row: ServiceRow): PublicService {
 
   return {
     slug: row.slug,
-    title: bothLanguages(row.title),
-    summary: bothLanguages(row.summary),
+    title: bothLanguages(translated.title),
+    summary: bothLanguages(translated.summary),
     body,
-    highlights: row.highlights.map((highlight) => bothLanguages(highlight)),
+    highlights: translated.highlights.map((highlight) => bothLanguages(highlight)),
     /* Kept from the shipped service where there is one: the steps are a fixed
        four-part narrative that the dashboard deliberately does not edit. */
     steps: shipped?.steps ?? [],

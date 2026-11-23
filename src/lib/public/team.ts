@@ -3,6 +3,7 @@ import { locales, type Locale } from "@/i18n/config";
 import { text, type TeamMemberRow } from "@/lib/db/types";
 
 import { getPublicTeam } from "./content";
+import { teamMemberWithShippedTranslations } from "./translations";
 
 /**
  * The team as the public website should show it.
@@ -19,21 +20,22 @@ export type PublicTeamMember = TeamMember & {
 
 function bothLanguages(
   value: Record<string, string | undefined> | null | undefined,
-): { sq: string; en: string } {
+): Record<Locale, string> {
   const filled = {} as Record<Locale, string>;
   for (const locale of locales) filled[locale] = text(value ?? {}, locale);
-  return filled as { sq: string; en: string };
+  return filled;
 }
 
 function fromRow(row: TeamMemberRow): PublicTeamMember {
-  const bio = bothLanguages(row.bio);
+  const translated = teamMemberWithShippedTranslations(row);
+  const bio = bothLanguages(translated.bio);
 
   return {
     name: row.name,
-    role: bothLanguages(row.role),
+    role: bothLanguages(translated.role),
     /* Omitted rather than an empty pair, because the section only renders the
        bio when there is one. */
-    ...(bio.sq !== "" || bio.en !== "" ? { bio } : {}),
+    ...(locales.some((locale) => bio[locale] !== "") ? { bio } : {}),
     ...(row.photo_id ? { photoUrl: `/api/media/${row.photo_id}` } : {}),
   };
 }

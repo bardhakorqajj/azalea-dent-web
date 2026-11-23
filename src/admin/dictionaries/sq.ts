@@ -56,6 +56,7 @@ export const sq = {
     language: "Gjuha",
     albanian: "Shqip",
     english: "Anglisht",
+    german: "Gjermanisht",
     optional: "opsionale",
     required: "e detyrueshme",
     yes: "Po",

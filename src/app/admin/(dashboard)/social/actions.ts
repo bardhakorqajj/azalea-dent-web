@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { getAdminDictionary } from "@/admin/get-dictionary";
 import { getAdminLocale } from "@/admin/locale";
+import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
 import { requireAdminMutation } from "@/lib/admin/auth";
 import {
   Errors,
@@ -26,6 +27,11 @@ import {
 } from "@/lib/db/repos/social";
 import { asUuid } from "@/lib/db/sql";
 import { oneOf, SOCIAL_PLATFORMS, SOCIAL_STATUSES } from "@/lib/db/types";
+
+/** The post's language, one of the site's; anything else reads as the default. */
+function postLanguage(value: string): Locale {
+  return isLocale(value) ? value : defaultLocale;
+}
 
 /**
  * Social post mutations.
@@ -88,7 +94,7 @@ async function readForm(
       hashtags: parseHashtags(str(formData, "hashtags", 1000)),
       mediaId: asUuid(formData.get("mediaId")),
       mediaSuggestion: textBlock(formData, "mediaSuggestion", 1000) || null,
-      language: str(formData, "language", 5) === "en" ? "en" : "sq",
+      language: postLanguage(str(formData, "language", 5)),
       status,
       scheduledFor,
       externalUrl: externalUrl === "" ? null : externalUrl,

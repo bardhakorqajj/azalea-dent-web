@@ -185,11 +185,12 @@ describe("page metadata", () => {
     ).toBe("/en/contact");
   });
 
-  it("offers both languages plus an x-default on every page", () => {
+  it("offers every language plus an x-default on every page", () => {
     const languages = languageAlternates("/prices");
     expect(languages).toEqual({
       sq: "/prices",
       en: "/en/prices",
+      de: "/de/prices",
       "x-default": "/prices",
     });
   });

@@ -31,7 +31,7 @@ import {
 } from "@/lib/db/repos/gallery";
 import { deleteMediaIfUnused, storeMedia } from "@/lib/db/repos/media";
 import { asUuid } from "@/lib/db/sql";
-import { GALLERY_KINDS, oneOf, text } from "@/lib/db/types";
+import { GALLERY_KINDS, hasText, oneOf, text } from "@/lib/db/types";
 import { PUBLIC_TAGS, refreshPublic } from "@/lib/public/tags";
 
 /**
@@ -123,7 +123,7 @@ export async function updateGalleryImageAction(
 
   /* Alt text is required to publish: an unlabelled photograph on the public
      site is unusable with a screen reader. */
-  if (input.isPublished && !text(input.alt, "sq") && !text(input.alt, "en")) {
+  if (input.isPublished && !hasText(input.alt)) {
     errors.add("alt.sq", dict.errors.required);
   }
 

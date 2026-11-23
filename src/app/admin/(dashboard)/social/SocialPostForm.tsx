@@ -87,6 +87,7 @@ export function SocialPostForm({
               options={[
                 { value: "sq", label: common.albanian },
                 { value: "en", label: common.english },
+                { value: "de", label: common.german },
               ]}
             />
           </div>

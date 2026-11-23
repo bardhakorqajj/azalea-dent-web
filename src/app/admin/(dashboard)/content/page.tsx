@@ -26,6 +26,7 @@ import { localeNames, locales } from "@/i18n/config";
 import { readCsrfToken } from "@/lib/admin/session";
 import { blocksInGroup, contentGroups, type ContentGroup } from "@/lib/cms/registry";
 import { contentOverrides, listFaqItems } from "@/lib/db/repos/content";
+import { faqItemWithShippedTranslations } from "@/lib/public/translations";
 import { databaseReady } from "@/lib/db/status";
 import { text } from "@/lib/db/types";
 
@@ -85,7 +86,9 @@ export default async function ContentPage({
 
   const [overrides, faqItems, csrfToken] = await Promise.all([
     contentOverrides(),
-    tab === "faq" ? listFaqItems() : Promise.resolve([]),
+    tab === "faq"
+      ? listFaqItems().then((items) => items.map(faqItemWithShippedTranslations))
+      : Promise.resolve([]),
     readCsrfToken(),
   ]);
 

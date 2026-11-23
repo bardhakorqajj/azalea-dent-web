@@ -1,8 +1,13 @@
 import { cookies } from "next/headers";
 
-import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 
-import { getAdminDictionary, type AdminDictionary } from "./get-dictionary";
+import {
+  getAdminDictionary,
+  isAdminLocale,
+  type AdminDictionary,
+  type AdminLocale,
+} from "./get-dictionary";
 
 /**
  * The dashboard's language, kept in a cookie.
@@ -15,15 +20,15 @@ import { getAdminDictionary, type AdminDictionary } from "./get-dictionary";
 
 export const ADMIN_LOCALE_COOKIE = "azalea_admin_locale";
 
-export async function getAdminLocale(): Promise<Locale> {
+export async function getAdminLocale(): Promise<AdminLocale> {
   const store = await cookies();
   const value = store.get(ADMIN_LOCALE_COOKIE)?.value;
-  return value && isLocale(value) ? value : defaultLocale;
+  return value && isAdminLocale(value) ? value : (defaultLocale as AdminLocale);
 }
 
 /** The language and its dictionary together, which is what every page needs. */
 export async function getAdminContext(): Promise<{
-  locale: Locale;
+  locale: AdminLocale;
   dict: AdminDictionary;
 }> {
   const locale = await getAdminLocale();

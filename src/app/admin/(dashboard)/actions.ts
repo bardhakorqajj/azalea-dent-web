@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { isAdminLocale } from "@/admin/get-dictionary";
 import { ADMIN_LOCALE_COOKIE } from "@/admin/locale";
-import { isLocale } from "@/i18n/config";
 import { requireAdminForAction, requireAdminMutation } from "@/lib/admin/auth";
 import { destroyAllSessions, destroySession } from "@/lib/admin/session";
 import { execute } from "@/lib/db/client";
@@ -37,7 +37,7 @@ export async function setAdminLocaleAction(formData: FormData): Promise<void> {
   await requireAdminMutation(formData);
 
   const requested = formData.get("locale");
-  if (typeof requested === "string" && isLocale(requested)) {
+  if (typeof requested === "string" && isAdminLocale(requested)) {
     const store = await cookies();
     store.set(ADMIN_LOCALE_COOKIE, requested, {
       httpOnly: false,

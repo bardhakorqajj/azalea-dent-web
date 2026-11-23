@@ -9,7 +9,7 @@ component needs to be touched to update the website.
 | The eight areas of treatment and their copy | `src/content/services.ts` |
 | The price list | `src/content/prices.ts` |
 | Photographs, alt text and captions | `src/content/images.ts` |
-| Every other word on the site, in both languages | `src/i18n/dictionaries/sq.ts` and `en.ts` |
+| Every other word on the site, in every language | `src/i18n/dictionaries/sq.ts`, `en.ts` and `de.ts` |
 
 After editing, run `npm run dev` and the change appears immediately.
 
@@ -139,12 +139,12 @@ keys to `galleryOrder`.
 sheet at reception. To change a price, edit the number:
 
 ```ts
-{ name: { sq: "Implanti", en: "Dental implant" }, price: 450 },
+{ name: { sq: "Implanti", en: "Dental implant", de: "Zahnimplantat" }, price: 450 },
 ```
 
 Prices are plain numbers in euro; the euro sign is added when rendering. Adding
 a treatment means adding one entry to the right group, and adding a whole
-category means one more group with an `id`, a `title` in both languages and its
+category means one more group with an `id`, a `title` in all three languages and its
 `items`.
 
 A few obvious spelling slips on the printed sheet were corrected in the file
@@ -183,14 +183,15 @@ and the structured data are all generated from that one entry.
 
 `src/i18n/dictionaries/sq.ts` is the Albanian copy and also defines the shape
 that every language must provide. If you add a key there, TypeScript will
-refuse to build until `en.ts` has it too, so the two languages cannot drift
-apart.
+refuse to build until `en.ts` and `de.ts` have it too, so the languages
+cannot drift apart. The same goes for every `{ sq, en, de }` entry in
+`src/content/`: leave out the German and the build fails.
 
 ---
 
 ## 9. Search metadata
 
-Each page's `<title>` and meta description live under `meta` in the two
+Each page's `<title>` and meta description live under `meta` in the
 dictionary files, one pair per page. They are deliberately **not** the same as
 the headings on the page: an `h1` is written for someone already reading, a
 title tag for someone scanning a results list who has not arrived yet, so the

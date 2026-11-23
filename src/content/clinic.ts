@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/config";
+
 /**
  * ---------------------------------------------------------------------------
  * SINGLE SOURCE OF TRUTH FOR EVERY CLINIC FACT ON THE WEBSITE.
@@ -29,9 +31,9 @@ export type TeamMember = {
   /** Full name exactly as the clinic writes it. */
   name: string;
   /** Role, e.g. "Dentist" / "Dentiste". Keep it factual. */
-  role: { sq: string; en: string };
+  role: Record<Locale, string>;
   /** Optional short bio. Only add what the clinic has actually published. */
-  bio?: { sq: string; en: string };
+  bio?: Record<Locale, string>;
   /**
    * Portrait in `src/assets/images/team/`, imported in `src/content/images.ts`.
    * Leave undefined and a typographic monogram card is shown instead.
@@ -40,7 +42,7 @@ export type TeamMember = {
 };
 
 export type Testimonial = {
-  quote: { sq: string; en: string };
+  quote: Record<Locale, string>;
   /** Patient's own attribution — never invent one. */
   author: string;
   source?: string;
@@ -148,7 +150,7 @@ export const clinic = {
   team: [
     {
       name: "Dr. Spec. Arbëreshë Korçaj",
-      role: { sq: "Mjeke specialiste", en: "Specialist dentist" },
+      role: { sq: "Mjeke specialiste", en: "Specialist dentist", de: "Fachzahnärztin" },
     },
   ] as TeamMember[],
 
