@@ -9,6 +9,7 @@ import { ActionLink, Breadcrumbs, PageHeader } from "@/components/admin/Ui";
 import { localeNames, path } from "@/i18n/config";
 import { readCsrfToken } from "@/lib/admin/session";
 import { getService } from "@/lib/db/repos/services";
+import { serviceWithShippedTranslations } from "@/lib/public/translations";
 import { asUuid } from "@/lib/db/sql";
 import { text } from "@/lib/db/types";
 import { siteUrl } from "@/lib/site";
@@ -71,7 +72,7 @@ export default async function EditServicePage({
         <ServiceForm
           action={updateServiceAction}
           csrfToken={csrf}
-          service={service}
+          service={serviceWithShippedTranslations(service)}
           cancelHref="/services"
           localeLabels={localeNames}
           labels={{

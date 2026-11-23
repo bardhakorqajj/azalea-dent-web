@@ -40,7 +40,8 @@ describe("isLocale", () => {
   it("accepts supported locales only", () => {
     expect(isLocale("sq")).toBe(true);
     expect(isLocale("en")).toBe(true);
-    expect(isLocale("de")).toBe(false);
+    expect(isLocale("de")).toBe(true);
+    expect(isLocale("fr")).toBe(false);
   });
 });
 
@@ -122,11 +123,13 @@ describe("languageAlternates", () => {
     expect(languageAlternates("/prices")).toEqual({
       sq: "/prices",
       en: "/en/prices",
+      de: "/de/prices",
       "x-default": "/prices",
     });
     expect(languageAlternates()).toEqual({
       sq: "/",
       en: "/en",
+      de: "/de",
       "x-default": "/",
     });
   });

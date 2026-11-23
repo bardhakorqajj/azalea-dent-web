@@ -9,6 +9,7 @@ import { Breadcrumbs, PageHeader } from "@/components/admin/Ui";
 import { localeNames } from "@/i18n/config";
 import { readCsrfToken } from "@/lib/admin/session";
 import { getTeamMember } from "@/lib/db/repos/team";
+import { teamMemberWithShippedTranslations } from "@/lib/public/translations";
 import { asUuid } from "@/lib/db/sql";
 
 import { deleteTeamMemberAction, updateTeamMemberAction } from "../actions";
@@ -49,7 +50,7 @@ export default async function EditTeamMemberPage({
         <TeamMemberForm
           action={updateTeamMemberAction}
           csrfToken={csrfToken ?? ""}
-          member={member}
+          member={teamMemberWithShippedTranslations(member)}
           cancelHref="/team"
           localeLabels={localeNames}
           labels={{ team: dict.team, common: dict.common, gallery: dict.gallery }}

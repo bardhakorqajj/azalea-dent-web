@@ -63,6 +63,14 @@
     color-scheme: dark;
   }
 
+  /* German builds long compounds ("Zahnbehandlungen", "Kinderzahnheilkunde")
+     that do not fit a large heading on a narrow phone. Hyphenation only splits
+     a word that would otherwise overflow, and the browser hyphenates by the
+     page's `lang`, so Albanian and English headings are unaffected. */
+  :lang(de) :is(h1, h2, h3) {
+    hyphens: auto;
+  }
+
   @media (min-width: 1024px) {
     :root {
       --mobile-bar: 0rem;

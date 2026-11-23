@@ -297,8 +297,8 @@ export function CheckboxField({
 /**
  * One field per language, side by side.
  *
- * Both languages are visible at once rather than behind a tab: the point of
- * this dashboard is that the Albanian and the English copy stay in step, and
+ * Every language is visible at once rather than behind a tab: the point of
+ * this dashboard is that the Albanian, English and German copy stay in step, and
  * a tab hides the fact that one of them is empty.
  */
 export function LocalisedField({
@@ -317,7 +317,7 @@ export function LocalisedField({
   name: string;
   label: string;
   hint?: string;
-  /** The action's field errors; this reads `name.sq` and `name.en` out of it. */
+  /** The action's field errors; this reads `name.sq`, `name.en` and `name.de` out of it. */
   errors?: Record<string, string>;
   value?: LocalisedValue;
   required?: boolean;
@@ -344,7 +344,7 @@ export function LocalisedField({
         </p>
       )}
 
-      <div className={cn("grid gap-3", multiline ? "lg:grid-cols-2" : "sm:grid-cols-2")}>
+      <div className={cn("grid gap-3", multiline ? "lg:grid-cols-2 xl:grid-cols-3" : "sm:grid-cols-3")}>
         {locales.map((locale) => {
           const fieldName = `${name}.${locale}`;
           const error = errors?.[fieldName];

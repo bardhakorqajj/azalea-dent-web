@@ -1,6 +1,6 @@
 # Azalea Dent — website
 
-Website for **Azalea Dent**, a dental clinic. Bilingual (Albanian and English),
+Website for **Azalea Dent**, a dental clinic. In Albanian, English and German,
 built around the clinic's own photography and its azalea flower branding.
 
 | | |
@@ -87,7 +87,7 @@ src/
     admin/                    The dashboard's own component kit
     ui/                       Container, Section, Button, Reveal, icons, logo
   content/                    Clinic facts, treatments, image manifest
-  i18n/                       Locale config + Albanian/English dictionaries
+  i18n/                       Locale config + Albanian/English/German dictionaries
   lib/
     admin/                    Sessions, passwords, CSRF, rate limits, uploads
     db/                       Pool, migrations, row types, one repo per table
@@ -122,10 +122,27 @@ at desktop or mobile width.
 
 ### Languages
 
-Albanian (`/sq`) is the default and `/` redirects to it; English lives at
-`/en`. `src/i18n/dictionaries/sq.ts` defines the `Dictionary` type, so a key
-missing from English fails the build. Both languages are fully pre-rendered,
-cross-linked with `hreflang`, and listed in the sitemap.
+Albanian is the default and is served without a prefix; English lives at
+`/en` and German at `/de`. `src/i18n/dictionaries/sq.ts` defines the
+`Dictionary` type, so a key missing from English or German fails the build.
+All three languages are fully pre-rendered, cross-linked with `hreflang`, and
+listed in the sitemap.
+
+German is there for patients from the diaspora in Germany, Austria and
+Switzerland. It is written in the formal "Sie", and a test fails if a German
+string is left as a copy of the English one.
+
+The dashboard edits all three languages, with a German box beside every
+Albanian and English one, but its own menus stay in Albanian and English
+(`src/admin/get-dictionary.ts`): nobody at the clinic needs them in German.
+
+Content moved into the dashboard before German existed has no German in its
+rows. For those, `src/lib/public/translations.ts` uses the German the site
+ships with, but only while the row's Albanian is still word for word the
+Albanian that German was translated from. The dashboard's forms show that
+same German in the German box, so saving a form stores it. A treatment whose
+Albanian the clinic has rewritten shows no borrowed German, and falls back
+until someone types the German in.
 
 ### Search
 

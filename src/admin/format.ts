@@ -26,7 +26,7 @@ import type {
  * what makes an appointment read as the day before.
  */
 
-const LOCALE_TAGS: Record<Locale, string> = { sq: "sq-AL", en: "en-GB" };
+const LOCALE_TAGS: Record<Locale, string> = { sq: "sq-AL", en: "en-GB", de: "de-DE" };
 
 // === Dates and times ======================================================
 

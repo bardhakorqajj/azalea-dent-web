@@ -7,7 +7,7 @@ import { CheckboxField, LocalisedField, TextField } from "@/components/admin/Fie
 import { FormErrorBanner, FormFooter } from "@/components/admin/FormChrome";
 import { ImagePicker } from "@/components/admin/ImagePicker";
 import { Card, CardBody, CardHeader } from "@/components/admin/Ui";
-import type { Locale } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
 import { idleState, listToLines, type ActionState } from "@/lib/admin/forms";
 import type { TeamMemberRow } from "@/lib/db/types";
 
@@ -115,8 +115,8 @@ export function TeamMemberForm({
               <p className="mb-2.5 text-[0.8125rem] text-ink-500 dark:text-bone-300">
                 {hint}
               </p>
-              <div className="grid gap-3 lg:grid-cols-2">
-                {(["sq", "en"] as const).map((locale) => (
+              <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+                {locales.map((locale) => (
                   <div key={locale}>
                     <label
                       htmlFor={`${field}.${locale}`}

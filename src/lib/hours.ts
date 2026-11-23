@@ -22,6 +22,15 @@ const WEEKDAY_LABELS: Record<Locale, Record<Weekday, string>> = {
     sat: "Saturday",
     sun: "Sunday",
   },
+  de: {
+    mon: "Montag",
+    tue: "Dienstag",
+    wed: "Mittwoch",
+    thu: "Donnerstag",
+    fri: "Freitag",
+    sat: "Samstag",
+    sun: "Sonntag",
+  },
 };
 
 /** Schema.org day names, used for `openingHoursSpecification`. */

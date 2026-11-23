@@ -52,6 +52,7 @@ export const en: AdminDictionary = {
     language: "Language",
     albanian: "Albanian",
     english: "English",
+    german: "German",
     optional: "optional",
     required: "required",
     yes: "Yes",

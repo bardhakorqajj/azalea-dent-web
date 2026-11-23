@@ -1,11 +1,17 @@
 import { services as staticServices } from "@/content/services";
 import { clinic } from "@/content/clinic";
-import { en } from "@/i18n/dictionaries/en";
-import { sq } from "@/i18n/dictionaries/sq";
+import { defaultLocale, locales } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 import { createFaqItem, faqCount } from "@/lib/db/repos/content";
 import { createService, serviceCount, serviceSlugAvailable } from "@/lib/db/repos/services";
 import { createTeamMember, teamCount, teamSlugAvailable } from "@/lib/db/repos/team";
 import { slugify } from "@/lib/admin/forms";
+import type { LocalisedValue } from "@/lib/db/types";
+
+/** One value per language, built by reading each language in turn. */
+function perLocale(read: (locale: (typeof locales)[number]) => string): LocalisedValue {
+  return Object.fromEntries(locales.map((locale) => [locale, read(locale)]));
+}
 
 /**
  * Imports the content the website is published with into the database, so it
@@ -39,18 +45,14 @@ export async function importSiteContent(): Promise<ImportResult> {
 
     await createService({
       slug: service.slug,
-      title: { sq: service.title.sq, en: service.title.en },
-      summary: { sq: service.summary.sq, en: service.summary.en },
+      title: { ...service.title },
+      summary: { ...service.summary },
       /* The site stores body copy as an array of paragraphs; the dashboard
          edits it as one field with blank lines between them. */
-      body: {
-        sq: service.body.map((paragraph) => paragraph.sq).join("\n\n"),
-        en: service.body.map((paragraph) => paragraph.en).join("\n\n"),
-      },
-      highlights: service.highlights.map((highlight) => ({
-        sq: highlight.sq,
-        en: highlight.en,
-      })),
+      body: perLocale((locale) =>
+        service.body.map((paragraph) => paragraph[locale]).join("\n\n"),
+      ),
+      highlights: service.highlights.map((highlight) => ({ ...highlight })),
       priceText: {},
       durationMinutes: null,
       imageId: null,
@@ -71,8 +73,8 @@ export async function importSiteContent(): Promise<ImportResult> {
     await createTeamMember({
       name: member.name,
       slug,
-      role: { sq: member.role.sq, en: member.role.en },
-      bio: member.bio ? { sq: member.bio.sq, en: member.bio.en } : {},
+      role: { ...member.role },
+      bio: member.bio ? { ...member.bio } : {},
       qualifications: [],
       specialties: [],
       photoId: null,
@@ -87,12 +89,11 @@ export async function importSiteContent(): Promise<ImportResult> {
   /* Only when the table is empty: the questions have no slug to match on, so
      re-importing would duplicate them. */
   if ((await faqCount()) === 0) {
-    for (const [index, item] of sq.faq.items.entries()) {
-      const english = en.faq.items[index];
-
+    const count = getDictionary(defaultLocale).faq.items.length;
+    for (let index = 0; index < count; index += 1) {
       await createFaqItem({
-        question: { sq: item.question, en: english?.question ?? item.question },
-        answer: { sq: item.answer, en: english?.answer ?? item.answer },
+        question: perLocale((locale) => getDictionary(locale).faq.items[index]!.question),
+        answer: perLocale((locale) => getDictionary(locale).faq.items[index]!.answer),
         isActive: true,
       });
 
@@ -115,6 +116,6 @@ export async function siteContentImportable(): Promise<boolean> {
   return (
     services < staticServices.length ||
     team < clinic.team.length ||
-    (faq === 0 && sq.faq.items.length > 0)
+    (faq === 0 && getDictionary(defaultLocale).faq.items.length > 0)
   );
 }

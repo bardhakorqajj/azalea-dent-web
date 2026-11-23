@@ -64,10 +64,12 @@ export const photos = {
     alt: {
       sq: "Hyrja e klinikës Azalea Dent në mbrëmje, me tabelën e ndriçuar dhe logon në formë lulëzimi azalea.",
       en: "The entrance to Azalea Dent in the evening, with the illuminated sign and the azalea flower logo.",
+      de: "Der Eingang von Azalea Dent am Abend, mit dem beleuchteten Schild und dem Logo in Form einer Azaleenblüte.",
     },
     caption: {
       sq: "Hyrja e klinikës",
       en: "The clinic entrance",
+      de: "Der Eingang der Praxis",
     },
     focus: "center 45%",
   },
@@ -76,10 +78,12 @@ export const photos = {
     alt: {
       sq: "Zona e pritjes e klinikës, me karrige, tavolinë prej druri dhe recepsion përballë dritareve nga dyshemeja në tavan.",
       en: "The clinic waiting area, with seating, a wooden table and the reception desk in front of floor-to-ceiling windows.",
+      de: "Der Wartebereich der Praxis, mit Sitzplätzen, einem Holztisch und dem Empfang vor raumhohen Fenstern.",
     },
     caption: {
       sq: "Zona e pritjes",
       en: "The waiting area",
+      de: "Der Wartebereich",
     },
     focus: "center 55%",
   },
@@ -88,10 +92,12 @@ export const photos = {
     alt: {
       sq: "Dhoma e trajtimit me karrige dentare, monitor dhe mobilie në ngjyrë antracit me sipërfaqe druri.",
       en: "A treatment room with a dental chair, monitor and charcoal cabinetry with a wooden worktop.",
+      de: "Ein Behandlungsraum mit Behandlungsstuhl, Monitor und anthrazitfarbenen Schränken mit Holzarbeitsplatte.",
     },
     caption: {
       sq: "Dhoma e trajtimit",
       en: "The treatment room",
+      de: "Der Behandlungsraum",
     },
     focus: "center 62%",
   },
@@ -100,10 +106,12 @@ export const photos = {
     alt: {
       sq: "Karrige dentare e gatshme pranë dritares së madhe, me dritë natyrale në dhomën e trajtimit.",
       en: "A prepared dental chair beside the large window, with natural light in the treatment room.",
+      de: "Ein vorbereiteter Behandlungsstuhl am großen Fenster, mit Tageslicht im Behandlungsraum.",
     },
     caption: {
       sq: "Njësia dentare",
       en: "The dental unit",
+      de: "Die Behandlungseinheit",
     },
     focus: "center center",
   },
@@ -112,10 +120,12 @@ export const photos = {
     alt: {
       sq: "Tabela e ndriçuar e Azalea Dent mbi rrugë në mbrëmje, me logon e azaleas, emrin e klinikës dhe numrin e telefonit, para qiellit në perëndim.",
       en: "The illuminated Azalea Dent sign above the street in the evening, with the azalea logo, the clinic name and the phone number, against the sunset sky.",
+      de: "Das beleuchtete Schild von Azalea Dent über der Straße am Abend, mit dem Azaleen-Logo, dem Namen der Praxis und der Telefonnummer vor dem Abendhimmel.",
     },
     caption: {
       sq: "Tabela e klinikës",
       en: "The clinic sign",
+      de: "Das Schild der Praxis",
     },
     /* Portrait frame: holds the whole sign, logo included, in the gallery's
        landscape crop while keeping some of the sunset behind it. */
@@ -126,10 +136,12 @@ export const photos = {
     alt: {
       sq: "Ndarja prej xhami me logon e gdhendur të lules azalea, që të çon drejt dhomës së trajtimit.",
       en: "The glass partition with the etched azalea logo, leading through to a treatment room.",
+      de: "Die Glaswand mit dem eingravierten Azaleen-Logo, die in einen Behandlungsraum führt.",
     },
     caption: {
       sq: "Dhoma e punës",
       en: "The work room",
+      de: "Der Arbeitsraum",
     },
     focus: "center center",
   },
@@ -156,10 +168,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbët e përparmë të sipërm, fillimisht të konsumuar dhe të parregullt, pastaj të njëtrajtshëm dhe të bardhë.",
       en: "Before and after: the upper front teeth, first worn and uneven, then even and white.",
+      de: "Vorher und nachher: die oberen Frontzähne, zuerst abgenutzt und ungleichmäßig, dann ebenmäßig und weiß.",
     },
     caption: {
       sq: "Dhëmbët e përparmë, para dhe pas",
       en: "The front teeth, before and after",
+      de: "Die Frontzähne, vorher und nachher",
     },
   },
   {
@@ -167,10 +181,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbë të thyer dhe të zbrazëta në harkun e sipërm, pastaj një rresht i plotë dhëmbësh të rregullt.",
       en: "Before and after: broken teeth and gaps in the upper arch, then a complete, even row of teeth.",
+      de: "Vorher und nachher: abgebrochene Zähne und Lücken im Oberkiefer, dann eine vollständige, ebenmäßige Zahnreihe.",
     },
     caption: {
       sq: "Harku i sipërm, para dhe pas",
       en: "The upper arch, before and after",
+      de: "Der Oberkiefer, vorher und nachher",
     },
   },
   {
@@ -178,10 +194,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbë të dëmtuar rëndë me mbushje të vjetra dhe gurëz, pastaj dhëmbë të rregullt e të bardhë.",
       en: "Before and after: heavily damaged teeth with old fillings and tartar, then even, white teeth.",
+      de: "Vorher und nachher: stark beschädigte Zähne mit alten Füllungen und Zahnstein, dann ebenmäßige, weiße Zähne.",
     },
     caption: {
       sq: "Dhëmbë të dëmtuar, para dhe pas",
       en: "Damaged teeth, before and after",
+      de: "Beschädigte Zähne, vorher und nachher",
     },
   },
   {
@@ -189,10 +207,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Pamje e afërt anësore e punës së përfunduar, me sipërfaqe të lëmuara dhe formë natyrale.",
       en: "A close side view of the finished work, with smooth surfaces and a natural shape.",
+      de: "Eine nahe Seitenansicht der fertigen Arbeit, mit glatten Oberflächen und natürlicher Form.",
     },
     caption: {
       sq: "Detaj i punës së përfunduar",
       en: "A detail of the finished work",
+      de: "Ein Detail der fertigen Arbeit",
     },
   },
   {
@@ -200,10 +220,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: buzëqeshja dhe pamja brenda gojës, para dhe pas trajtimit.",
       en: "Before and after: the smile and the intraoral view, before and after treatment.",
+      de: "Vorher und nachher: das Lächeln und die Ansicht im Mund, vor und nach der Behandlung.",
     },
     caption: {
       sq: "Buzëqeshja, para dhe pas",
       en: "The smile, before and after",
+      de: "Das Lächeln, vorher und nachher",
     },
   },
   {
@@ -211,10 +233,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbët e sipërm të përparmë, fillimisht të çngjyrosur dhe të pabarabartë, pastaj të njëtrajtshëm.",
       en: "Before and after: the upper front teeth, first discoloured and uneven, then uniform.",
+      de: "Vorher und nachher: die oberen Frontzähne, zuerst verfärbt und ungleichmäßig, dann einheitlich.",
     },
     caption: {
       sq: "Dhëmbët e sipërm, para dhe pas",
       en: "The upper teeth, before and after",
+      de: "Die oberen Zähne, vorher und nachher",
     },
   },
   {
@@ -222,10 +246,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas, nga afër dhe anash: sipërfaqja e dhëmbëve fillimisht me njolla, pastaj e pastër dhe e lëmuar.",
       en: "Before and after, close up from the side: the tooth surface first stained, then clean and smooth.",
+      de: "Vorher und nachher, nah von der Seite: die Zahnoberfläche zuerst verfärbt, dann sauber und glatt.",
     },
     caption: {
       sq: "Pamje anësore, para dhe pas",
       en: "Side view, before and after",
+      de: "Seitenansicht, vorher und nachher",
     },
   },
   {
@@ -233,10 +259,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbët e përparmë me ngjyrë të verdhë dhe skaje të parregullta, pastaj më të çelët dhe më të rregullt.",
       en: "Before and after: the front teeth yellowed with uneven edges, then lighter and more even.",
+      de: "Vorher und nachher: die Frontzähne vergilbt mit unebenen Kanten, dann heller und gleichmäßiger.",
     },
     caption: {
       sq: "Ngjyra e dhëmbëve, para dhe pas",
       en: "Tooth shade, before and after",
+      de: "Zahnfarbe, vorher und nachher",
     },
   },
   {
@@ -244,10 +272,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbët e sipërm dhe të poshtëm të konsumuar rëndë, pastaj të dy harqet e rikthyer.",
       en: "Before and after: the upper and lower teeth heavily worn, then both arches restored.",
+      de: "Vorher und nachher: die oberen und unteren Zähne stark abgenutzt, dann beide Kiefer wiederhergestellt.",
     },
     caption: {
       sq: "Të dy harqet, para dhe pas",
       en: "Both arches, before and after",
+      de: "Beide Kiefer, vorher und nachher",
     },
   },
   {
@@ -255,10 +285,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Gjatë trajtimit: mishi i dhëmbëve i mbrojtur me një shtresë mbrojtëse blu përpara punës në dhëmbë.",
       en: "During treatment: the gums shielded with a blue protective barrier before work on the teeth.",
+      de: "Während der Behandlung: Das Zahnfleisch ist vor der Arbeit an den Zähnen mit einem blauen Schutz abgedeckt.",
     },
     caption: {
       sq: "Gjatë trajtimit",
       en: "During treatment",
+      de: "Während der Behandlung",
     },
   },
   {
@@ -266,10 +298,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas, nga afër: dhëmbët e përparmë të sipërm, me ngjyrë më të ndriçuar pas trajtimit.",
       en: "Before and after, close up: the upper front teeth, brighter in shade after treatment.",
+      de: "Vorher und nachher, aus der Nähe: die oberen Frontzähne, nach der Behandlung heller.",
     },
     caption: {
       sq: "Nga afër, para dhe pas",
       en: "Up close, before and after",
+      de: "Aus der Nähe, vorher und nachher",
     },
   },
   {
@@ -277,10 +311,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Skanim dixhital i harkut para dhe pas, dhe aparati transparent i vendosur mbi dhëmbë.",
       en: "A digital scan of the arch before and after, and the clear aligner in place over the teeth.",
+      de: "Ein digitaler Scan des Zahnbogens vorher und nachher und die durchsichtige Schiene auf den Zähnen.",
     },
     caption: {
       sq: "Skanim dhe aparat transparent",
       en: "Scan and clear aligner",
+      de: "Scan und durchsichtige Schiene",
     },
   },
   {
@@ -288,10 +324,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas: dhëmbë të konsumuar dhe të errësuar, pastaj një rresht i plotë dhëmbësh të rregullt.",
       en: "Before and after: worn, darkened teeth, then a complete, even row of teeth.",
+      de: "Vorher und nachher: abgenutzte, nachgedunkelte Zähne, dann eine vollständige, ebenmäßige Zahnreihe.",
     },
     caption: {
       sq: "Dhëmbë të konsumuar, para dhe pas",
       en: "Worn teeth, before and after",
+      de: "Abgenutzte Zähne, vorher und nachher",
     },
   },
   {
@@ -299,10 +337,12 @@ export const workPhotos: Photo[] = [
     alt: {
       sq: "Para dhe pas, ballore dhe anash: dhëmbët e konsumuar, pastaj puna e përfunduar e parë nga të dy anët.",
       en: "Before and after, from the front and the side: the worn teeth, then the finished work seen from both.",
+      de: "Vorher und nachher, von vorn und von der Seite: die abgenutzten Zähne, dann die fertige Arbeit aus beiden Ansichten.",
     },
     caption: {
       sq: "Pamje ballore dhe anësore, para dhe pas",
       en: "Front and side view, before and after",
+      de: "Ansicht von vorn und von der Seite, vorher und nachher",
     },
   },
 ];

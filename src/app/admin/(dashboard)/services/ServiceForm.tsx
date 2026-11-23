@@ -12,7 +12,7 @@ import { FormErrorBanner, FormFooter } from "@/components/admin/FormChrome";
 import { ImagePicker } from "@/components/admin/ImagePicker";
 import { Card, CardBody, CardHeader } from "@/components/admin/Ui";
 import { idleState, listToLines, type ActionState } from "@/lib/admin/forms";
-import type { Locale } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
 import type { ServiceRow } from "@/lib/db/types";
 
 /**
@@ -52,11 +52,10 @@ export function ServiceForm({
   const { services: t, common, gallery } = labels;
 
   /* The highlights list is edited as one line per point in each language, so
-     the two columns line up by position. */
-  const highlightLines: Record<Locale, string> = {
-    sq: listToLines(service?.highlights ?? [], "sq"),
-    en: listToLines(service?.highlights ?? [], "en"),
-  };
+     the columns line up by position. */
+  const highlightLines = Object.fromEntries(
+    locales.map((locale) => [locale, listToLines(service?.highlights ?? [], locale)]),
+  ) as Record<Locale, string>;
 
   return (
     <form action={formAction} className="space-y-6" noValidate>
@@ -112,8 +111,8 @@ export function ServiceForm({
             <p className="mb-2.5 text-[0.8125rem] leading-relaxed text-ink-500 dark:text-bone-300">
               {t.highlightsHint}
             </p>
-            <div className="grid gap-3 lg:grid-cols-2">
-              {(["sq", "en"] as const).map((locale) => (
+            <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
+              {locales.map((locale) => (
                 <div key={locale}>
                   <label
                     htmlFor={`highlights.${locale}`}

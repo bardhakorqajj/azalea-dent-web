@@ -18,7 +18,8 @@ import { defaultLocale, isLocale, path, type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
 import { faqSchema, pageSchema } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
-import { getPublicFaq, getPublicPromotions } from "@/lib/public/content";
+import { getPublicPromotions } from "@/lib/public/content";
+import { publicFaq } from "@/lib/public/faq";
 import { getPublicDictionary } from "@/lib/public/dictionary";
 import { publicReviews } from "@/lib/public/reviews";
 import { publicServices } from "@/lib/public/services";
@@ -57,24 +58,16 @@ export default async function HomePage({
      are independent cached reads, so doing them in sequence would make the
      page wait on each in turn. Each one falls back to the copy the site ships
      with, so an unreachable database changes nothing here. */
-  const [dict, services, team, reviews, promotions, faqItems] = await Promise.all([
+  const [dict, services, team, reviews, promotions, faq] = await Promise.all([
     getPublicDictionary(locale),
     publicServices(),
     publicTeam(),
     publicReviews(),
     getPublicPromotions(),
-    getPublicFaq(),
+    /* The clinic's own questions where it has added any, and the site's
+       otherwise. The schema below describes whatever is rendered. */
+    publicFaq(locale),
   ]);
-
-  /* The clinic's own questions where it has added any, and the site's
-     otherwise — the schema below has to describe whatever is rendered. */
-  const faq =
-    faqItems.length > 0
-      ? faqItems.map((item) => ({
-          question: item.question[locale] ?? item.question.sq ?? "",
-          answer: item.answer[locale] ?? item.answer.sq ?? "",
-        }))
-      : dict.faq.items.map((item) => ({ ...item }));
 
   return (
     <>

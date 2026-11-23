@@ -24,7 +24,7 @@ function fromRow(row: ReviewRow): PublicReview {
   for (const locale of locales) quote[locale] = text(row.body, locale);
 
   return {
-    quote: quote as { sq: string; en: string },
+    quote,
     author: row.author_name,
     rating: row.rating,
   };
