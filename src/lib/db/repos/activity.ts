@@ -16,6 +16,7 @@ export type ActivityKind =
   | "appointment.requested"
   | "appointment.created"
   | "appointment.status_changed"
+  | "appointment.confirmation_sent"
   | "message.received"
   | "review.published"
   | "promotion.activated"

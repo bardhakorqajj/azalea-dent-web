@@ -195,6 +195,31 @@ The form never reports success for a request that went nowhere. Until a
 delivery method is configured, patients are routed to a real channel rather
 than a dead end.
 
+## Confirmation messages
+
+When the clinic confirms an appointment in the dashboard, the patient can be
+told. There are confirmations only, never reminders: a message goes out
+because someone pressed a button, not because a timer fired.
+
+- **Confirm** carries a tick-box, on by default, that sends the confirmation by
+  email and SMS, whichever are configured and reachable. The same variables
+  as the appointment requests switch them on (`RESEND_API_KEY`, the
+  `TWILIO_*` trio). Untick it to confirm silently.
+- **WhatsApp** cannot be sent from a server without a WhatsApp Business
+  account, so the dashboard opens WhatsApp with the message already typed,
+  and a person presses send and then marks it as sent.
+- The message is written in the language the patient booked in (Albanian,
+  English or German), names the day, date and time, the treatment, the
+  address and the number to call to change it. Text: `src/lib/confirmation.ts`.
+- Local numbers such as `044 123 456` are read as Kosovo numbers. A number
+  with no country it can be placed in is refused rather than guessed, since a
+  wrong guess texts a stranger.
+- The appointment records when and on which channels it went, and says so
+  when the appointment has moved since the patient was told.
+
+Only a message the provider accepted is recorded as sent. Emailing patients
+needs the clinic's domain verified with Resend; see DEPLOYMENT.md, step 2.
+
 ## Admin dashboard
 
 The clinic's own dashboard, at **`admin.azalea-dent.org`** in production and

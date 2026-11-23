@@ -104,6 +104,12 @@ After this, mail is sent from the clinic's own domain, lands in the inbox
 rather than Junk, and can be delivered to any address — so a second recipient
 can be added later with `APPOINTMENT_TO_EMAIL`.
 
+**Confirmation emails to patients need this step.** In testing mode Resend
+delivers only to the clinic's own inbox, so the email half of "Confirm and
+tell the patient" fails for every patient until the domain is verified. The
+dashboard reports that failure rather than hiding it, and SMS and WhatsApp
+still work in the meantime.
+
 Note that this sends _from_ `azalea-dent.org` without creating a mailbox there.
 Replies still work: each request sets `Reply-To` to the patient's own address,
 so hitting reply in Hotmail answers the patient.
@@ -392,9 +398,14 @@ DATABASE_URL=postgres://…  npm run db:migrate
 npm run db:status            # shows what has been applied
 ```
 
-The migration is a single file, `src/lib/db/migrations/0001_init.sql`, and it
-runs inside a transaction: if anything in it fails, nothing is applied.
-Running it twice is safe — it records what it has done and skips it.
+The migrations are the numbered files in `src/lib/db/migrations/`, applied in
+order. Each runs inside a transaction: if anything in it fails, nothing is
+applied. Running it twice is safe — it records what it has done and skips it.
+
+**When an update adds a migration, run `npm run db:migrate` again** against
+the production database. The dashboard keeps working until you do, and says
+on the page what is waiting: `0002_appointment_confirmation.sql`, for example,
+is what lets an appointment remember that its confirmation was sent.
 
 **Redeploy after this** (step 9), because a new environment variable only
 reaches a build made after it was saved.

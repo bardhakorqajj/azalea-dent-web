@@ -26,7 +26,26 @@ import { IconCheck, IconClose, IconWarning } from "./Icons";
  * reaches the page.
  */
 
-export type NoticeKind = "saved" | "deleted" | "error" | "signed_out" | "imported";
+export type NoticeKind =
+  | "saved"
+  | "deleted"
+  | "error"
+  | "signed_out"
+  | "imported"
+  | "confirmation_sent"
+  | "confirmation_partial"
+  | "confirmation_failed"
+  | "confirmation_none"
+  | "confirmation_unrecorded";
+
+/** Notices that report something the reader has to act on. */
+const WARNINGS: ReadonlySet<string> = new Set([
+  "error",
+  "confirmation_partial",
+  "confirmation_failed",
+  "confirmation_none",
+  "confirmation_unrecorded",
+]);
 
 export function Toast({
   messages,
@@ -47,7 +66,7 @@ export function Toast({
 
   const count = searchParams.get("count");
   const message = count ? template.replace("{count}", count) : template;
-  const isError = notice === "error";
+  const isError = WARNINGS.has(notice);
 
   /* The same page, minus the notice. */
   const params = new URLSearchParams(searchParams.toString());
