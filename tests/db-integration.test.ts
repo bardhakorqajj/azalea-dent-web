@@ -471,6 +471,49 @@ describeDb("appointments", () => {
     expect(row?.patient_name).toBe("Arta Krasniqi");
   });
 
+  it("starts with no confirmation sent", async () => {
+    const id = await repos.appointments.createAppointment(appointmentInput());
+    expect(await repos.appointments.getAppointmentConfirmation(id)).toEqual({
+      state: "ready",
+      sentAt: null,
+      channels: [],
+      sentFor: null,
+    });
+  });
+
+  it("adds channels to a confirmation while it names the same time", async () => {
+    const id = await repos.appointments.createAppointment(appointmentInput());
+    await repos.appointments.recordAppointmentConfirmation(id, ["sms"], "2026-12-04 15:00");
+    await repos.appointments.recordAppointmentConfirmation(id, ["email", "sms"], "2026-12-04 15:00");
+    await repos.appointments.recordAppointmentConfirmation(id, ["whatsapp"], "2026-12-04 15:00");
+
+    const record = await repos.appointments.getAppointmentConfirmation(id);
+    expect(record.state === "ready" && record.channels).toEqual(["email", "sms", "whatsapp"]);
+    expect(record.state === "ready" && record.sentAt).toBeInstanceOf(Date);
+  });
+
+  it("starts the channel list again once the appointment has moved", async () => {
+    const id = await repos.appointments.createAppointment(appointmentInput());
+    await repos.appointments.recordAppointmentConfirmation(id, ["email", "sms"], "2026-12-04 15:00");
+    await repos.appointments.recordAppointmentConfirmation(id, ["whatsapp"], "2026-12-05 10:00");
+
+    expect(await repos.appointments.getAppointmentConfirmation(id)).toMatchObject({
+      channels: ["whatsapp"],
+      sentFor: "2026-12-05 10:00",
+    });
+  });
+
+  it("refuses a channel the schema does not know", async () => {
+    const id = await repos.appointments.createAppointment(appointmentInput());
+    await expect(
+      repos.appointments.recordAppointmentConfirmation(
+        id,
+        ["pigeon" as "sms"],
+        "2026-12-04 15:00",
+      ),
+    ).rejects.toThrow();
+  });
+
   it("builds a request chart with a row per week, including empty ones", async () => {
     const weeks = await repos.appointments.requestsPerWeek(12);
     expect(weeks).toHaveLength(12);

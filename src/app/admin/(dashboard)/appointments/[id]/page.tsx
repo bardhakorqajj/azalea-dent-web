@@ -28,7 +28,9 @@ import {
 } from "@/components/admin/Ui";
 import { telHref } from "@/content/clinic";
 import { readCsrfToken } from "@/lib/admin/session";
-import { getAppointment } from "@/lib/db/repos/appointments";
+import { confirmationForAppointment, confirmationTarget } from "@/lib/appointment-confirmation";
+import { availableChannels, patientE164, whatsappConfirmationHref } from "@/lib/confirmation";
+import { getAppointment, getAppointmentConfirmation } from "@/lib/db/repos/appointments";
 import { serviceOptions } from "@/lib/db/repos/services";
 import { teamOptions } from "@/lib/db/repos/team";
 import { asUuid } from "@/lib/db/sql";
@@ -41,6 +43,7 @@ import {
   updateAppointmentAction,
 } from "../actions";
 import { AppointmentForm } from "../AppointmentForm";
+import { channelList, ConfirmationCard } from "../ConfirmationCard";
 
 export const metadata: Metadata = { title: "Takimi" };
 
@@ -63,14 +66,25 @@ export default async function AppointmentPage({
 
   const { dict, locale } = await getAdminContext();
 
-  const [appointment, services, team, csrfToken] = await Promise.all([
+  const [appointment, services, team, csrfToken, confirmationRecord] = await Promise.all([
     getAppointment(id),
     serviceOptions(),
     teamOptions(),
     readCsrfToken(),
+    getAppointmentConfirmation(id),
   ]);
 
   if (!appointment) notFound();
+
+  const confirmation = await confirmationForAppointment(appointment);
+  const autoChannels = availableChannels(process.env, {
+    email: appointment.email,
+    phone: appointment.phone,
+  });
+  const autoNames = [
+    ...(autoChannels.email ? (["email"] as const) : []),
+    ...(autoChannels.sms ? (["sms"] as const) : []),
+  ];
 
   const csrf = csrfToken ?? "";
   const serviceName = appointment.service_title
@@ -111,6 +125,11 @@ export default async function AppointmentPage({
         messages={{
           saved: dict.appointments.savedNotice,
           error: dict.errors.body,
+          confirmation_sent: dict.appointments.confirmation.sentNotice,
+          confirmation_partial: dict.appointments.confirmation.partialNotice,
+          confirmation_failed: dict.appointments.confirmation.failedNotice,
+          confirmation_none: dict.appointments.confirmation.noneNotice,
+          confirmation_unrecorded: dict.appointments.confirmation.unrecordedNotice,
         }}
       />
 
@@ -186,6 +205,21 @@ export default async function AppointmentPage({
             </CardBody>
           </Card>
 
+          <ConfirmationCard
+            appointmentId={appointment.id}
+            confirmed={appointment.status === "confirmed"}
+            csrf={csrf}
+            message={confirmation}
+            record={confirmationRecord}
+            target={confirmationTarget(appointment)}
+            auto={autoChannels}
+            whatsappHref={whatsappConfirmationHref(appointment.phone, confirmation.short)}
+            hasPhone={Boolean(appointment.phone?.trim())}
+            hasEmail={Boolean(appointment.email?.trim())}
+            dict={dict}
+            locale={locale}
+          />
+
           <Card>
             <CardHeader title={dict.appointments.editTitle} />
             <CardBody>
@@ -221,7 +255,28 @@ export default async function AppointmentPage({
                   label={dict.appointments.confirm}
                   tone="primary"
                   icon={<IconCheck className="h-4 w-4" />}
-                />
+                >
+                  {autoNames.length > 0 ? (
+                    <label className="mt-2 flex items-start gap-2 text-[0.8125rem] leading-snug text-ink-600 dark:text-bone-300">
+                      <input
+                        type="checkbox"
+                        name="notify"
+                        defaultChecked
+                        className="mt-0.5 h-4 w-4 shrink-0 accent-ink-900 dark:accent-gold-400"
+                      />
+                      {dict.appointments.confirmation.notifyOnConfirm.replace(
+                        "{channels}",
+                        channelList([...autoNames], dict.appointments.confirmation),
+                      )}
+                    </label>
+                  ) : (
+                    patientE164(appointment.phone) && (
+                      <p className="mt-2 text-[0.8125rem] leading-snug text-ink-500 dark:text-bone-300">
+                        {dict.appointments.confirmation.noAutoChannel}
+                      </p>
+                    )
+                  )}
+                </StatusButton>
               )}
               {appointment.status !== "completed" && (
                 <StatusButton
@@ -312,6 +367,7 @@ function StatusButton({
   label,
   tone,
   icon,
+  children,
 }: {
   id: string;
   csrf: string;
@@ -319,6 +375,8 @@ function StatusButton({
   label: string;
   tone: "primary" | "secondary" | "quiet";
   icon?: React.ReactNode;
+  /** Extra fields posted with this button, e.g. "also tell the patient". */
+  children?: React.ReactNode;
 }) {
   return (
     <form action={setAppointmentStatusAction}>
@@ -329,6 +387,7 @@ function StatusButton({
         {icon}
         {label}
       </button>
+      {children}
     </form>
   );
 }

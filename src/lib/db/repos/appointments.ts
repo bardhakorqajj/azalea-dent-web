@@ -480,3 +480,87 @@ export async function requestsBySource(
   );
   return rows.map((row) => ({ source: row.source, count: Number(row.count) }));
 }
+
+// === Confirmation messages ================================================
+
+export type AppointmentConfirmation =
+  | { state: "unavailable" }
+  | {
+      state: "ready";
+      sentAt: Date | null;
+      channels: ("email" | "sms" | "whatsapp")[];
+      /** The date and time the message named: "YYYY-MM-DD HH:MM" or a date. */
+      sentFor: string | null;
+    };
+
+/** Postgres' "undefined column" — the confirmation migration is not applied. */
+function isMissingColumn(error: unknown): boolean {
+  return (error as { code?: string } | null)?.code === "42703";
+}
+
+/**
+ * The confirmation record, read on its own rather than added to `SELECT`.
+ *
+ * Deliberately separate: the columns come from migration 0002, and a
+ * deployment can reach the live site before someone has run it. Reading them
+ * here means that gap costs the confirmation panel, which says so, and not
+ * every appointment page in the dashboard.
+ */
+export async function getAppointmentConfirmation(id: string): Promise<AppointmentConfirmation> {
+  try {
+    const row = await queryOne<{
+      confirmation_sent_at: Date | null;
+      confirmation_channels: string[];
+      confirmation_for: string | null;
+    }>(
+      `select confirmation_sent_at, confirmation_channels, confirmation_for
+         from appointment where id = $1`,
+      [id],
+    );
+    return {
+      state: "ready",
+      sentAt: row?.confirmation_sent_at ?? null,
+      channels: (row?.confirmation_channels ?? []) as ("email" | "sms" | "whatsapp")[],
+      sentFor: row?.confirmation_for ?? null,
+    };
+  } catch (error) {
+    if (isMissingColumn(error)) return { state: "unavailable" };
+    throw error;
+  }
+}
+
+/**
+ * Records that a confirmation reached the patient.
+ *
+ * Channels accumulate while the message names the same date and time — an
+ * email now and a WhatsApp later are one confirmation. Once the appointment
+ * has moved, a new confirmation starts the list again, so the dashboard never
+ * claims the patient was told the new time on a channel that only carried the
+ * old one.
+ *
+ * Returns false when the columns are missing, and the caller says so.
+ */
+export async function recordAppointmentConfirmation(
+  id: string,
+  channels: ("email" | "sms" | "whatsapp")[],
+  sentFor: string,
+): Promise<boolean> {
+  if (channels.length === 0) return true;
+  try {
+    await execute(
+      `update appointment set
+         confirmation_channels = case
+           when confirmation_for is distinct from $3 then $2::text[]
+           else array(select distinct unnest(confirmation_channels || $2::text[]) order by 1)
+         end,
+         confirmation_for = $3,
+         confirmation_sent_at = now()
+       where id = $1`,
+      [id, channels, sentFor],
+    );
+    return true;
+  } catch (error) {
+    if (isMissingColumn(error)) return false;
+    throw error;
+  }
+}

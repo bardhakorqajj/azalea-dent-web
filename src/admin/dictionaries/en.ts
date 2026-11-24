@@ -225,6 +225,42 @@ export const en: AdminDictionary = {
     created: "Created",
     savedNotice: "Appointment saved.",
     deletedNotice: "Appointment deleted.",
+    confirmation: {
+      title: "Confirmation to the patient",
+      notifyOnConfirm: "Send the patient a confirmation by {channels}",
+      noAutoChannel:
+        "The patient gets no automatic message. Once confirmed, send it on WhatsApp.",
+      onlyWhenConfirmed: "Confirm the appointment to send the patient a confirmation.",
+      notSent: "Not sent yet.",
+      sentOn: "Sent on {date} by {channels}.",
+      movedSince:
+        "The appointment has moved since the confirmation was sent. Send it again so the patient knows the new time.",
+      preview: "The message, in the patient's language ({language})",
+      send: "Send by {channels}",
+      sendAgain: "Send again by {channels}",
+      openWhatsapp: "Open in WhatsApp",
+      markWhatsapp: "I sent it on WhatsApp",
+      whatsappHint:
+        "WhatsApp opens with the message typed in. Send it yourself, then mark it here.",
+      noContact: "This appointment has no email address or usable phone number.",
+      phoneUnusable:
+        "For SMS and WhatsApp the phone number must look like 044 123 456 or +383 44 123 456.",
+      notConfigured:
+        "Automatic email and SMS sending is not switched on. See DEPLOYMENT.md, step 2.",
+      unavailable:
+        "Confirmations cannot be recorded until the database is updated (npm run db:migrate).",
+      channelEmail: "email",
+      channelSms: "SMS",
+      channelWhatsapp: "WhatsApp",
+      and: " and ",
+      sentNotice: "The confirmation was sent to the patient.",
+      partialNotice: "The confirmation was sent, but not on every channel. See below.",
+      failedNotice: "The confirmation was not sent. Try again, or send it on WhatsApp.",
+      noneNotice:
+        "The appointment is confirmed, but the patient cannot be told automatically. Send it on WhatsApp.",
+      unrecordedNotice:
+        "The message was sent but not recorded in the dashboard: the database needs updating.",
+    },
   },
 
   patients: {

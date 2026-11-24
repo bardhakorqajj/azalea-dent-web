@@ -230,6 +230,43 @@ export const sq = {
     created: "Krijuar",
     savedNotice: "Takimi u ruajt.",
     deletedNotice: "Takimi u fshi.",
+    confirmation: {
+      title: "Konfirmimi për pacientin",
+      notifyOnConfirm: "Dërgoji pacientit konfirmimin me {channels}",
+      noAutoChannel:
+        "Pacienti nuk merr mesazh automatik. Pasi ta konfirmoni, dërgojani në WhatsApp.",
+      onlyWhenConfirmed: "Konfirmoni takimin për t’i dërguar pacientit konfirmimin.",
+      notSent: "Ende nuk është dërguar.",
+      sentOn: "Dërguar më {date} me {channels}.",
+      movedSince:
+        "Takimi është zhvendosur që kur u dërgua konfirmimi. Dërgojeni përsëri, që pacienti ta dijë kohën e re.",
+      preview: "Mesazhi, në gjuhën e pacientit ({language})",
+      send: "Dërgo me {channels}",
+      sendAgain: "Dërgo përsëri me {channels}",
+      openWhatsapp: "Hape në WhatsApp",
+      markWhatsapp: "E dërgova në WhatsApp",
+      whatsappHint:
+        "WhatsApp hapet me mesazhin të shkruar. Dërgojeni vetë, pastaj shënojeni këtu.",
+      noContact: "Ky takim nuk ka email as numër telefoni që mund të përdoret.",
+      phoneUnusable:
+        "Numri i telefonit duhet të jetë si 044 123 456 ose +383 44 123 456 për SMS dhe WhatsApp.",
+      notConfigured:
+        "Dërgimi automatik me email dhe SMS nuk është aktivizuar. Shihni DEPLOYMENT.md, hapi 2.",
+      unavailable:
+        "Konfirmimet nuk mund të ruhen derisa të përditësohet databaza (npm run db:migrate).",
+      channelEmail: "email",
+      channelSms: "SMS",
+      channelWhatsapp: "WhatsApp",
+      and: " dhe ",
+      sentNotice: "Konfirmimi iu dërgua pacientit.",
+      partialNotice: "Konfirmimi u dërgua, por jo në çdo kanal. Shihni më poshtë.",
+      failedNotice:
+        "Konfirmimi nuk u dërgua. Provoni përsëri ose dërgojeni në WhatsApp.",
+      noneNotice:
+        "Takimi u konfirmua, por pacienti nuk mund të njoftohet automatikisht. Dërgojeni në WhatsApp.",
+      unrecordedNotice:
+        "Mesazhi u dërgua, por nuk u ruajt në panel: databaza duhet përditësuar.",
+    },
   },
 
   patients: {
