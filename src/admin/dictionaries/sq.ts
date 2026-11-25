@@ -241,6 +241,9 @@ export const sq = {
       movedSince:
         "Takimi është zhvendosur që kur u dërgua konfirmimi. Dërgojeni përsëri, që pacienti ta dijë kohën e re.",
       preview: "Mesazhi, në gjuhën e pacientit ({language})",
+      editHint:
+        "Mund ta ndryshoni mesazhin për këtë pacient para se ta dërgoni. Ndryshimi vlen vetëm për këtë dërgim; tekstin për të gjithë pacientët e ndryshoni te Cilësimet → Konfirmimi.",
+      resetText: "Kthe tekstin fillestar",
       send: "Dërgo me {channels}",
       sendAgain: "Dërgo përsëri me {channels}",
       openWhatsapp: "Hape në WhatsApp",

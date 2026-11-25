@@ -11,7 +11,7 @@ import {
   confirmationForAppointment,
   confirmationTarget,
 } from "@/lib/appointment-confirmation";
-import { sendConfirmation } from "@/lib/confirmation";
+import { sendConfirmation, withEditedText } from "@/lib/confirmation";
 import {
   bool,
   dateStr,
@@ -193,7 +193,7 @@ export async function setAppointmentStatusAction(formData: FormData): Promise<vo
      status change is silent: there is no cancellation or reminder message. */
   let notice = "saved";
   if (before && status === "confirmed" && formData.get("notify") === "on") {
-    notice = await deliverConfirmation({ ...before, status });
+    notice = await deliverConfirmation({ ...before, status }, editedText(formData));
   }
 
   revalidatePath("/admin", "layout");
@@ -211,7 +211,9 @@ export async function sendConfirmationAction(formData: FormData): Promise<void> 
   if (!appointment) redirect("/appointments");
 
   const notice =
-    appointment.status === "confirmed" ? await deliverConfirmation(appointment) : "error";
+    appointment.status === "confirmed"
+      ? await deliverConfirmation(appointment, editedText(formData))
+      : "error";
 
   revalidatePath("/admin", "layout");
   redirect(`/appointments/${id}?notice=${notice}`);
@@ -249,12 +251,20 @@ export async function markConfirmationWhatsappAction(formData: FormData): Promis
   redirect(`/appointments/${id}?notice=${recorded ? "confirmation_sent" : "confirmation_unrecorded"}`);
 }
 
+/** The message as edited on the appointment page, or "" when it was not. */
+function editedText(formData: FormData): string {
+  return textBlock(formData, "message", 2_000);
+}
+
 /**
  * Sends the confirmation on every channel that can reach the patient, records
  * the ones that worked, and names the notice the page should show.
  */
-async function deliverConfirmation(appointment: AppointmentWithNames): Promise<string> {
-  const message = await confirmationForAppointment(appointment);
+async function deliverConfirmation(
+  appointment: AppointmentWithNames,
+  edited = "",
+): Promise<string> {
+  const message = withEditedText(await confirmationForAppointment(appointment), edited);
   const contact = { email: appointment.email, phone: appointment.phone };
 
   const results = await sendConfirmation(message, contact, {

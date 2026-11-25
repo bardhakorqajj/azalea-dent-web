@@ -236,6 +236,9 @@ export const en: AdminDictionary = {
       movedSince:
         "The appointment has moved since the confirmation was sent. Send it again so the patient knows the new time.",
       preview: "The message, in the patient's language ({language})",
+      editHint:
+        "You can change the message for this patient before sending it. The change applies to this send only; the text for every patient is in Settings → Confirmation.",
+      resetText: "Restore the original text",
       send: "Send by {channels}",
       sendAgain: "Send again by {channels}",
       openWhatsapp: "Open in WhatsApp",

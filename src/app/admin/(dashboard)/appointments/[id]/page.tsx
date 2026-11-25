@@ -29,7 +29,7 @@ import {
 import { telHref } from "@/content/clinic";
 import { readCsrfToken } from "@/lib/admin/session";
 import { confirmationForAppointment, confirmationTarget } from "@/lib/appointment-confirmation";
-import { availableChannels, patientE164, whatsappConfirmationHref } from "@/lib/confirmation";
+import { availableChannels, patientE164 } from "@/lib/confirmation";
 import { getAppointment, getAppointmentConfirmation } from "@/lib/db/repos/appointments";
 import { serviceOptions } from "@/lib/db/repos/services";
 import { teamOptions } from "@/lib/db/repos/team";
@@ -46,6 +46,9 @@ import { AppointmentForm } from "../AppointmentForm";
 import { channelList, ConfirmationCard } from "../ConfirmationCard";
 
 export const metadata: Metadata = { title: "Takimi" };
+
+/** The Confirm button's form, which the confirmation message box posts with. */
+const CONFIRM_FORM_ID = "confirm-appointment-form";
 
 /**
  * One appointment: what it is, the one-click status changes, and the full
@@ -81,6 +84,8 @@ export default async function AppointmentPage({
     email: appointment.email,
     phone: appointment.phone,
   });
+  const patientNumber = patientE164(appointment.phone);
+  const whatsappBase = patientNumber ? `https://wa.me/${patientNumber.slice(1)}` : null;
   const autoNames = [
     ...(autoChannels.email ? (["email"] as const) : []),
     ...(autoChannels.sms ? (["sms"] as const) : []),
@@ -213,7 +218,8 @@ export default async function AppointmentPage({
             record={confirmationRecord}
             target={confirmationTarget(appointment)}
             auto={autoChannels}
-            whatsappHref={whatsappConfirmationHref(appointment.phone, confirmation.short)}
+            whatsappBase={whatsappBase}
+            confirmFormId={autoNames.length > 0 ? CONFIRM_FORM_ID : undefined}
             hasPhone={Boolean(appointment.phone?.trim())}
             hasEmail={Boolean(appointment.email?.trim())}
             dict={dict}
@@ -255,6 +261,7 @@ export default async function AppointmentPage({
                   label={dict.appointments.confirm}
                   tone="primary"
                   icon={<IconCheck className="h-4 w-4" />}
+                  formId={CONFIRM_FORM_ID}
                 >
                   {autoNames.length > 0 ? (
                     <label className="mt-2 flex items-start gap-2 text-[0.8125rem] leading-snug text-ink-600 dark:text-bone-300">
@@ -368,6 +375,7 @@ function StatusButton({
   tone,
   icon,
   children,
+  formId,
 }: {
   id: string;
   csrf: string;
@@ -377,9 +385,11 @@ function StatusButton({
   icon?: React.ReactNode;
   /** Extra fields posted with this button, e.g. "also tell the patient". */
   children?: React.ReactNode;
+  /** Lets a field elsewhere on the page post with this form. */
+  formId?: string;
 }) {
   return (
-    <form action={setAppointmentStatusAction}>
+    <form id={formId} action={setAppointmentStatusAction}>
       <input type="hidden" name="csrf" value={csrf} />
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="status" value={status} />
