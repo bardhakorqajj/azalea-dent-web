@@ -37,57 +37,143 @@ export type ConfirmationDetails = {
 
 const DATE_TAGS: Record<Locale, string> = { sq: "sq-AL", en: "en-GB", de: "de-DE" };
 
-type Copy = {
-  subject: string;
-  greeting: (name: string) => string;
-  confirmed: (clinic: string, when: string) => string;
-  at: (time: string) => string;
-  slot: Record<"morning" | "afternoon" | "evening", string>;
-  service: (name: string) => string;
-  address: (address: string) => string;
-  change: (phone: string) => string;
-  changeNoPhone: string;
-  signOff: string;
-};
-
-const COPY: Record<Locale, Copy> = {
+/** How the time of day is written in each language. */
+const TIME_WORDS: Record<
+  Locale,
+  { at: (time: string) => string; slot: Record<"morning" | "afternoon" | "evening", string> }
+> = {
   sq: {
-    subject: "Takimi juaj është konfirmuar",
-    greeting: (name) => `Përshëndetje ${name},`,
-    confirmed: (clinic, when) => `Takimi juaj te ${clinic} është konfirmuar: ${when}.`,
     at: (time) => `ora ${time}`,
     slot: { morning: "paradite", afternoon: "pasdite", evening: "në mbrëmje" },
-    service: (name) => `Trajtimi: ${name}.`,
-    address: (address) => `Adresa: ${address}.`,
-    change: (phone) => `Për ta ndryshuar ose anuluar, na telefononi në ${phone}.`,
-    changeNoPhone: "Për ta ndryshuar ose anuluar, na shkruani.",
-    signOff: "Ju presim!",
   },
   en: {
-    subject: "Your appointment is confirmed",
-    greeting: (name) => `Hello ${name},`,
-    confirmed: (clinic, when) => `Your appointment at ${clinic} is confirmed: ${when}.`,
     at: (time) => `at ${time}`,
     slot: { morning: "in the morning", afternoon: "in the afternoon", evening: "in the evening" },
-    service: (name) => `Treatment: ${name}.`,
-    address: (address) => `Address: ${address}.`,
-    change: (phone) => `To change or cancel it, call us on ${phone}.`,
-    changeNoPhone: "To change or cancel it, send us a message.",
-    signOff: "We look forward to seeing you.",
   },
   de: {
-    subject: "Ihr Termin ist bestätigt",
-    greeting: (name) => `Guten Tag ${name},`,
-    confirmed: (clinic, when) => `Ihr Termin bei ${clinic} ist bestätigt: ${when}.`,
     at: (time) => `um ${time} Uhr`,
     slot: { morning: "vormittags", afternoon: "nachmittags", evening: "abends" },
-    service: (name) => `Behandlung: ${name}.`,
-    address: (address) => `Adresse: ${address}.`,
-    change: (phone) => `Für Änderungen oder eine Absage rufen Sie uns an: ${phone}.`,
-    changeNoPhone: "Für Änderungen oder eine Absage schreiben Sie uns bitte.",
-    signOff: "Wir freuen uns auf Ihren Besuch.",
   },
 };
+
+// === Templates ============================================================
+
+/**
+ * The words the clinic can use in its own message, each replaced by the
+ * appointment's detail when the message is sent.
+ */
+export const PLACEHOLDERS = [
+  "patient",
+  "when",
+  "date",
+  "time",
+  "service",
+  "clinic",
+  "address",
+  "phone",
+] as const;
+
+export type Placeholder = (typeof PLACEHOLDERS)[number];
+
+export type ConfirmationTemplate = { subject: string; body: string };
+
+/**
+ * The message as it ships, and what an emptied field in Settings goes back to.
+ *
+ * Each detail sits on a line of its own on purpose: a line whose placeholder
+ * has nothing to fill it (no treatment chosen, say) is left out whole, so the
+ * patient never reads "Treatment: ." with nothing after it.
+ */
+export const DEFAULT_TEMPLATES: Record<Locale, ConfirmationTemplate> = {
+  sq: {
+    subject: "Takimi juaj është konfirmuar — {clinic}",
+    body: [
+      "Përshëndetje {patient},",
+      "",
+      "Takimi juaj te {clinic} është konfirmuar: {when}.",
+      "Trajtimi: {service}.",
+      "Adresa: {address}.",
+      "Për ta ndryshuar ose anuluar, na telefononi në {phone}.",
+      "",
+      "Ju presim!",
+      "{clinic}",
+    ].join("\n"),
+  },
+  en: {
+    subject: "Your appointment is confirmed — {clinic}",
+    body: [
+      "Hello {patient},",
+      "",
+      "Your appointment at {clinic} is confirmed: {when}.",
+      "Treatment: {service}.",
+      "Address: {address}.",
+      "To change or cancel it, call us on {phone}.",
+      "",
+      "We look forward to seeing you.",
+      "{clinic}",
+    ].join("\n"),
+  },
+  de: {
+    subject: "Ihr Termin ist bestätigt — {clinic}",
+    body: [
+      "Guten Tag {patient},",
+      "",
+      "Ihr Termin bei {clinic} ist bestätigt: {when}.",
+      "Behandlung: {service}.",
+      "Adresse: {address}.",
+      "Für Änderungen oder eine Absage rufen Sie uns an: {phone}.",
+      "",
+      "Wir freuen uns auf Ihren Besuch.",
+      "{clinic}",
+    ].join("\n"),
+  },
+};
+
+const PLACEHOLDER_PATTERN = /\{([^{}\s]*)\}/g;
+
+/**
+ * Placeholders in a template that are not ones the message can fill, such as
+ * a typo like "{patinet}". Settings refuses to save these: otherwise the
+ * patient would receive the braces exactly as typed.
+ */
+export function unknownPlaceholders(template: string): string[] {
+  const unknown = new Set<string>();
+  for (const match of template.matchAll(PLACEHOLDER_PATTERN)) {
+    const name = match[1] ?? "";
+    if (!(PLACEHOLDERS as readonly string[]).includes(name)) unknown.add(`{${name}}`);
+  }
+  return [...unknown];
+}
+
+/**
+ * Fills a template. A line that names a placeholder with no value is dropped
+ * entirely rather than sent half empty, and the blank lines that leaves
+ * behind are tidied up.
+ */
+export function renderTemplate(
+  template: string,
+  values: Partial<Record<Placeholder, string | null>>,
+): string {
+  const lines: string[] = [];
+
+  for (const line of template.replace(/\r\n?/g, "\n").split("\n")) {
+    let missing = false;
+    const filled = line.replace(PLACEHOLDER_PATTERN, (whole, name: string) => {
+      if (!(PLACEHOLDERS as readonly string[]).includes(name)) return whole;
+      const value = values[name as Placeholder]?.trim() ?? "";
+      if (value === "") missing = true;
+      return value;
+    });
+    if (!missing) lines.push(filled.trimEnd());
+  }
+
+  return lines
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+// === The message ==========================================================
 
 /** The language to write in: the one recorded on the request, or Albanian. */
 export function confirmationLocale(recorded: string | null | undefined): Locale {
@@ -107,42 +193,63 @@ function longDate(iso: string, locale: Locale): string {
   }).format(new Date(Date.UTC(year, month - 1, day)));
 }
 
-function when(details: ConfirmationDetails, copy: Copy, locale: Locale): string {
+/** The values each placeholder stands for, for one appointment. */
+export function placeholderValues(
+  details: ConfirmationDetails,
+  locale: Locale,
+): Record<Placeholder, string | null> {
+  const words = TIME_WORDS[locale];
   const date = longDate(details.date, locale);
-  if (details.time) return `${date}, ${copy.at(details.time)}`;
-  if (details.timeSlot) return `${date}, ${copy.slot[details.timeSlot]}`;
-  return date;
+  const time = details.time ?? (details.timeSlot ? words.slot[details.timeSlot] : null);
+  const when = details.time
+    ? `${date}, ${words.at(details.time)}`
+    : details.timeSlot
+      ? `${date}, ${words.slot[details.timeSlot]}`
+      : date;
+
+  return {
+    patient: details.patientName,
+    when,
+    date,
+    time,
+    service: details.service,
+    clinic: details.clinicName,
+    address: details.address,
+    phone: details.phone,
+  };
 }
 
 export type ConfirmationMessage = {
   locale: Locale;
   subject: string;
-  /** Full text, for email: greeting, the details, a sign-off. */
+  /** The message: the email's text, and what SMS and WhatsApp carry too. */
   body: string;
-  /** The same facts without greeting or sign-off, for SMS and WhatsApp. */
+  /** The same text with blank lines removed, which reads better as an SMS. */
   short: string;
 };
 
+/**
+ * The confirmation for one appointment. `custom` is the clinic's own wording
+ * from Settings; a field it leaves empty uses the default.
+ */
 export function buildConfirmation(
   details: ConfirmationDetails,
   locale: Locale,
+  custom: Partial<ConfirmationTemplate> = {},
 ): ConfirmationMessage {
-  const copy = COPY[locale];
+  const template = DEFAULT_TEMPLATES[locale];
+  const values = placeholderValues(details, locale);
 
-  const facts = [
-    copy.confirmed(details.clinicName, when(details, copy, locale)),
-    details.service ? copy.service(details.service) : null,
-    details.address ? copy.address(details.address) : null,
-    details.phone ? copy.change(details.phone) : copy.changeNoPhone,
-  ].filter((line): line is string => line !== null);
+  const body = renderTemplate(custom.body?.trim() || template.body, values);
+  const subject =
+    renderTemplate(custom.subject?.trim() || template.subject, values).replace(/\s*\n\s*/g, " ") ||
+    renderTemplate(template.subject, values);
 
   return {
     locale,
-    subject: `${copy.subject} — ${details.clinicName}`,
-    body: [copy.greeting(details.patientName), "", ...facts, "", copy.signOff, details.clinicName].join(
-      "\n",
-    ),
-    short: facts.join(" "),
+    subject,
+    body,
+    short: body.replace(/\n{2,}/g, "\n"),
   };
 }
 

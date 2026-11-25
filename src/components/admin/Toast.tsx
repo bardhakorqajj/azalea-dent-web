@@ -36,7 +36,8 @@ export type NoticeKind =
   | "confirmation_partial"
   | "confirmation_failed"
   | "confirmation_none"
-  | "confirmation_unrecorded";
+  | "confirmation_unrecorded"
+  | "placeholder_error";
 
 /** Notices that report something the reader has to act on. */
 const WARNINGS: ReadonlySet<string> = new Set([
@@ -45,6 +46,7 @@ const WARNINGS: ReadonlySet<string> = new Set([
   "confirmation_failed",
   "confirmation_none",
   "confirmation_unrecorded",
+  "placeholder_error",
 ]);
 
 export function Toast({
