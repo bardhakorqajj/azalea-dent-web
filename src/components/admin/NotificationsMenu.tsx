@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 import type { AdminDictionary } from "@/admin/get-dictionary";
+import { markActivityReadAction } from "@/app/admin/(dashboard)/actions";
 import { cn } from "@/lib/utils";
 
 import { IconBell } from "./Icons";
@@ -15,6 +16,10 @@ import { buttonClass } from "./Ui";
  * Every item here is a real recorded event — an appointment request that
  * arrived, a message that came in — read from the `activity` table. Nothing is
  * generated to fill the panel out: with nothing recorded, it says so.
+ *
+ * Clicking an item marks it read. The dot and the badge change at once, from
+ * local state, and the database is told in the background, so the click goes
+ * straight on to the appointment or message it names rather than waiting.
  */
 
 export type NotificationItem = {
@@ -40,7 +45,22 @@ export function NotificationsMenu({
   csrfToken: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [readHere, setReadHere] = useState<ReadonlySet<string>>(() => new Set());
   const container = useRef<HTMLDivElement>(null);
+
+  const isUnread = (item: NotificationItem) => item.unread && !readHere.has(item.id);
+  const unread = Math.max(
+    0,
+    unreadCount - items.filter((item) => item.unread && readHere.has(item.id)).length,
+  );
+
+  const markRead = (item: NotificationItem) => {
+    if (!isUnread(item)) return;
+    setReadHere((previous) => new Set(previous).add(item.id));
+    /* Not awaited: a failure costs only the dot coming back on the next page
+       load, which is the truthful outcome, and must not block the link. */
+    markActivityReadAction(item.id, csrfToken).catch(() => {});
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -70,12 +90,12 @@ export function NotificationsMenu({
         className={cn(buttonClass("quiet", "sm"), "relative")}
       >
         <IconBell />
-        {unreadCount > 0 && (
+        {unread > 0 && (
           <span
             aria-hidden="true"
             className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b4442f] px-1 text-[0.625rem] font-semibold text-bone-50"
           >
-            {unreadCount > 9 ? "9+" : unreadCount}
+            {unread > 9 ? "9+" : unread}
           </span>
         )}
       </button>
@@ -90,7 +110,7 @@ export function NotificationsMenu({
             <p className="text-[0.875rem] font-medium text-ink-900 dark:text-bone-50">
               {labels.title}
             </p>
-            {unreadCount > 0 && (
+            {unread > 0 && (
               /* A plain form post, so clearing them survives a page that has
                  not hydrated yet. */
               <form action="/api/admin/notifications/read" method="post">
@@ -115,13 +135,13 @@ export function NotificationsMenu({
                 const content = (
                   <>
                     <span className="flex items-start gap-2.5">
-                      {item.unread && (
+                      {isUnread(item) && (
                         <span
                           aria-hidden="true"
                           className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500 dark:bg-gold-400"
                         />
                       )}
-                      <span className={cn("min-w-0", !item.unread && "pl-4")}>
+                      <span className={cn("min-w-0", !isUnread(item) && "pl-4")}>
                         <span className="block text-[0.875rem] leading-snug text-ink-800 dark:text-bone-100">
                           {item.summary}
                         </span>
@@ -138,13 +158,23 @@ export function NotificationsMenu({
                     {item.href ? (
                       <Link
                         href={item.href}
-                        onClick={() => setOpen(false)}
+                        onClick={() => {
+                          markRead(item);
+                          setOpen(false);
+                        }}
                         className="block px-4 py-3 transition-colors hover:bg-ink-900/[0.04] dark:hover:bg-bone-100/[0.06]"
                       >
                         {content}
                       </Link>
                     ) : (
-                      <div className="px-4 py-3">{content}</div>
+                      /* Nothing to open, but clicking still marks it read. */
+                      <button
+                        type="button"
+                        onClick={() => markRead(item)}
+                        className="block w-full px-4 py-3 text-left transition-colors hover:bg-ink-900/[0.04] dark:hover:bg-bone-100/[0.06]"
+                      >
+                        {content}
+                      </button>
                     )}
                   </li>
                 );
