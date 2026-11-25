@@ -6,8 +6,13 @@ import { redirect } from "next/navigation";
 
 import { isAdminLocale } from "@/admin/get-dictionary";
 import { ADMIN_LOCALE_COOKIE } from "@/admin/locale";
-import { requireAdminForAction, requireAdminMutation } from "@/lib/admin/auth";
-import { destroyAllSessions, destroySession } from "@/lib/admin/session";
+import {
+  requireAdminForAction,
+  requireAdminMutation,
+  UnauthorizedError,
+  verifySameOrigin,
+} from "@/lib/admin/auth";
+import { destroyAllSessions, destroySession, verifyCsrfToken } from "@/lib/admin/session";
 import { execute } from "@/lib/db/client";
 
 /**
@@ -58,10 +63,28 @@ export async function markNotificationsReadAction(formData: FormData): Promise<v
   revalidatePath("/admin", "layout");
 }
 
-/** Used by the notifications panel to open one item and mark it seen. */
-export async function markActivityReadAction(id: string): Promise<void> {
+/**
+ * Marks one notification read, when it is clicked in the panel.
+ *
+ * Called directly from the panel rather than through a form, so the click can
+ * go on to open the appointment or message without waiting for it. That is why
+ * it takes the CSRF token as an argument and checks it by hand: it gets the
+ * same three checks as every form-posted action.
+ *
+ * Nothing is revalidated: the panel has already shown the item as read, and
+ * re-rendering the layout under a navigation that is under way would only
+ * slow it down. The next page load reads the badge from the database.
+ */
+export async function markActivityReadAction(id: string, csrf: string): Promise<void> {
   await requireAdminForAction();
+  if (!(await verifySameOrigin())) throw new UnauthorizedError();
+  if (!(await verifyCsrfToken(csrf))) throw new UnauthorizedError();
+
+  /* Activity ids are a bigserial, not uuids like the other tables. */
+  if (!/^\d{1,18}$/.test(id)) return;
+  const activityId = id;
+
   await execute("update activity set read_at = now() where id = $1 and read_at is null", [
-    id,
+    activityId,
   ]);
 }
