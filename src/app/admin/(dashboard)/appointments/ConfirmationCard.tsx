@@ -1,12 +1,16 @@
 import { formatDateTime } from "@/admin/format";
 import type { AdminDictionary, AdminLocale } from "@/admin/get-dictionary";
-import { IconCheck, IconExternal, IconMessages } from "@/components/admin/Icons";
+import { IconCheck, IconMessages } from "@/components/admin/Icons";
 import { Callout, Card, CardBody, CardHeader, buttonClass } from "@/components/admin/Ui";
 import { localeNames } from "@/i18n/config";
 import type { ConfirmationMessage } from "@/lib/confirmation";
 import type { AppointmentConfirmation } from "@/lib/db/repos/appointments";
 
 import { markConfirmationWhatsappAction, sendConfirmationAction } from "./actions";
+import { ConfirmationMessageEditor } from "./ConfirmationMessageEditor";
+
+/** The "Send again" form, which the message box posts with once confirmed. */
+const SEND_FORM_ID = "send-confirmation-form";
 
 type Channel = "email" | "sms" | "whatsapp";
 
@@ -36,7 +40,8 @@ export function ConfirmationCard({
   record,
   target,
   auto,
-  whatsappHref,
+  whatsappBase,
+  confirmFormId,
   hasPhone,
   hasEmail,
   dict,
@@ -50,7 +55,10 @@ export function ConfirmationCard({
   /** What a confirmation sent now would name, to compare with the record. */
   target: string;
   auto: { email: boolean; sms: boolean; emailConfigured: boolean; smsConfigured: boolean };
-  whatsappHref: string | null;
+  /** `https://wa.me/<number>`, or null when the number cannot be used. */
+  whatsappBase: string | null;
+  /** The status card's Confirm form, when confirming can also send. */
+  confirmFormId?: string;
   hasPhone: boolean;
   hasEmail: boolean;
   dict: AdminDictionary;
@@ -63,7 +71,9 @@ export function ConfirmationCard({
   ];
 
   const sent = record.state === "ready" && record.sentAt !== null;
-  const moved = sent && record.state === "ready" && record.sentFor !== target;
+  /* Only worth saying on a confirmed appointment: on a pending one there is
+     nothing to send again until it is confirmed. */
+  const moved = confirmed && sent && record.state === "ready" && record.sentFor !== target;
 
   return (
     <Card>
@@ -93,20 +103,27 @@ export function ConfirmationCard({
           <p className="text-[0.9375rem] text-ink-600 dark:text-bone-300">{t.onlyWhenConfirmed}</p>
         )}
 
-        <div>
-          <p className="admin-label mb-1.5">
-            {t.preview.replace("{language}", localeNames[message.locale])}
-          </p>
-          <div
-            lang={message.locale}
-            className="rounded-sm border border-ink-900/10 bg-bone-100/60 px-4 py-3 text-[0.9375rem] leading-relaxed whitespace-pre-line text-ink-800 dark:border-bone-50/10 dark:bg-ink-900/40 dark:text-bone-100"
-          >
-            {message.body}
-          </div>
-        </div>
+        <ConfirmationMessageEditor
+          initialText={message.body}
+          locale={message.locale}
+          formId={
+            confirmed
+              ? autoChannels.length > 0
+                ? SEND_FORM_ID
+                : undefined
+              : confirmFormId
+          }
+          whatsappBase={confirmed ? whatsappBase : null}
+          labels={{
+            title: t.preview.replace("{language}", localeNames[message.locale]),
+            hint: t.editHint,
+            reset: t.resetText,
+            openWhatsapp: t.openWhatsapp,
+          }}
+        />
 
         {!hasEmail && !hasPhone && <Callout tone="warning">{t.noContact}</Callout>}
-        {hasPhone && !whatsappHref && <Callout tone="warning">{t.phoneUnusable}</Callout>}
+        {hasPhone && !whatsappBase && <Callout tone="warning">{t.phoneUnusable}</Callout>}
         {!auto.emailConfigured && !auto.smsConfigured && (hasEmail || hasPhone) && (
           <Callout tone="info">{t.notConfigured}</Callout>
         )}
@@ -114,7 +131,7 @@ export function ConfirmationCard({
         {confirmed && (
           <div className="flex flex-wrap gap-2.5">
             {autoChannels.length > 0 && (
-              <form action={sendConfirmationAction}>
+              <form id={SEND_FORM_ID} action={sendConfirmationAction}>
                 <input type="hidden" name="csrf" value={csrf} />
                 <input type="hidden" name="id" value={appointmentId} />
                 <button type="submit" className={buttonClass(sent && !moved ? "secondary" : "primary", "sm")}>
@@ -124,19 +141,7 @@ export function ConfirmationCard({
               </form>
             )}
 
-            {whatsappHref && (
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonClass("secondary", "sm")}
-              >
-                <IconExternal className="h-4 w-4" />
-                {t.openWhatsapp}
-              </a>
-            )}
-
-            {whatsappHref && (
+            {whatsappBase && (
               <form action={markConfirmationWhatsappAction}>
                 <input type="hidden" name="csrf" value={csrf} />
                 <input type="hidden" name="id" value={appointmentId} />
@@ -149,7 +154,7 @@ export function ConfirmationCard({
           </div>
         )}
 
-        {confirmed && whatsappHref && (
+        {confirmed && whatsappBase && (
           <p className="text-[0.8125rem] text-ink-500 dark:text-bone-300">{t.whatsappHint}</p>
         )}
       </CardBody>

@@ -7,6 +7,7 @@ import {
   placeholderValues,
   renderTemplate,
   unknownPlaceholders,
+  withEditedText,
   confirmationLocale,
   patientE164,
   sendConfirmation,
@@ -234,5 +235,20 @@ describe("sending", () => {
       await sendConfirmation(message, contact, { env: {}, fetchImpl: fetchImpl as unknown as typeof fetch }),
     ).toEqual([]);
     expect(fetchImpl).not.toHaveBeenCalled();
+  });
+});
+
+describe("editing the message on the appointment page", () => {
+  const message = buildConfirmation(details, "sq");
+
+  it("sends what was typed, by every channel, keeping the template's subject", () => {
+    const edited = withEditedText(message, "Përshëndetje Arta!\r\n\r\nShihemi të premten.\n");
+    expect(edited.body).toBe("Përshëndetje Arta!\n\nShihemi të premten.");
+    expect(edited.short).toBe("Përshëndetje Arta!\nShihemi të premten.");
+    expect(edited.subject).toBe(message.subject);
+  });
+
+  it("keeps the template's text when the box was emptied", () => {
+    expect(withEditedText(message, "  \n ")).toEqual(message);
   });
 });

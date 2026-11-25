@@ -390,3 +390,13 @@ export async function sendConfirmation(
 
   return Promise.all(jobs);
 }
+
+/**
+ * The message with its text replaced by what someone typed on the appointment
+ * page. The subject still comes from the template. Empty means "unchanged".
+ */
+export function withEditedText(message: ConfirmationMessage, text: string): ConfirmationMessage {
+  const body = text.replace(/\r\n?/g, "\n").trim();
+  if (body === "") return message;
+  return { ...message, body, short: body.replace(/\n{2,}/g, "\n") };
+}
