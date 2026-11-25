@@ -3,6 +3,10 @@ import { describe, expect, it, vi } from "vitest";
 import {
   availableChannels,
   buildConfirmation,
+  DEFAULT_TEMPLATES,
+  placeholderValues,
+  renderTemplate,
+  unknownPlaceholders,
   confirmationLocale,
   patientE164,
   sendConfirmation,
@@ -56,17 +60,60 @@ describe("buildConfirmation", () => {
     expect(message.short).toContain("call us on +383 48 306 376");
   });
 
-  it("leaves out what the clinic has not published rather than inventing it", () => {
+  it("leaves out a line whose detail is missing rather than sending it half empty", () => {
     const message = buildConfirmation({ ...details, address: null, phone: null }, "en");
-    expect(message.short).not.toContain("Address");
-    expect(message.short).toContain("send us a message");
+    expect(message.body).not.toContain("Address");
+    expect(message.body).not.toContain("call us on");
+    expect(message.body).toContain("We look forward to seeing you.");
   });
 
-  it("greets the patient by name in the email only", () => {
+  it("greets the patient by name and gives the email a subject", () => {
     const message = buildConfirmation(details, "sq");
     expect(message.body.startsWith("Përshëndetje Arta Krasniqi,")).toBe(true);
-    expect(message.short).not.toContain("Arta");
     expect(message.subject).toBe("Takimi juaj është konfirmuar — Azalea Dent");
+  });
+
+  it("keeps the SMS compact by dropping blank lines", () => {
+    const message = buildConfirmation(details, "en");
+    expect(message.body).toContain("\n\n");
+    expect(message.short).not.toContain("\n\n");
+  });
+});
+
+describe("the clinic's own wording", () => {
+  it("is used instead of the default, with the placeholders filled", () => {
+    const message = buildConfirmation(details, "de", {
+      subject: "Termin am {date}",
+      body: "Hallo {patient}! Bis {when}.\nIhre {clinic}",
+    });
+    expect(message.subject).toBe("Termin am Freitag, 4. Dezember 2026");
+    expect(message.body).toBe(
+      "Hallo Arta Krasniqi! Bis Freitag, 4. Dezember 2026, um 15:00 Uhr.\nIhre Azalea Dent",
+    );
+  });
+
+  it("falls back to the default for a field left empty", () => {
+    const message = buildConfirmation(details, "en", { subject: "  ", body: "" });
+    expect(message.subject).toBe("Your appointment is confirmed — Azalea Dent");
+    expect(message.body).toBe(buildConfirmation(details, "en").body);
+  });
+
+  it("fills {time} with the part of the day when there is no exact time", () => {
+    expect(
+      renderTemplate("Ora: {time}", placeholderValues({ ...details, time: null, timeSlot: "evening" }, "sq")),
+    ).toBe("Ora: në mbrëmje");
+  });
+
+  it("drops a line naming an empty detail and tidies the gap it leaves", () => {
+    expect(
+      renderTemplate("Hello\n\nTreatment: {service}\n\n\nBye", { service: null }),
+    ).toBe("Hello\n\nBye");
+  });
+
+  it("finds a mistyped placeholder, so it can be refused before a patient sees it", () => {
+    expect(unknownPlaceholders("Hello {patinet}, see you {when} {}")).toEqual(["{patinet}", "{}"]);
+    expect(unknownPlaceholders(DEFAULT_TEMPLATES.de.body)).toEqual([]);
+    expect(unknownPlaceholders(DEFAULT_TEMPLATES.sq.subject)).toEqual([]);
   });
 });
 

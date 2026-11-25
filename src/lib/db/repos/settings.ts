@@ -1,3 +1,4 @@
+import { locales, type Locale } from "@/i18n/config";
 import { execute, query } from "@/lib/db/client";
 import { json } from "@/lib/db/sql";
 import {
@@ -52,6 +53,11 @@ export async function readSettings(): Promise<SettingsShape> {
         if (typeof value === "boolean") settings[key] = value;
         break;
 
+      case "confirmationSubject":
+      case "confirmationBody":
+        settings[key] = localisedStrings(value);
+        break;
+
       default:
         if (typeof value === "string") settings[key] = value;
         break;
@@ -84,4 +90,15 @@ export async function writeSettings(
 
 export async function resetSetting(key: SettingKey): Promise<void> {
   await execute("delete from setting where key = $1", [key]);
+}
+
+/** Only the languages the site has, and only string values, from a jsonb row. */
+function localisedStrings(value: unknown): Partial<Record<Locale, string>> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return {};
+  const result: Partial<Record<Locale, string>> = {};
+  for (const locale of locales) {
+    const entry = (value as Record<string, unknown>)[locale];
+    if (typeof entry === "string" && entry.trim() !== "") result[locale] = entry;
+  }
+  return result;
 }

@@ -39,12 +39,21 @@ import {
   saveHoursAction,
   saveNotificationsAction,
 } from "./actions";
+import { ConfirmationSettings } from "./ConfirmationSettings";
 import { PasswordForm } from "./PasswordForm";
 import { signOutEverywhereAction } from "../actions";
 
 export const metadata: Metadata = { title: "Cilësimet" };
 
-const TABS = ["clinic", "hours", "social", "website", "notifications", "account"] as const;
+const TABS = [
+  "clinic",
+  "hours",
+  "social",
+  "website",
+  "notifications",
+  "confirmation",
+  "account",
+] as const;
 type Tab = (typeof TABS)[number];
 
 /**
@@ -109,6 +118,7 @@ export default async function SettingsPage({
     social: dict.settings.tabSocial,
     website: dict.settings.tabWebsite,
     notifications: dict.settings.tabNotifications,
+    confirmation: dict.settings.tabConfirmation,
     account: dict.settings.tabAccount,
   };
 
@@ -118,7 +128,11 @@ export default async function SettingsPage({
 
       <Toast
         closeLabel={dict.common.close}
-        messages={{ saved: dict.settings.savedNotice, error: dict.errors.body }}
+        messages={{
+          saved: dict.settings.savedNotice,
+          error: dict.errors.body,
+          placeholder_error: dict.settings.placeholderErrorNotice,
+        }}
       />
 
       <nav className="admin-divide mt-6 flex flex-wrap gap-1 border-b pb-px">
@@ -139,7 +153,9 @@ export default async function SettingsPage({
         ))}
       </nav>
 
-      <div className="mt-6 max-w-3xl">
+      {/* The confirmation tab sets three languages side by side, so it gets the
+          full width; every other tab is a single column of short fields. */}
+      <div className={tab === "confirmation" ? "mt-6 max-w-6xl" : "mt-6 max-w-3xl"}>
         {tab === "clinic" && (
           <Card>
             <CardHeader title={dict.settings.tabClinic} />
@@ -384,6 +400,10 @@ export default async function SettingsPage({
               </form>
             </CardBody>
           </Card>
+        )}
+
+        {tab === "confirmation" && (
+          <ConfirmationSettings settings={settings} csrf={csrf} dict={dict} />
         )}
 
         {tab === "account" && (

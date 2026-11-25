@@ -1,4 +1,5 @@
 import { clinic, type OpeningHours } from "@/content/clinic";
+import type { Locale } from "@/i18n/config";
 
 /**
  * The clinic's settings, and the values the site already ships with.
@@ -34,6 +35,12 @@ export type SettingsShape = {
   notifyOnAppointment: boolean;
   notifyOnMessage: boolean;
   notifyEmail: string;
+  /**
+   * The clinic's own wording for the confirmation sent to a patient, per
+   * language. A language left out uses the default in `lib/confirmation.ts`.
+   */
+  confirmationSubject: Partial<Record<Locale, string>>;
+  confirmationBody: Partial<Record<Locale, string>>;
 };
 
 /** Every setting key, so a stray row can be ignored. */
@@ -56,6 +63,8 @@ export const settingKeys = [
   "notifyOnAppointment",
   "notifyOnMessage",
   "notifyEmail",
+  "confirmationSubject",
+  "confirmationBody",
 ] as const satisfies readonly (keyof SettingsShape)[];
 
 export type SettingKey = (typeof settingKeys)[number];
@@ -89,6 +98,8 @@ export function defaultSettings(): SettingsShape {
     notifyOnAppointment: false,
     notifyOnMessage: false,
     notifyEmail: clinic.email ?? "",
+    confirmationSubject: {},
+    confirmationBody: {},
   };
 }
 

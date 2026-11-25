@@ -210,7 +210,12 @@ because someone pressed a button, not because a timer fired.
   and a person presses send and then marks it as sent.
 - The message is written in the language the patient booked in (Albanian,
   English or German), names the day, date and time, the treatment, the
-  address and the number to call to change it. Text: `src/lib/confirmation.ts`.
+  address and the number to call to change it.
+- The clinic can reword it in **Settings → Confirmation**, per language, with
+  placeholders such as `{patient}`, `{when}` and `{service}` filled in for
+  each appointment. A line whose placeholder has nothing to fill it is left
+  out whole; a mistyped placeholder is refused on save; an emptied field
+  goes back to the default. The defaults are in `src/lib/confirmation.ts`.
 - Local numbers such as `044 123 456` are read as Kosovo numbers. A number
   with no country it can be placed in is refused rather than guessed, since a
   wrong guess texts a stranger.

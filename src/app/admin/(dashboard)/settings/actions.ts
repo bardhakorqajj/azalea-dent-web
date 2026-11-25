@@ -9,6 +9,7 @@ import {
   updateAccountDetails,
   verifyCurrentPassword,
 } from "@/lib/admin/account";
+import { locales, type Locale } from "@/i18n/config";
 import { requireAdminMutation } from "@/lib/admin/auth";
 import {
   errorState,
@@ -17,6 +18,7 @@ import {
   lines,
   str,
   successState,
+  textBlock,
   timeStr,
   type ActionState,
 } from "@/lib/admin/forms";
@@ -27,7 +29,8 @@ import {
   revokeSession,
 } from "@/lib/admin/session";
 import { clientIp, clientUserAgent } from "@/lib/admin/auth";
-import { writeSettings } from "@/lib/db/repos/settings";
+import { DEFAULT_TEMPLATES, unknownPlaceholders } from "@/lib/confirmation";
+import { resetSetting, writeSettings } from "@/lib/db/repos/settings";
 import { asUuid } from "@/lib/db/sql";
 import {
   hoursFromDays,
@@ -111,6 +114,47 @@ export async function saveNotificationsAction(formData: FormData): Promise<void>
   });
 
   redirect("/settings?tab=notifications&notice=saved");
+}
+
+/**
+ * The clinic's own wording for the confirmation sent to patients.
+ *
+ * Only what differs from the default is stored, so a language left as it was
+ * keeps following the default, and emptying a field brings the default back —
+ * the same rule as every other piece of text in the dashboard.
+ *
+ * A placeholder the message cannot fill ("{patinet}") refuses the whole save:
+ * sent as it stands, the patient would read the braces.
+ */
+export async function saveConfirmationTemplateAction(formData: FormData): Promise<void> {
+  await requireAdminMutation(formData);
+
+  const subject: Partial<Record<Locale, string>> = {};
+  const body: Partial<Record<Locale, string>> = {};
+
+  for (const locale of locales) {
+    const typedSubject = str(formData, `confirmationSubject.${locale}`, 200);
+    const typedBody = textBlock(formData, `confirmationBody.${locale}`, 2_000).trim();
+
+    if (unknownPlaceholders(typedSubject).length + unknownPlaceholders(typedBody).length > 0) {
+      redirect("/settings?tab=confirmation&notice=placeholder_error");
+    }
+
+    const defaults = DEFAULT_TEMPLATES[locale];
+    if (typedSubject !== "" && typedSubject !== defaults.subject) subject[locale] = typedSubject;
+    if (typedBody !== "" && typedBody !== defaults.body) body[locale] = typedBody;
+  }
+
+  await writeSettings({ confirmationSubject: subject, confirmationBody: body });
+  redirect("/settings?tab=confirmation&notice=saved");
+}
+
+/** Puts every language back to the default confirmation. */
+export async function resetConfirmationTemplateAction(formData: FormData): Promise<void> {
+  await requireAdminMutation(formData);
+  await resetSetting("confirmationSubject");
+  await resetSetting("confirmationBody");
+  redirect("/settings?tab=confirmation&notice=saved");
 }
 
 /**

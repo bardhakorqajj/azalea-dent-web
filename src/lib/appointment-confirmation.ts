@@ -9,6 +9,7 @@ import {
 import type { AppointmentWithNames } from "@/lib/db/repos/appointments";
 import { readSettings } from "@/lib/db/repos/settings";
 import { text } from "@/lib/db/types";
+import type { SettingsShape } from "@/lib/settings/registry";
 
 /**
  * The confirmation for one appointment, as the dashboard shows and sends it.
@@ -22,12 +23,6 @@ export async function confirmationForAppointment(
   const settings = await readSettings();
   const locale = confirmationLocale(appointment.locale);
 
-  const town = [settings.addressPostalCode, settings.addressLocality]
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .join(" ");
-  const address = [settings.addressStreet.trim(), town].filter(Boolean).join(", ");
-
   const service = appointment.service_title
     ? text(appointment.service_title, locale)
     : serviceLabelIn(appointment.service_label, locale);
@@ -39,12 +34,59 @@ export async function confirmationForAppointment(
       time: appointment.scheduled_time,
       timeSlot: appointment.time_slot,
       service: service?.trim() || null,
-      clinicName: settings.clinicName.trim() || "Azalea Dent",
-      address: address || null,
-      phone: settings.phones[0]?.trim() || null,
+      ...clinicDetails(settings),
     },
     locale,
+    customTemplate(settings, locale),
   );
+}
+
+/**
+ * The confirmation as a made-up appointment a week from now would receive it,
+ * for the preview in Settings. Same clinic details and the same wording as a
+ * real one, so what the clinic sees there is what a patient gets.
+ */
+export function exampleConfirmation(
+  settings: SettingsShape,
+  locale: Locale,
+  today = new Date(),
+): ConfirmationMessage {
+  const date = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const surgery = services.find((service) => service.slug === "kirurgji-orale");
+
+  return buildConfirmation(
+    {
+      patientName: "Arta Krasniqi",
+      date,
+      time: "15:00",
+      timeSlot: null,
+      service: surgery ? surgery.title[locale] : null,
+      ...clinicDetails(settings),
+    },
+    locale,
+    customTemplate(settings, locale),
+  );
+}
+
+function clinicDetails(settings: SettingsShape) {
+  const town = [settings.addressPostalCode, settings.addressLocality]
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .join(" ");
+  const address = [settings.addressStreet.trim(), town].filter(Boolean).join(", ");
+
+  return {
+    clinicName: settings.clinicName.trim() || "Azalea Dent",
+    address: address || null,
+    phone: settings.phones[0]?.trim() || null,
+  };
+}
+
+function customTemplate(settings: SettingsShape, locale: Locale) {
+  return {
+    subject: settings.confirmationSubject[locale],
+    body: settings.confirmationBody[locale],
+  };
 }
 
 /**
